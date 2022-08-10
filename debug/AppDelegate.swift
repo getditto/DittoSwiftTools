@@ -1,14 +1,14 @@
 //
-//  debugApp.swift
-//  debug
+//  DittoMessagesApp.swift
+//  DittoMessages
 //
-//  Created by Rae McKelvey on 8/9/22.
+//  Created by Maximilian Alexander on 7/18/22.
 //
 
 import SwiftUI
 
 @main
-struct debugApp: App {
+struct AppDelegate: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
