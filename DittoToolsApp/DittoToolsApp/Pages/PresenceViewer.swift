@@ -8,18 +8,7 @@ import DittoPresenceViewer
 struct PresenceViewer: View{
 
     var body: some View {
-        PV()
+        PresenceView(ditto: DittoManager.shared.ditto!)
     }
 }
 
-struct PV: UIViewRepresentable {
-    typealias UIViewType = UIView
-    func makeUIView(context: Self.Context) -> Self.UIViewType {
-        return DittoPresenceView(ditto: DittoManager.shared.ditto!)
-    }
-    func updateUIView(_: Self.UIViewType, context: Self.Context) {
-        return
-        
-    }
-    
-}
