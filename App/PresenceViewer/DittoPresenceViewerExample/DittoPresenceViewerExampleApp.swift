@@ -22,8 +22,6 @@ struct DittoPresenceViewerExampleApp: App {
     }
 
     var body: some Scene {
-//        WindowGroup {
-            PresenceView(ditto: ditto)
-//        }
+        PresenceView(ditto: ditto)
     }
 }
