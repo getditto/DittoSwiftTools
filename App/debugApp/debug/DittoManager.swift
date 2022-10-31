@@ -35,10 +35,10 @@ class DittoManager: ObservableObject {
 
     @Published var identityType = IdentityType.onlinePlayground
     @Published var config = DittoConfig(
-        appID: "0042dfca-829c-42f5-8e40-82d2bce8ca6c",
-        playgroundToken: "761ca5db-934d-4d8a-ae23-a8491ec62b70",
+        appID: "YOUR_APP_ID_HERE",
+        playgroundToken: "YOUR_TOKEN_HERE",
         identityType: IdentityType.onlinePlayground,
-        offlineLicenseToken: "o2d1c2VyX2lkc3NodW5zdWtlQGRpdHRvLmxpdmVmZXhwaXJ5dDIwMjItMTItMzFUMDg6MDA6MDBaaXNpZ25hdHVyZXhYMUpibm5OY25GVWFKeUpudTBvdE5nMnZ5b0tIQ1lIcWJQRjQzaGZVTlU0REhKQTJxVnI0akR6bmZIRGFnVVRIenlNdnYrTW9QdEJtNDBGNEJ5c0VqSUE9PQ==",
+        offlineLicenseToken: "YOUR_OFFLINE_LICENSE_HERE",
         authenticationProvider: "",
         authenticationToken: "",
         useIsolatedDirectories: true

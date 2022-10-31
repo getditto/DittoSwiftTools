@@ -1,0 +1,681 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F89866F928E8A7C0001AB409 /* DittoPresenceViewerExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89866F828E8A7C0001AB409 /* DittoPresenceViewerExampleApp.swift */; };
+		F89866FB28E8A7C0001AB409 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89866FA28E8A7C0001AB409 /* ContentView.swift */; };
+		F89866FD28E8A7C1001AB409 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F89866FC28E8A7C1001AB409 /* Assets.xcassets */; };
+		F898670128E8A7C1001AB409 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F898670028E8A7C1001AB409 /* Preview Assets.xcassets */; };
+		F898670B28E8A7C1001AB409 /* DittoPresenceViewerExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F898670A28E8A7C1001AB409 /* DittoPresenceViewerExampleTests.swift */; };
+		F898671528E8A7C1001AB409 /* DittoPresenceViewerExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F898671428E8A7C1001AB409 /* DittoPresenceViewerExampleUITests.swift */; };
+		F898671728E8A7C1001AB409 /* DittoPresenceViewerExampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F898671628E8A7C1001AB409 /* DittoPresenceViewerExampleUITestsLaunchTests.swift */; };
+		F898672528E8A985001AB409 /* DittoPresenceViewer in Frameworks */ = {isa = PBXBuildFile; productRef = F898672428E8A985001AB409 /* DittoPresenceViewer */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F898670728E8A7C1001AB409 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F89866ED28E8A7C0001AB409 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F89866F428E8A7C0001AB409;
+			remoteInfo = DittoPresenceViewerExample;
+		};
+		F898671128E8A7C1001AB409 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F89866ED28E8A7C0001AB409 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F89866F428E8A7C0001AB409;
+			remoteInfo = DittoPresenceViewerExample;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F80864F4290B24B700622DFB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F89866F528E8A7C0001AB409 /* DittoPresenceViewerExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DittoPresenceViewerExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F89866F828E8A7C0001AB409 /* DittoPresenceViewerExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoPresenceViewerExampleApp.swift; sourceTree = "<group>"; };
+		F89866FA28E8A7C0001AB409 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F89866FC28E8A7C1001AB409 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F89866FE28E8A7C1001AB409 /* DittoPresenceViewerExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DittoPresenceViewerExample.entitlements; sourceTree = "<group>"; };
+		F898670028E8A7C1001AB409 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F898670628E8A7C1001AB409 /* DittoPresenceViewerExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoPresenceViewerExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F898670A28E8A7C1001AB409 /* DittoPresenceViewerExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoPresenceViewerExampleTests.swift; sourceTree = "<group>"; };
+		F898671028E8A7C1001AB409 /* DittoPresenceViewerExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoPresenceViewerExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F898671428E8A7C1001AB409 /* DittoPresenceViewerExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoPresenceViewerExampleUITests.swift; sourceTree = "<group>"; };
+		F898671628E8A7C1001AB409 /* DittoPresenceViewerExampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoPresenceViewerExampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		F898672728E8A995001AB409 /* DittoPresenceViewer */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DittoPresenceViewer; path = ..; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F89866F228E8A7C0001AB409 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F898672528E8A985001AB409 /* DittoPresenceViewer in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F898670328E8A7C1001AB409 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F898670D28E8A7C1001AB409 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F89866EC28E8A7C0001AB409 = {
+			isa = PBXGroup;
+			children = (
+				F898672628E8A995001AB409 /* Packages */,
+				F89866F728E8A7C0001AB409 /* DittoPresenceViewerExample */,
+				F898670928E8A7C1001AB409 /* DittoPresenceViewerExampleTests */,
+				F898671328E8A7C1001AB409 /* DittoPresenceViewerExampleUITests */,
+				F89866F628E8A7C0001AB409 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F89866F628E8A7C0001AB409 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F89866F528E8A7C0001AB409 /* DittoPresenceViewerExample.app */,
+				F898670628E8A7C1001AB409 /* DittoPresenceViewerExampleTests.xctest */,
+				F898671028E8A7C1001AB409 /* DittoPresenceViewerExampleUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F89866F728E8A7C0001AB409 /* DittoPresenceViewerExample */ = {
+			isa = PBXGroup;
+			children = (
+				F80864F4290B24B700622DFB /* Info.plist */,
+				F89866F828E8A7C0001AB409 /* DittoPresenceViewerExampleApp.swift */,
+				F89866FA28E8A7C0001AB409 /* ContentView.swift */,
+				F89866FC28E8A7C1001AB409 /* Assets.xcassets */,
+				F89866FE28E8A7C1001AB409 /* DittoPresenceViewerExample.entitlements */,
+				F89866FF28E8A7C1001AB409 /* Preview Content */,
+			);
+			path = DittoPresenceViewerExample;
+			sourceTree = "<group>";
+		};
+		F89866FF28E8A7C1001AB409 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				F898670028E8A7C1001AB409 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F898670928E8A7C1001AB409 /* DittoPresenceViewerExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				F898670A28E8A7C1001AB409 /* DittoPresenceViewerExampleTests.swift */,
+			);
+			path = DittoPresenceViewerExampleTests;
+			sourceTree = "<group>";
+		};
+		F898671328E8A7C1001AB409 /* DittoPresenceViewerExampleUITests */ = {
+			isa = PBXGroup;
+			children = (
+				F898671428E8A7C1001AB409 /* DittoPresenceViewerExampleUITests.swift */,
+				F898671628E8A7C1001AB409 /* DittoPresenceViewerExampleUITestsLaunchTests.swift */,
+			);
+			path = DittoPresenceViewerExampleUITests;
+			sourceTree = "<group>";
+		};
+		F898672628E8A995001AB409 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				F898672728E8A995001AB409 /* DittoPresenceViewer */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F89866F428E8A7C0001AB409 /* DittoPresenceViewerExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F898671A28E8A7C1001AB409 /* Build configuration list for PBXNativeTarget "DittoPresenceViewerExample" */;
+			buildPhases = (
+				F89866F128E8A7C0001AB409 /* Sources */,
+				F89866F228E8A7C0001AB409 /* Frameworks */,
+				F89866F328E8A7C0001AB409 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F849468328E8ABE700F10ED1 /* PBXTargetDependency */,
+			);
+			name = DittoPresenceViewerExample;
+			packageProductDependencies = (
+				F898672428E8A985001AB409 /* DittoPresenceViewer */,
+			);
+			productName = DittoPresenceViewerExample;
+			productReference = F89866F528E8A7C0001AB409 /* DittoPresenceViewerExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F898670528E8A7C1001AB409 /* DittoPresenceViewerExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F898671D28E8A7C1001AB409 /* Build configuration list for PBXNativeTarget "DittoPresenceViewerExampleTests" */;
+			buildPhases = (
+				F898670228E8A7C1001AB409 /* Sources */,
+				F898670328E8A7C1001AB409 /* Frameworks */,
+				F898670428E8A7C1001AB409 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F898670828E8A7C1001AB409 /* PBXTargetDependency */,
+			);
+			name = DittoPresenceViewerExampleTests;
+			productName = DittoPresenceViewerExampleTests;
+			productReference = F898670628E8A7C1001AB409 /* DittoPresenceViewerExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F898670F28E8A7C1001AB409 /* DittoPresenceViewerExampleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F898672028E8A7C1001AB409 /* Build configuration list for PBXNativeTarget "DittoPresenceViewerExampleUITests" */;
+			buildPhases = (
+				F898670C28E8A7C1001AB409 /* Sources */,
+				F898670D28E8A7C1001AB409 /* Frameworks */,
+				F898670E28E8A7C1001AB409 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F898671228E8A7C1001AB409 /* PBXTargetDependency */,
+			);
+			name = DittoPresenceViewerExampleUITests;
+			productName = DittoPresenceViewerExampleUITests;
+			productReference = F898671028E8A7C1001AB409 /* DittoPresenceViewerExampleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F89866ED28E8A7C0001AB409 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1400;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					F89866F428E8A7C0001AB409 = {
+						CreatedOnToolsVersion = 14.0.1;
+					};
+					F898670528E8A7C1001AB409 = {
+						CreatedOnToolsVersion = 14.0.1;
+						TestTargetID = F89866F428E8A7C0001AB409;
+					};
+					F898670F28E8A7C1001AB409 = {
+						CreatedOnToolsVersion = 14.0.1;
+						TestTargetID = F89866F428E8A7C0001AB409;
+					};
+				};
+			};
+			buildConfigurationList = F89866F028E8A7C0001AB409 /* Build configuration list for PBXProject "DittoPresenceViewerExample" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F89866EC28E8A7C0001AB409;
+			packageReferences = (
+				F898672328E8A985001AB409 /* XCRemoteSwiftPackageReference "DittoPresenceViewer" */,
+			);
+			productRefGroup = F89866F628E8A7C0001AB409 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F89866F428E8A7C0001AB409 /* DittoPresenceViewerExample */,
+				F898670528E8A7C1001AB409 /* DittoPresenceViewerExampleTests */,
+				F898670F28E8A7C1001AB409 /* DittoPresenceViewerExampleUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F89866F328E8A7C0001AB409 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F898670128E8A7C1001AB409 /* Preview Assets.xcassets in Resources */,
+				F89866FD28E8A7C1001AB409 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F898670428E8A7C1001AB409 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F898670E28E8A7C1001AB409 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F89866F128E8A7C0001AB409 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F89866FB28E8A7C0001AB409 /* ContentView.swift in Sources */,
+				F89866F928E8A7C0001AB409 /* DittoPresenceViewerExampleApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F898670228E8A7C1001AB409 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F898670B28E8A7C1001AB409 /* DittoPresenceViewerExampleTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F898670C28E8A7C1001AB409 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F898671528E8A7C1001AB409 /* DittoPresenceViewerExampleUITests.swift in Sources */,
+				F898671728E8A7C1001AB409 /* DittoPresenceViewerExampleUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F849468328E8ABE700F10ED1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = F849468228E8ABE700F10ED1 /* DittoPresenceViewer */;
+		};
+		F898670828E8A7C1001AB409 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F89866F428E8A7C0001AB409 /* DittoPresenceViewerExample */;
+			targetProxy = F898670728E8A7C1001AB409 /* PBXContainerItemProxy */;
+		};
+		F898671228E8A7C1001AB409 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F89866F428E8A7C0001AB409 /* DittoPresenceViewerExample */;
+			targetProxy = F898671128E8A7C1001AB409 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F898671828E8A7C1001AB409 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F898671928E8A7C1001AB409 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		F898671B28E8A7C1001AB409 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DittoPresenceViewerExample/DittoPresenceViewerExample.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"DittoPresenceViewerExample/Preview Content\"";
+				DEVELOPMENT_TEAM = 3T2VMFZPPQ;
+				ENABLE_BITCODE = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DittoPresenceViewerExample/Info.plist;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = live.ditto.DittoPresenceViewerExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F898671C28E8A7C1001AB409 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DittoPresenceViewerExample/DittoPresenceViewerExample.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"DittoPresenceViewerExample/Preview Content\"";
+				DEVELOPMENT_TEAM = 3T2VMFZPPQ;
+				ENABLE_BITCODE = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DittoPresenceViewerExample/Info.plist;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = live.ditto.DittoPresenceViewerExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F898671E28E8A7C1001AB409 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 3T2VMFZPPQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = live.ditto.DittoPresenceViewerExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DittoPresenceViewerExample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DittoPresenceViewerExample";
+			};
+			name = Debug;
+		};
+		F898671F28E8A7C1001AB409 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 3T2VMFZPPQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = live.ditto.DittoPresenceViewerExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DittoPresenceViewerExample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DittoPresenceViewerExample";
+			};
+			name = Release;
+		};
+		F898672128E8A7C1001AB409 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 3T2VMFZPPQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = live.ditto.DittoPresenceViewerExampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DittoPresenceViewerExample;
+			};
+			name = Debug;
+		};
+		F898672228E8A7C1001AB409 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 3T2VMFZPPQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = live.ditto.DittoPresenceViewerExampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DittoPresenceViewerExample;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F89866F028E8A7C0001AB409 /* Build configuration list for PBXProject "DittoPresenceViewerExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F898671828E8A7C1001AB409 /* Debug */,
+				F898671928E8A7C1001AB409 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F898671A28E8A7C1001AB409 /* Build configuration list for PBXNativeTarget "DittoPresenceViewerExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F898671B28E8A7C1001AB409 /* Debug */,
+				F898671C28E8A7C1001AB409 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F898671D28E8A7C1001AB409 /* Build configuration list for PBXNativeTarget "DittoPresenceViewerExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F898671E28E8A7C1001AB409 /* Debug */,
+				F898671F28E8A7C1001AB409 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F898672028E8A7C1001AB409 /* Build configuration list for PBXNativeTarget "DittoPresenceViewerExampleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F898672128E8A7C1001AB409 /* Debug */,
+				F898672228E8A7C1001AB409 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F898672328E8A985001AB409 /* XCRemoteSwiftPackageReference "DittoPresenceViewer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getditto/DittoPresenceViewer";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F849468228E8ABE700F10ED1 /* DittoPresenceViewer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DittoPresenceViewer;
+		};
+		F898672428E8A985001AB409 /* DittoPresenceViewer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F898672328E8A985001AB409 /* XCRemoteSwiftPackageReference "DittoPresenceViewer" */;
+			productName = DittoPresenceViewer;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = F89866ED28E8A7C0001AB409 /* Project object */;
+}

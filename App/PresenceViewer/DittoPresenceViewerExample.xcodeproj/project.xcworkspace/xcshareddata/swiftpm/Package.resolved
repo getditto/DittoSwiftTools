@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "dittopresenceviewer",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getditto/DittoPresenceViewer",
+      "state" : {
+        "branch" : "main",
+        "revision" : "d2e753ec04afca23c27f691e57819505e11dd294"
+      }
+    },
+    {
+      "identity" : "dittoswiftpackage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getditto/DittoSwiftPackage",
+      "state" : {
+        "revision" : "2ec1761ea3fa39767820cc43fd089f67c3671045",
+        "version" : "2.0.8"
+      }
+    }
+  ],
+  "version" : 2
+}
