@@ -13,9 +13,9 @@
 		01F34C9728A2EAE3003BDF17 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34C9628A2EAE3003BDF17 /* ContentView.swift */; };
 		01F34C9928A2EAE5003BDF17 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01F34C9828A2EAE5003BDF17 /* Assets.xcassets */; };
 		01F34C9C28A2EAE5003BDF17 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01F34C9B28A2EAE5003BDF17 /* Preview Assets.xcassets */; };
-		01F34CA628A2EAE5003BDF17 /* debugTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CA528A2EAE5003BDF17 /* debugTests.swift */; };
-		01F34CB028A2EAE5003BDF17 /* debugUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CAF28A2EAE5003BDF17 /* debugUITests.swift */; };
-		01F34CB228A2EAE5003BDF17 /* debugUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CB128A2EAE5003BDF17 /* debugUITestsLaunchTests.swift */; };
+		01F34CA628A2EAE5003BDF17 /* DittoToolsAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CA528A2EAE5003BDF17 /* DittoToolsAppTests.swift */; };
+		01F34CB028A2EAE5003BDF17 /* DittoToolsAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CAF28A2EAE5003BDF17 /* DittoToolsAppUITests.swift */; };
+		01F34CB228A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CB128A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift */; };
 		01F34CC028A2EBD4003BDF17 /* DittoObjC in Frameworks */ = {isa = PBXBuildFile; productRef = 01F34CBF28A2EBD4003BDF17 /* DittoObjC */; };
 		01F34CC228A2EBD4003BDF17 /* DittoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 01F34CC128A2EBD4003BDF17 /* DittoSwift */; };
 		01F34CC528A3046C003BDF17 /* DittoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CC428A3046C003BDF17 /* DittoManager.swift */; };
@@ -58,15 +58,15 @@
 		016757D828A32E9400347491 /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		016757DC28A3313300347491 /* PresenceViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenceViewer.swift; sourceTree = "<group>"; };
 		016757DE28A3393B00347491 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
-		01F34C9128A2EAE3003BDF17 /* debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		01F34C9128A2EAE3003BDF17 /* DittoToolsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DittoToolsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01F34C9628A2EAE3003BDF17 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		01F34C9828A2EAE5003BDF17 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01F34C9B28A2EAE5003BDF17 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		01F34CA128A2EAE5003BDF17 /* debugTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = debugTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		01F34CA528A2EAE5003BDF17 /* debugTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = debugTests.swift; sourceTree = "<group>"; };
-		01F34CAB28A2EAE5003BDF17 /* debugUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = debugUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		01F34CAF28A2EAE5003BDF17 /* debugUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = debugUITests.swift; sourceTree = "<group>"; };
-		01F34CB128A2EAE5003BDF17 /* debugUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = debugUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		01F34CA128A2EAE5003BDF17 /* DittoToolsAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoToolsAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		01F34CA528A2EAE5003BDF17 /* DittoToolsAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoToolsAppTests.swift; sourceTree = "<group>"; };
+		01F34CAB28A2EAE5003BDF17 /* DittoToolsAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoToolsAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		01F34CAF28A2EAE5003BDF17 /* DittoToolsAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoToolsAppUITests.swift; sourceTree = "<group>"; };
+		01F34CB128A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoToolsAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		01F34CC328A2EC4A003BDF17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		01F34CC428A3046C003BDF17 /* DittoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoManager.swift; sourceTree = "<group>"; };
 		01F34CC928A304F0003BDF17 /* LogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogManager.swift; sourceTree = "<group>"; };
@@ -117,9 +117,9 @@
 		01F34C8828A2EAE3003BDF17 = {
 			isa = PBXGroup;
 			children = (
-				01F34C9328A2EAE3003BDF17 /* debug */,
-				01F34CA428A2EAE5003BDF17 /* debugTests */,
-				01F34CAE28A2EAE5003BDF17 /* debugUITests */,
+				01F34C9328A2EAE3003BDF17 /* DittoToolsApp */,
+				01F34CA428A2EAE5003BDF17 /* DittoToolsAppTests */,
+				01F34CAE28A2EAE5003BDF17 /* DittoToolsAppUITests */,
 				01F34C9228A2EAE3003BDF17 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -127,14 +127,14 @@
 		01F34C9228A2EAE3003BDF17 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				01F34C9128A2EAE3003BDF17 /* debug.app */,
-				01F34CA128A2EAE5003BDF17 /* debugTests.xctest */,
-				01F34CAB28A2EAE5003BDF17 /* debugUITests.xctest */,
+				01F34C9128A2EAE3003BDF17 /* DittoToolsApp.app */,
+				01F34CA128A2EAE5003BDF17 /* DittoToolsAppTests.xctest */,
+				01F34CAB28A2EAE5003BDF17 /* DittoToolsAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		01F34C9328A2EAE3003BDF17 /* debug */ = {
+		01F34C9328A2EAE3003BDF17 /* DittoToolsApp */ = {
 			isa = PBXGroup;
 			children = (
 				01F34CE428A30798003BDF17 /* Model */,
@@ -150,7 +150,7 @@
 				01F34C9828A2EAE5003BDF17 /* Assets.xcassets */,
 				01F34C9A28A2EAE5003BDF17 /* Preview Content */,
 			);
-			path = debug;
+			path = DittoToolsApp;
 			sourceTree = "<group>";
 		};
 		01F34C9A28A2EAE5003BDF17 /* Preview Content */ = {
@@ -161,21 +161,21 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		01F34CA428A2EAE5003BDF17 /* debugTests */ = {
+		01F34CA428A2EAE5003BDF17 /* DittoToolsAppTests */ = {
 			isa = PBXGroup;
 			children = (
-				01F34CA528A2EAE5003BDF17 /* debugTests.swift */,
+				01F34CA528A2EAE5003BDF17 /* DittoToolsAppTests.swift */,
 			);
-			path = debugTests;
+			path = DittoToolsAppTests;
 			sourceTree = "<group>";
 		};
-		01F34CAE28A2EAE5003BDF17 /* debugUITests */ = {
+		01F34CAE28A2EAE5003BDF17 /* DittoToolsAppUITests */ = {
 			isa = PBXGroup;
 			children = (
-				01F34CAF28A2EAE5003BDF17 /* debugUITests.swift */,
-				01F34CB128A2EAE5003BDF17 /* debugUITestsLaunchTests.swift */,
+				01F34CAF28A2EAE5003BDF17 /* DittoToolsAppUITests.swift */,
+				01F34CB128A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift */,
 			);
-			path = debugUITests;
+			path = DittoToolsAppUITests;
 			sourceTree = "<group>";
 		};
 		01F34CDF28A3076D003BDF17 /* Debug Tools */ = {
@@ -224,9 +224,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		01F34C9028A2EAE3003BDF17 /* debug */ = {
+		01F34C9028A2EAE3003BDF17 /* DittoToolsApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 01F34CB528A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "debug" */;
+			buildConfigurationList = 01F34CB528A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "DittoToolsApp" */;
 			buildPhases = (
 				01F34C8D28A2EAE3003BDF17 /* Sources */,
 				01F34C8E28A2EAE3003BDF17 /* Frameworks */,
@@ -236,19 +236,19 @@
 			);
 			dependencies = (
 			);
-			name = debug;
+			name = DittoToolsApp;
 			packageProductDependencies = (
 				01F34CBF28A2EBD4003BDF17 /* DittoObjC */,
 				01F34CC128A2EBD4003BDF17 /* DittoSwift */,
 				0ED14DA82910627D0038ADF8 /* DittoPresenceViewer */,
 			);
 			productName = debug;
-			productReference = 01F34C9128A2EAE3003BDF17 /* debug.app */;
+			productReference = 01F34C9128A2EAE3003BDF17 /* DittoToolsApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		01F34CA028A2EAE5003BDF17 /* debugTests */ = {
+		01F34CA028A2EAE5003BDF17 /* DittoToolsAppTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 01F34CB828A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "debugTests" */;
+			buildConfigurationList = 01F34CB828A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "DittoToolsAppTests" */;
 			buildPhases = (
 				01F34C9D28A2EAE5003BDF17 /* Sources */,
 				01F34C9E28A2EAE5003BDF17 /* Frameworks */,
@@ -259,14 +259,14 @@
 			dependencies = (
 				01F34CA328A2EAE5003BDF17 /* PBXTargetDependency */,
 			);
-			name = debugTests;
+			name = DittoToolsAppTests;
 			productName = debugTests;
-			productReference = 01F34CA128A2EAE5003BDF17 /* debugTests.xctest */;
+			productReference = 01F34CA128A2EAE5003BDF17 /* DittoToolsAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		01F34CAA28A2EAE5003BDF17 /* debugUITests */ = {
+		01F34CAA28A2EAE5003BDF17 /* DittoToolsAppUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 01F34CBB28A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "debugUITests" */;
+			buildConfigurationList = 01F34CBB28A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "DittoToolsAppUITests" */;
 			buildPhases = (
 				01F34CA728A2EAE5003BDF17 /* Sources */,
 				01F34CA828A2EAE5003BDF17 /* Frameworks */,
@@ -277,9 +277,9 @@
 			dependencies = (
 				01F34CAD28A2EAE5003BDF17 /* PBXTargetDependency */,
 			);
-			name = debugUITests;
+			name = DittoToolsAppUITests;
 			productName = debugUITests;
-			productReference = 01F34CAB28A2EAE5003BDF17 /* debugUITests.xctest */;
+			productReference = 01F34CAB28A2EAE5003BDF17 /* DittoToolsAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -305,7 +305,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 01F34C8C28A2EAE3003BDF17 /* Build configuration list for PBXProject "debug" */;
+			buildConfigurationList = 01F34C8C28A2EAE3003BDF17 /* Build configuration list for PBXProject "DittoToolsApp" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -322,9 +322,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				01F34C9028A2EAE3003BDF17 /* debug */,
-				01F34CA028A2EAE5003BDF17 /* debugTests */,
-				01F34CAA28A2EAE5003BDF17 /* debugUITests */,
+				01F34C9028A2EAE3003BDF17 /* DittoToolsApp */,
+				01F34CA028A2EAE5003BDF17 /* DittoToolsAppTests */,
+				01F34CAA28A2EAE5003BDF17 /* DittoToolsAppUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -387,7 +387,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01F34CA628A2EAE5003BDF17 /* debugTests.swift in Sources */,
+				01F34CA628A2EAE5003BDF17 /* DittoToolsAppTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,8 +395,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01F34CB228A2EAE5003BDF17 /* debugUITestsLaunchTests.swift in Sources */,
-				01F34CB028A2EAE5003BDF17 /* debugUITests.swift in Sources */,
+				01F34CB228A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift in Sources */,
+				01F34CB028A2EAE5003BDF17 /* DittoToolsAppUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -405,12 +405,12 @@
 /* Begin PBXTargetDependency section */
 		01F34CA328A2EAE5003BDF17 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 01F34C9028A2EAE3003BDF17 /* debug */;
+			target = 01F34C9028A2EAE3003BDF17 /* DittoToolsApp */;
 			targetProxy = 01F34CA228A2EAE5003BDF17 /* PBXContainerItemProxy */;
 		};
 		01F34CAD28A2EAE5003BDF17 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 01F34C9028A2EAE3003BDF17 /* debug */;
+			target = 01F34C9028A2EAE3003BDF17 /* DittoToolsApp */;
 			targetProxy = 01F34CAC28A2EAE5003BDF17 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -537,11 +537,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"debug/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"DittoToolsApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 3T2VMFZPPQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = debug/Info.plist;
+				INFOPLIST_FILE = DittoToolsApp/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Bluetooth sync";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Uses Bluetooth to connect and sync with nearby devices\n";
@@ -556,7 +556,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dittolive.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = dittolive.DittoToolsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -571,11 +571,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"debug/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"DittoToolsApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 3T2VMFZPPQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = debug/Info.plist;
+				INFOPLIST_FILE = DittoToolsApp/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Bluetooth sync";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Uses Bluetooth to connect and sync with nearby devices\n";
@@ -590,7 +590,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dittolive.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = dittolive.DittoToolsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -614,7 +614,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/debug.app/debug";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DittoToolsApp.app/DittoToolsApp";
 			};
 			name = Debug;
 		};
@@ -634,7 +634,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/debug.app/debug";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DittoToolsApp.app/DittoToolsApp";
 			};
 			name = Release;
 		};
@@ -677,7 +677,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		01F34C8C28A2EAE3003BDF17 /* Build configuration list for PBXProject "debug" */ = {
+		01F34C8C28A2EAE3003BDF17 /* Build configuration list for PBXProject "DittoToolsApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01F34CB328A2EAE5003BDF17 /* Debug */,
@@ -686,7 +686,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		01F34CB528A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "debug" */ = {
+		01F34CB528A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "DittoToolsApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01F34CB628A2EAE5003BDF17 /* Debug */,
@@ -695,7 +695,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		01F34CB828A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "debugTests" */ = {
+		01F34CB828A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "DittoToolsAppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01F34CB928A2EAE5003BDF17 /* Debug */,
@@ -704,7 +704,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		01F34CBB28A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "debugUITests" */ = {
+		01F34CBB28A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "DittoToolsAppUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01F34CBC28A2EAE5003BDF17 /* Debug */,

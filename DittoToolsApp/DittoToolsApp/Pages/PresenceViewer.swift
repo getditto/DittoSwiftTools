@@ -3,7 +3,7 @@
 //
 import SwiftUI
 import UIKit
-import DittoSwiftPresenceViewer
+import DittoPresenceViewer
 
 struct PresenceViewer: View{
 

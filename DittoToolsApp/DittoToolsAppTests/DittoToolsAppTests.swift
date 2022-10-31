@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import debug
+@testable import DittoToolsApp
 
 class debugTests: XCTestCase {
 
