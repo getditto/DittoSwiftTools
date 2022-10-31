@@ -7,5 +7,6 @@ final class DittoPresenceViewerTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
 //        XCTAssertEqual(DittoPresenceViewer().text, "Hello, World!")
+
     }
 }
