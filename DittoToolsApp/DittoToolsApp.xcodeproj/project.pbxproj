@@ -728,7 +728,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/getditto/DittoSwiftTools";
 			requirement = {
-				branch = we/toolsPackage;
+				branch = main;
 				kind = branch;
 			};
 		};
