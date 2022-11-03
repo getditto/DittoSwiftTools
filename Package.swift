@@ -30,9 +30,6 @@ let package = Package(
             cxxSettings: [
                 .define("ENABLE_BITCODE", to: "NO")
             ]
-        ),
-        .testTarget(
-            name: "DittoPresenceViewerTests",
-            dependencies: ["DittoPresenceViewer"]),
+        )
     ]
 )

@@ -1,3 +1,3 @@
-# DittoSwiftDebugger
+# DittoSwiftTools
 
-Debugging tools for Ditto
+Diagnostic tools for Ditto
