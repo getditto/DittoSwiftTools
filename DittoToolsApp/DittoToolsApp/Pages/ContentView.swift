@@ -46,7 +46,7 @@ struct ContentView: View {
                 
             }
             .listStyle(InsetGroupedListStyle())
-            .navigationTitle("Ditto Debugger")
+            .navigationTitle("Ditto Tools")
             
         }
         .navigationViewStyle(StackNavigationViewStyle())
