@@ -26,7 +26,7 @@ struct Documents: View {
                         ForEach(viewModel.docsList, id: \.self) { doc in
                             
                             if(doc.value[property] != nil) {
-                                Text(doc.value[property]!.debugDescription.replacingOccurrences(of: "Optional(", with: ""))
+                                Text(doc.value[property]!.debugDescription)
                             }
                         }
                     }

@@ -18,6 +18,9 @@ class DittoManager {
         //Data Browser
         ditto = Ditto(identity: .onlinePlayground(appID: "cef0fac8-b44b-40d3-b052-480266ef237c", token: "11411143-8ff2-4345-a17c-e8139ae6145e", enableDittoCloudSync: true))
 
+        
+        
+        
         do {
             try ditto.startSync()
         } catch (let err){
