@@ -9,7 +9,9 @@ import Foundation
 import SwiftUI
 
 struct CollectionView: View {
+    public var name: String
+    
     var body : some View {
-        Text("Hello collection")
+        Text("Hello \(name)")
     }
 }
