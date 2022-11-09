@@ -10,8 +10,9 @@ class AuthDelegate: DittoAuthenticationDelegate {
     func authenticationRequired(authenticator: DittoAuthenticator) {
         let provider = DittoManager.shared.config.authenticationProvider
         let token = DittoManager.shared.config.authenticationToken
+        print("login with \(token), \(provider)")
     
-        DittoManager.shared.ditto!.auth?.loginWithToken(token, provider: provider, completion: { err in
+        authenticator.loginWithToken(token, provider: provider, completion: { err in
             print("Error authenticating \(err?.localizedDescription)")
         })
     }
@@ -20,7 +21,7 @@ class AuthDelegate: DittoAuthenticationDelegate {
         let provider = DittoManager.shared.config.authenticationProvider
         let token = DittoManager.shared.config.authenticationToken
         print("Auth token expiring in \(secondsRemaining)")
-        DittoManager.shared.ditto!.auth?.loginWithToken(token, provider: provider, completion: { err in
+        authenticator.loginWithToken(token, provider: provider, completion: { err in
             print("Error authenticating \(err?.localizedDescription)")
         })
     }
@@ -33,7 +34,6 @@ class DittoManager: ObservableObject {
 
     var ditto: Ditto? = Ditto()
 
-    @Published var identityType = IdentityType.onlinePlayground
     @Published var config = DittoConfig(
         appID: "YOUR_APP_ID_HERE",
         playgroundToken: "YOUR_TOKEN_HERE",
@@ -76,10 +76,11 @@ class DittoManager: ObservableObject {
         self.ditto = nil
         let persistenceDir = getPersistenceDir(config: config)
     
-        switch (self.identityType) {
+        switch (self.config.identityType) {
         case IdentityType.onlinePlayground:
             self.ditto = Ditto(identity: .onlinePlayground(appID: self.config.appID, token: self.config.playgroundToken, persistenceDirectory: persistenceDir), persistenceDirectory: persistenceDir)
         case IdentityType.onlineWithAuthentication:
+            self.authDelegate = AuthDelegate()
             self.ditto = Ditto(identity: .onlineWithAuthentication(appID: self.config.appID, authenticationDelegate: self.authDelegate, persistenceDirectory: persistenceDir), persistenceDirectory: persistenceDir)
         case IdentityType.offlinePlayground:
             self.ditto = Ditto(identity: .offlinePlayground(appID: self.config.appID, persistenceDirectory: persistenceDir), persistenceDirectory: persistenceDir)
@@ -87,27 +88,12 @@ class DittoManager: ObservableObject {
         }
 
         self.ditto!.delegate = self
-        let newConfig = DittoTransportConfig()
-        for transport in AppSettings.shared.enabledTransports {
-            switch transport {
-            case .bluetooth:
-                newConfig.peerToPeer.bluetoothLe.isEnabled = true
-            case .wifi:
-                newConfig.peerToPeer.lan.isEnabled = true
-            case .awdl:
-                newConfig.peerToPeer.awdl.isEnabled = true
-            case .tcpServer:
-                if let server = AppSettings.shared.selectedTCPServer {
-                    newConfig.connect.tcpServers.add(server.urlString(formattedFor: .tcp))
-                }
-            case .websocketServer:
-                if let server = AppSettings.shared.selectedWebsocketServer {
-                    newConfig.connect.websocketURLs.add(server.urlString(formattedFor: .websocket))
-                }
-            }
+        
+        do {
+            try ditto!.startSync()
+        } catch {
+            assertionFailure(error.localizedDescription)
         }
-        ditto!.transportConfig = newConfig
-        try ditto!.startSync()
 
         DispatchQueue.main.async {
             // Let the DittoManager finish getting created, then apply initial diagnostics setting
