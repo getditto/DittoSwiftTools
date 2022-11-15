@@ -17,31 +17,70 @@ class DocumentsViewModel : ObservableObject {
         
     @Published var docProperties: [String]?
     @Published var docsList: [Document] = []
+    @Published var selectedDoc = 0
+
     var orderedDict = OrderedDictionary<String, Any?>()
+
     
     init(collectionName: String) {
         self.collectionName = collectionName
         subscription = DittoManager.shared.ditto.store.collection(collectionName).findAll().subscribe()
-        setupLiveQuery()
+        findAll_LiveQuery()
     }
     
-    func setupLiveQuery() {
+    func findAll_LiveQuery() {
         collectionObserver = DittoManager.shared.ditto.store.collection(collectionName).findAll().observeLocal(eventHandler: {docs, event in
+            self.docsList.removeAll()
             for doc in docs {
+                print(type(of: docs))
+                print(type(of: doc))
                 print(doc.value)
-//                ["isCompleted": Optional(false), "_id": Optional("62cef664008fd87e00e60667"), "body": Optional("run")]
-//                ["body": Optional("Cxvb"), "isDeleted": Optional(false), "_id": Optional("63333b1600ce507b0097e3b3"), "isCompleted": Optional(false)]
-                
-                self.docProperties = doc.value.keys.map{$0}
+                self.docProperties = doc.value.keys.map{$0}.sorted()
                 
                 for (key, value) in doc.value {
                     self.orderedDict[key] = value
                 }
                 
-                self.docsList.append(Document(key: doc.id.toString(), value: self.orderedDict))
-                print(self.docsList.count)
-                
+                self.docsList.append(Document(id: doc.id.toString(), value: self.orderedDict))
             }
         })
+    }
+    
+    func findWithFilter_LiveQuery(queryString: String) throws {
+        self.selectedDoc = 0
+
+        collectionObserver = DittoManager.shared.ditto.store.collection(collectionName).find(queryString).observeLocal(eventHandler: {docs, event in
+            self.docsList.removeAll()
+            
+            for doc in docs {
+                
+                self.docProperties = doc.value.keys.map{$0}.sorted()
+                
+                for (key, value) in doc.value {
+                    self.orderedDict[key] = value
+                }
+                
+                self.docsList.append(Document(id: doc.id.toString(), value: self.orderedDict))
+            }
+            
+        })
+
+    }
+    
+    
+    func filterDocs(queryString: String) {
+        collectionObserver?.stop()
+        collectionObserver = nil
+        
+        if(queryString == "") {
+            findAll_LiveQuery()
+        }
+        else {
+            do {
+                try findWithFilter_LiveQuery(queryString: queryString)
+            } catch {
+                print("error filtering data")
+            }
+        }
     }
 }

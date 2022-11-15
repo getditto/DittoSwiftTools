@@ -10,19 +10,18 @@ import OrderedCollections
 
 class Document : Hashable, Equatable{
     static func == (lhs: Document, rhs: Document) -> Bool {
-        lhs.key.description == rhs.key.description
+        lhs.id.description == rhs.id.description
     }
     
-    
+    let id: String
     let value: OrderedDictionary<String,Any?>
-    let key: String
     
-    init(key: String, value: OrderedDictionary<String,Any?>) {
-        self.key = key
+    init(id: String, value: OrderedDictionary<String,Any?>) {
+        self.id = id
         self.value = value
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(key)
+        hasher.combine(id)
     }
 }
