@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct DataBrowser: View {
+struct Collections: View {
     
     @StateObject var viewModel = DataBrowserViewModel()
     
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Collections")) {
+                Section() {
                     ForEach(viewModel.collections ?? [], id: \.name) { collection in
                         NavigationLink(destination: Documents(collectionName: collection.name)) {
                             Text(collection.name)
@@ -22,13 +22,13 @@ struct DataBrowser: View {
                     }
                 }
             }
-            .navigationTitle("Data Browser")
+            .navigationTitle("Collections")
         }
     }
 }
 
-struct DataBrowser_Previews: PreviewProvider {
+struct Collections_Previews: PreviewProvider {
     static var previews: some View {
-        DataBrowser()
+        Collections()
     }
 }

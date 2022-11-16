@@ -11,6 +11,7 @@
 		0E163E722919A220009C9344 /* DocumentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E163E712919A220009C9344 /* DocumentsViewModel.swift */; };
 		0E163E74291AD530009C9344 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E163E73291AD530009C9344 /* Document.swift */; };
 		0E163E77291B0D41009C9344 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 0E163E76291B0D41009C9344 /* OrderedCollections */; };
+		0E687DE829258D1C00D59155 /* Collections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E687DE729258D1C00D59155 /* Collections.swift */; };
 		0EC3713829146C1100E66287 /* DataBrowserApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EC3713729146C1100E66287 /* DataBrowserApp.swift */; };
 		0EC3713C29146C1200E66287 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0EC3713B29146C1200E66287 /* Assets.xcassets */; };
 		0EC3713F29146C1200E66287 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0EC3713E29146C1200E66287 /* Preview Assets.xcassets */; };
@@ -20,7 +21,6 @@
 		0EC3716329146DF400E66287 /* DittoObjC in Frameworks */ = {isa = PBXBuildFile; productRef = 0EC3716229146DF400E66287 /* DittoObjC */; };
 		0EC3716529146DF400E66287 /* DittoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0EC3716429146DF400E66287 /* DittoSwift */; };
 		0EC371682914732800E66287 /* DittoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EC371672914732800E66287 /* DittoManager.swift */; };
-		0EC3716A29147D0500E66287 /* DataBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EC3716929147D0500E66287 /* DataBrowser.swift */; };
 		0EC3716C29147D3000E66287 /* DataBrowserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EC3716B29147D3000E66287 /* DataBrowserViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +45,7 @@
 		0E163E6F2919A1EC009C9344 /* Documents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Documents.swift; sourceTree = "<group>"; };
 		0E163E712919A220009C9344 /* DocumentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsViewModel.swift; sourceTree = "<group>"; };
 		0E163E73291AD530009C9344 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		0E687DE729258D1C00D59155 /* Collections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collections.swift; sourceTree = "<group>"; };
 		0EC3713429146C1100E66287 /* DataBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EC3713729146C1100E66287 /* DataBrowserApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBrowserApp.swift; sourceTree = "<group>"; };
 		0EC3713B29146C1200E66287 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -56,7 +57,6 @@
 		0EC3715429146C1200E66287 /* DataBrowserUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBrowserUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		0EC37166291471EA00E66287 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		0EC371672914732800E66287 /* DittoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoManager.swift; sourceTree = "<group>"; };
-		0EC3716929147D0500E66287 /* DataBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBrowser.swift; sourceTree = "<group>"; };
 		0EC3716B29147D3000E66287 /* DataBrowserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBrowserViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,7 +114,7 @@
 				0EC371672914732800E66287 /* DittoManager.swift */,
 				0EC37166291471EA00E66287 /* Info.plist */,
 				0EC3713729146C1100E66287 /* DataBrowserApp.swift */,
-				0EC3716929147D0500E66287 /* DataBrowser.swift */,
+				0E687DE729258D1C00D59155 /* Collections.swift */,
 				0EC3713B29146C1200E66287 /* Assets.xcassets */,
 				0EC3713D29146C1200E66287 /* Preview Content */,
 				0EC3716B29147D3000E66287 /* DataBrowserViewModel.swift */,
@@ -290,8 +290,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				0EC3713829146C1100E66287 /* DataBrowserApp.swift in Sources */,
-				0EC3716A29147D0500E66287 /* DataBrowser.swift in Sources */,
 				0EC371682914732800E66287 /* DittoManager.swift in Sources */,
+				0E687DE829258D1C00D59155 /* Collections.swift in Sources */,
 				0E163E702919A1EC009C9344 /* Documents.swift in Sources */,
 				0EC3716C29147D3000E66287 /* DataBrowserViewModel.swift in Sources */,
 				0E163E74291AD530009C9344 /* Document.swift in Sources */,

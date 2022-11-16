@@ -46,9 +46,9 @@ class DocumentsViewModel : ObservableObject {
         })
     }
     
-    func findWithFilter_LiveQuery(queryString: String) throws {
+    func findWithFilter_LiveQuery(queryString: String) {
         self.selectedDoc = 0
-
+        
         collectionObserver = DittoManager.shared.ditto.store.collection(collectionName).find(queryString).observeLocal(eventHandler: {docs, event in
             self.docsList.removeAll()
             
@@ -72,15 +72,11 @@ class DocumentsViewModel : ObservableObject {
         collectionObserver?.stop()
         collectionObserver = nil
         
-        if(queryString == "") {
-            findAll_LiveQuery()
+        if(queryString.isEmpty) {
+            findWithFilter_LiveQuery(queryString: queryString)
         }
         else {
-            do {
-                try findWithFilter_LiveQuery(queryString: queryString)
-            } catch {
-                print("error filtering data")
-            }
+            findAll_LiveQuery()
         }
     }
 }
