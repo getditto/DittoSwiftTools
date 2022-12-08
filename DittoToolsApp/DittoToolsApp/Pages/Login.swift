@@ -1,9 +1,4 @@
-//
-//  DemoLoginPage.swift
-//  Pluto
-//
-//  Created by Maximilian Alexander on 9/16/21.
-//
+
 import SwiftUI
 
 struct Login: View {
