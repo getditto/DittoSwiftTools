@@ -23,6 +23,7 @@ let package = Package(
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
             ],
+            path: "Sources/DittoPresenceViewer",
             resources: [
                 .copy("Resources/index.html"),
                 .copy("Resources/main.css"),
@@ -38,6 +39,8 @@ let package = Package(
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
                 .product(name: "OrderedCollections", package: "swift-collections")
-            ]),
+            ],
+            path: "Sources/DittoDataBrowser"
+        ),
     ]
 )
