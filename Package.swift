@@ -14,7 +14,8 @@ let package = Package(
             targets: ["DittoPresenceViewer"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "2.0.8")
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "2.0.8"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
         .target(
@@ -30,6 +31,13 @@ let package = Package(
             cxxSettings: [
                 .define("ENABLE_BITCODE", to: "NO")
             ]
-        )
+        ),
+        
+        .target(
+            name: "DittoDataBrowser",
+            dependencies: [
+                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
+                .product(name: "OrderedCollections", package: "swift-collections")
+            ]),
     ]
 )
