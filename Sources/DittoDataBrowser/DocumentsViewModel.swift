@@ -27,7 +27,7 @@ class DocumentsViewModel : ObservableObject {
     init(collectionName: String, ditto: Ditto) {
         self.collectionName = collectionName
         self.ditto = ditto
-        subscription = self.ditto.store.collection(collectionName).findAll().subscribe()
+        subscription = self.ditto.store.collection(collectionName).findAll().limit(1000).subscribe()
         findAll_LiveQuery()
     }
     
