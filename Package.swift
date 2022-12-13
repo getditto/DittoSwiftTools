@@ -12,6 +12,9 @@ let package = Package(
         .library(
             name: "DittoPresenceViewer",
             targets: ["DittoPresenceViewer"]),
+        .library(
+            name: "DittoDataBrowser",
+             targets: ["DittoDataBrowser"])
     ],
     dependencies: [
         .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "2.0.8"),
