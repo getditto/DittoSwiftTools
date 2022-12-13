@@ -18,21 +18,19 @@ public struct DataBrowser: View {
     }
     
     public var body: some View {
-        NavigationView {
-            if #available(iOS 15.0, *) {
-                List {
-                    Section() {
-                        ForEach(viewModel.collections ?? [], id: \.name) { collection in
-                            NavigationLink(destination: Documents(collectionName: collection.name, ditto: viewModel.ditto)) {
-                                Text(collection.name)
-                            }
+        if #available(iOS 15.0, *) {
+            List {
+                Section() {
+                    ForEach(viewModel.collections ?? [], id: \.name) { collection in
+                        NavigationLink(destination: Documents(collectionName: collection.name, ditto: viewModel.ditto)) {
+                            Text(collection.name)
                         }
                     }
                 }
-                .navigationTitle("Collections")
-            } else {
-                // Fallback on earlier versions
             }
+            .navigationTitle("Collections")
+        } else {
+            // Fallback on earlier versions
         }
     }
 }

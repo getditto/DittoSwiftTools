@@ -28,7 +28,7 @@ struct ContentView: View {
         NavigationView {
             List{
                 Section(header: Text("Debug")) {
-                    NavigationLink(destination: DataBrowser()) {
+                    NavigationLink(destination: DataBrowserView()) {
                         MenuListItem(title: "Data Browser", systemImage: "photo", color: .green)
                     }
                     NavigationLink(destination: NetworkPage()) {
