@@ -54,21 +54,17 @@ struct Login: View {
                     case IdentityType.offlinePlayground:
                         HStack {
                             Text("Offline License Token")
-                            TextField("", text: $viewModel.config.offlineLicenseToken)
+                            TextField("", text: $viewModel.config.offlineLicenseToken).textInputAutocapitalization(.never)
                         }
                     case IdentityType.onlineWithAuthentication:
                         HStack {
                             Text("Provider")
-                            TextField("", text: $viewModel.config.authenticationProvider)
+                            TextField("", text: $viewModel.config.authenticationProvider).textInputAutocapitalization(.never)
                         }
                         HStack {
                             Text("Token")
-                            TextField("", text: $viewModel.config.authenticationToken)
+                            TextField("", text: $viewModel.config.authenticationToken).textInputAutocapitalization(.never)
                         }
-                    }
-                    
-                    HStack {
-                        Toggle("Use Isolated Directories", isOn: $viewModel.config.useIsolatedDirectories)
                     }
                 }
                 Section {
