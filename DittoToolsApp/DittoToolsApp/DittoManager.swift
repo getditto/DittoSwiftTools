@@ -50,6 +50,7 @@ class DittoManager: ObservableObject {
     /// Singleton instance. All access is via `DittoManager.shared`.
     static var shared = DittoManager()
     var collectionsObserver: DittoLiveQuery?
+    var collectionsSubscription: DittoSubscription?
     var authDelegate = AuthDelegate()
 
     // MARK: - Private Constructor
@@ -78,12 +79,12 @@ class DittoManager: ObservableObject {
     
         switch (self.config.identityType) {
         case IdentityType.onlinePlayground:
-            self.ditto = Ditto(identity: .onlinePlayground(appID: self.config.appID, token: self.config.playgroundToken, persistenceDirectory: persistenceDir), persistenceDirectory: persistenceDir)
+            self.ditto = Ditto(identity: .onlinePlayground(appID: self.config.appID, token: self.config.playgroundToken), persistenceDirectory: persistenceDir)
         case IdentityType.onlineWithAuthentication:
             self.authDelegate = AuthDelegate()
-            self.ditto = Ditto(identity: .onlineWithAuthentication(appID: self.config.appID, authenticationDelegate: self.authDelegate, persistenceDirectory: persistenceDir), persistenceDirectory: persistenceDir)
+            self.ditto = Ditto(identity: .onlineWithAuthentication(appID: self.config.appID, authenticationDelegate: self.authDelegate), persistenceDirectory: persistenceDir)
         case IdentityType.offlinePlayground:
-            self.ditto = Ditto(identity: .offlinePlayground(appID: self.config.appID, persistenceDirectory: persistenceDir), persistenceDirectory: persistenceDir)
+            self.ditto = Ditto(identity: .offlinePlayground(appID: self.config.appID), persistenceDirectory: persistenceDir)
             try self.ditto!.setOfflineOnlyLicenseToken(self.config.offlineLicenseToken)
         }
 
@@ -104,9 +105,10 @@ class DittoManager: ObservableObject {
     }
     
     func setupLiveQueries () {
-      self.collectionsObserver = DittoManager.shared.ditto?.store.collections().observe(eventHandler: { event in
-         print("collections changed")
-         self.colls = DittoManager.shared.ditto?.store.collections().exec() ?? []
+        self.collectionsSubscription = DittoManager.shared.ditto?.store.collections().subscribe()
+        self.collectionsObserver = DittoManager.shared.ditto?.store.collections().observeLocal(eventHandler: { event in
+            print("collections changed")
+            self.colls = DittoManager.shared.ditto?.store.collections().exec() ?? []
        })
     }
 
