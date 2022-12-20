@@ -17,7 +17,7 @@ let package = Package(
              targets: ["DittoDataBrowser"])
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "2.0.8"),
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "3.0.0"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [

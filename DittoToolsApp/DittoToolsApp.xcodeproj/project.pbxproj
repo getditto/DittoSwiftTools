@@ -16,8 +16,6 @@
 		01F34CA628A2EAE5003BDF17 /* DittoToolsAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CA528A2EAE5003BDF17 /* DittoToolsAppTests.swift */; };
 		01F34CB028A2EAE5003BDF17 /* DittoToolsAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CAF28A2EAE5003BDF17 /* DittoToolsAppUITests.swift */; };
 		01F34CB228A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CB128A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift */; };
-		01F34CC028A2EBD4003BDF17 /* DittoObjC in Frameworks */ = {isa = PBXBuildFile; productRef = 01F34CBF28A2EBD4003BDF17 /* DittoObjC */; };
-		01F34CC228A2EBD4003BDF17 /* DittoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 01F34CC128A2EBD4003BDF17 /* DittoSwift */; };
 		01F34CC528A3046C003BDF17 /* DittoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CC428A3046C003BDF17 /* DittoManager.swift */; };
 		01F34CCF28A304F0003BDF17 /* LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CC928A304F0003BDF17 /* LogManager.swift */; };
 		01F34CD028A304F0003BDF17 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CCA28A304F0003BDF17 /* AppSettings.swift */; };
@@ -34,7 +32,8 @@
 		01F34D0528A31147003BDF17 /* PrimaryFormButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0428A31147003BDF17 /* PrimaryFormButton.swift */; };
 		01F34D0728A3119E003BDF17 /* MenuListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0628A3119E003BDF17 /* MenuListItem.swift */; };
 		01F34D0928A31644003BDF17 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0828A31644003BDF17 /* AppDelegate.swift */; };
-		0ED14DA92910627D0038ADF8 /* DittoPresenceViewer in Frameworks */ = {isa = PBXBuildFile; productRef = 0ED14DA82910627D0038ADF8 /* DittoPresenceViewer */; };
+		0E1252B72951114B00BCC55E /* DittoDataBrowser in Frameworks */ = {isa = PBXBuildFile; productRef = 0E1252B62951114B00BCC55E /* DittoDataBrowser */; };
+		0E1252B92951114B00BCC55E /* DittoPresenceViewer in Frameworks */ = {isa = PBXBuildFile; productRef = 0E1252B82951114B00BCC55E /* DittoPresenceViewer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,9 +90,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01F34CC028A2EBD4003BDF17 /* DittoObjC in Frameworks */,
-				0ED14DA92910627D0038ADF8 /* DittoPresenceViewer in Frameworks */,
-				01F34CC228A2EBD4003BDF17 /* DittoSwift in Frameworks */,
+				0E1252B92951114B00BCC55E /* DittoPresenceViewer in Frameworks */,
+				0E1252B72951114B00BCC55E /* DittoDataBrowser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +119,7 @@
 				01F34CA428A2EAE5003BDF17 /* DittoToolsAppTests */,
 				01F34CAE28A2EAE5003BDF17 /* DittoToolsAppUITests */,
 				01F34C9228A2EAE3003BDF17 /* Products */,
+				0E8FA0692947FC5E00B2E38F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -221,6 +220,13 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		0E8FA0692947FC5E00B2E38F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -238,9 +244,8 @@
 			);
 			name = DittoToolsApp;
 			packageProductDependencies = (
-				01F34CBF28A2EBD4003BDF17 /* DittoObjC */,
-				01F34CC128A2EBD4003BDF17 /* DittoSwift */,
-				0ED14DA82910627D0038ADF8 /* DittoPresenceViewer */,
+				0E1252B62951114B00BCC55E /* DittoDataBrowser */,
+				0E1252B82951114B00BCC55E /* DittoPresenceViewer */,
 			);
 			productName = debug;
 			productReference = 01F34C9128A2EAE3003BDF17 /* DittoToolsApp.app */;
@@ -315,8 +320,7 @@
 			);
 			mainGroup = 01F34C8828A2EAE3003BDF17;
 			packageReferences = (
-				01F34CBE28A2EBD4003BDF17 /* XCRemoteSwiftPackageReference "DittoSwiftPackage" */,
-				0ED14DA72910627D0038ADF8 /* XCRemoteSwiftPackageReference "DittoSwiftTools" */,
+				0E1252B52951114B00BCC55E /* XCRemoteSwiftPackageReference "DittoSwiftTools" */,
 			);
 			productRefGroup = 01F34C9228A2EAE3003BDF17 /* Products */;
 			projectDirPath = "";
@@ -716,15 +720,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		01F34CBE28A2EBD4003BDF17 /* XCRemoteSwiftPackageReference "DittoSwiftPackage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/getditto/DittoSwiftPackage";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
-		0ED14DA72910627D0038ADF8 /* XCRemoteSwiftPackageReference "DittoSwiftTools" */ = {
+		0E1252B52951114B00BCC55E /* XCRemoteSwiftPackageReference "DittoSwiftTools" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/getditto/DittoSwiftTools";
 			requirement = {
@@ -735,19 +731,14 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		01F34CBF28A2EBD4003BDF17 /* DittoObjC */ = {
+		0E1252B62951114B00BCC55E /* DittoDataBrowser */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 01F34CBE28A2EBD4003BDF17 /* XCRemoteSwiftPackageReference "DittoSwiftPackage" */;
-			productName = DittoObjC;
+			package = 0E1252B52951114B00BCC55E /* XCRemoteSwiftPackageReference "DittoSwiftTools" */;
+			productName = DittoDataBrowser;
 		};
-		01F34CC128A2EBD4003BDF17 /* DittoSwift */ = {
+		0E1252B82951114B00BCC55E /* DittoPresenceViewer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 01F34CBE28A2EBD4003BDF17 /* XCRemoteSwiftPackageReference "DittoSwiftPackage" */;
-			productName = DittoSwift;
-		};
-		0ED14DA82910627D0038ADF8 /* DittoPresenceViewer */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0ED14DA72910627D0038ADF8 /* XCRemoteSwiftPackageReference "DittoSwiftTools" */;
+			package = 0E1252B52951114B00BCC55E /* XCRemoteSwiftPackageReference "DittoSwiftTools" */;
 			productName = DittoPresenceViewer;
 		};
 /* End XCSwiftPackageProductDependency section */
