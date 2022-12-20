@@ -724,7 +724,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/getditto/DittoSwiftTools";
 			requirement = {
-				branch = DataBrowser;
+				branch = main;
 				kind = branch;
 			};
 		};
