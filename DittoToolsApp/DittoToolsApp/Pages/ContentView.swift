@@ -58,7 +58,11 @@ struct ContentView: View {
                         ExportLogs()
                     }
                 }
-                
+                Section(header: Text("Disk Usage")) {
+                    NavigationLink(destination: DiskUsageViewer()) {
+                        MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .green)
+                    }
+                }
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Ditto Tools")

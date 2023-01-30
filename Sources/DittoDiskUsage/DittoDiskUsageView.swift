@@ -94,7 +94,7 @@ public struct DittoDiskUsageView: View {
 
     @ObservedObject var viewModel: DiskUsageViewModel
 
-    init(ditto: Ditto) {
+    public init(ditto: Ditto) {
         self.ditto = ditto
         self.viewModel = DiskUsageViewModel(ditto: ditto)
     }
