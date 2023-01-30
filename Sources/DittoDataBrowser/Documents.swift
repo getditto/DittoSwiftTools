@@ -8,6 +8,10 @@
 import SwiftUI
 import DittoSwift
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 @available(iOS 15.0, *)
 struct Documents: View {
     

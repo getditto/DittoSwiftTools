@@ -18,9 +18,13 @@ let package = Package(
         .library(
             name: "DittoExportLogs",
             targets: ["DittoExportLogs"]),
+        .library(
+            name: "DittoDiskUsage",
+            targets: ["DittoDiskUsage"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "3.0.0"),
+        // Ditto.diskUsage was added in 3.0.1
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "3.0.1"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
@@ -48,13 +52,21 @@ let package = Package(
             ],
             path: "Sources/DittoDataBrowser"
         ),
-        
+
         .target(
             name: "DittoExportLogs",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
             ],
             path: "Sources/DittoExportLogs"
+        ),
+
+        .target(
+            name: "DittoDiskUsage",
+            dependencies: [
+                .product(name: "DittoSwift", package: "DittoSwiftPackage")
+            ],
+            path: "Sources/DittoDiskUsage"
         ),
     ]
 )
