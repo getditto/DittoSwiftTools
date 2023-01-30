@@ -1,6 +1,9 @@
- # DittoSwiftTools  
- <img align="left" src="/Img/Ditto_logo.png" alt="Ditto Logo" width="150"> <br />
-
+ # DittoSwiftTools
+ <img align="left" src="/Img/Ditto_logo.png" alt="Ditto Logo" width="150">  
+ <br />  
+ <br />  
+ <br />  
+ 
 DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers, export debug logs, browse collections/documents and see Ditto's disk usage.
 
 ## Requirements
