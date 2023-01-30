@@ -26,7 +26,18 @@ class AuthDelegate: DittoAuthenticationDelegate {
         })
     }
 }
-extension String: Error {} // Enables you to throw a string
+
+struct DittoStartError: Error {
+    let message: String
+
+    init(_ message: String) {
+        self.message = message
+    }
+
+    public var localizedDescription: String {
+        return message
+    }
+}
 
 /// A singleton which manages our `Ditto` object.
 class DittoManager: ObservableObject {
@@ -74,7 +85,7 @@ class DittoManager: ObservableObject {
     // MARK: - Functions
     
     func restartDitto() throws {
-        self.ditto!.stopSync()
+        self.ditto?.stopSync()
         self.ditto = nil
         let persistenceDir = getPersistenceDir(config: config)
     
@@ -83,14 +94,14 @@ class DittoManager: ObservableObject {
             let appID = UUID(uuidString: self.config.appID)
             let token = UUID(uuidString: self.config.playgroundToken)
             if (appID == nil || token == nil) {
-                throw "AppID and Token are not valid UUIDs."
+                throw DittoStartError("AppID and Token are not valid UUIDs.")
             }
             self.ditto = Ditto(identity: .onlinePlayground(appID: self.config.appID, token: self.config.playgroundToken), persistenceDirectory: persistenceDir)
         case IdentityType.onlineWithAuthentication:
             self.authDelegate = AuthDelegate()
             let appID = UUID(uuidString: self.config.appID)
             if (appID == nil) {
-                throw "AppID is not a valid UUID."
+                throw DittoStartError("AppID is not a valid UUID.")
             }
             self.ditto = Ditto(identity: .onlineWithAuthentication(appID: self.config.appID, authenticationDelegate: self.authDelegate), persistenceDirectory: persistenceDir)
         case IdentityType.offlinePlayground:

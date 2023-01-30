@@ -82,7 +82,7 @@ struct ContentView: View {
                 }
         })
         VStack {
-            Text("SDK Version: \(dittoModel.ditto!.sdkVersion ?? "N/A")")
+            Text("SDK Version: \(dittoModel.ditto?.sdkVersion ?? "N/A")")
         }.padding()
 }
 }
