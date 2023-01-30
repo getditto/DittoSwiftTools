@@ -8,6 +8,11 @@
 import SwiftUI
 import DittoSwift
 
+#if canImport(SwiftUI)
+#if canImport(UIKit)
+
+import UIKit
+
 @available(iOS 15.0, *)
 struct Documents: View {
     
@@ -140,3 +145,5 @@ struct SearchBar: View {
         }
     }
 }
+#endif
+#endif

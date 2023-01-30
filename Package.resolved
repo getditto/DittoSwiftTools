@@ -17,6 +17,15 @@
         "revision" : "f504716c27d2e5d4144fa4794b12129301d17729",
         "version" : "1.0.3"
       }
+    },
+    {
+      "identity" : "swiftcbor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/valpackett/SwiftCBOR",
+      "state" : {
+        "revision" : "98a59c305cca5c5367c3422d5e127661d4e76e24",
+        "version" : "0.4.5"
+      }
     }
   ],
   "version" : 2

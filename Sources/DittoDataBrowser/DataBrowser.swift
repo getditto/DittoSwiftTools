@@ -5,6 +5,9 @@
 //  Created by Walker Erekson on 11/3/22.
 //
 
+#if canImport(UIKit)
+#if canImport(SwiftUI)
+
 import SwiftUI
 import DittoSwift
 
@@ -34,3 +37,5 @@ public struct DataBrowser: View {
         }
     }
 }
+#endif
+#endif
