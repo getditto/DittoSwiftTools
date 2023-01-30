@@ -26,6 +26,7 @@ class AuthDelegate: DittoAuthenticationDelegate {
         })
     }
 }
+extension String: Error {} // Enables you to throw a string
 
 /// A singleton which manages our `Ditto` object.
 class DittoManager: ObservableObject {
@@ -71,7 +72,7 @@ class DittoManager: ObservableObject {
             .appendingPathComponent(UUID().uuidString)
     }
     // MARK: - Functions
-
+    
     func restartDitto() throws {
         self.ditto!.stopSync()
         self.ditto = nil
@@ -79,15 +80,24 @@ class DittoManager: ObservableObject {
     
         switch (self.config.identityType) {
         case IdentityType.onlinePlayground:
+            let appID = UUID(uuidString: self.config.appID)
+            let token = UUID(uuidString: self.config.playgroundToken)
+            if (appID == nil || token == nil) {
+                throw "AppID and Token are not valid UUIDs."
+            }
             self.ditto = Ditto(identity: .onlinePlayground(appID: self.config.appID, token: self.config.playgroundToken), persistenceDirectory: persistenceDir)
         case IdentityType.onlineWithAuthentication:
             self.authDelegate = AuthDelegate()
+            let appID = UUID(uuidString: self.config.appID)
+            if (appID == nil) {
+                throw "AppID is not a valid UUID."
+            }
             self.ditto = Ditto(identity: .onlineWithAuthentication(appID: self.config.appID, authenticationDelegate: self.authDelegate), persistenceDirectory: persistenceDir)
         case IdentityType.offlinePlayground:
             self.ditto = Ditto(identity: .offlinePlayground(appID: self.config.appID), persistenceDirectory: persistenceDir)
             try self.ditto!.setOfflineOnlyLicenseToken(self.config.offlineLicenseToken)
         }
-
+        
         self.ditto!.delegate = self
         
         do {
