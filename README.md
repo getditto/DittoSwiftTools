@@ -1,5 +1,5 @@
  # DittoSwiftTools  
- <img align="left" src="/Img/Ditto_logo.png" alt="Ditto Logo" width="150">  
+ <img align="left" src="/Img/Ditto_logo.png" alt="Ditto Logo" width="150"> <br />
 
 DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers, export debug logs, browse collections/documents and see Ditto's disk usage.
 
@@ -11,7 +11,7 @@ DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers, ex
 The reccomended approach to use DittoSwiftTools in your project is using the Swift Package Manager.
 1. With your project open in Xcode go to File -> Add Packages, then search using  "github.com/getditto/DittoSwiftTools" to find the DittoSwiftTools package.  
 
- <img src="/Img/addPackage.png" alt="Add Package Image" width="550">  
+ <img src="/Img/addPackage.png" alt="Add Package Image">  
 
 2. Select "Add Package"
 3. Select which DittoSwiftTools products you would like, then select "Add Package"
