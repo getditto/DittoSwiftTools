@@ -1,5 +1,7 @@
 import DittoSwift
 import SwiftUI
+
+#if canImport(UIKit)
 import UIKit
 
 
@@ -38,3 +40,4 @@ public struct ExportLogs: UIViewControllerRepresentable {
 }
 
 
+#endif

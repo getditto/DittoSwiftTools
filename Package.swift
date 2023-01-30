@@ -18,10 +18,14 @@ let package = Package(
         .library(
             name: "DittoExportLogs",
             targets: ["DittoExportLogs"]),
+        .library(
+            name: "DittoAddWinsSet",
+            targets: ["DittoAddWinsSet"]),
     ],
     dependencies: [
         .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "3.0.0"),
-        .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
+        .package(url: "https://github.com/apple/swift-collections", from: "1.0.0"),
+        .package(url: "https://github.com/valpackett/SwiftCBOR", from: "0.4.5")
     ],
     targets: [
         .target(
@@ -39,7 +43,6 @@ let package = Package(
                 .define("ENABLE_BITCODE", to: "NO")
             ]
         ),
-        
         .target(
             name: "DittoDataBrowser",
             dependencies: [
@@ -48,7 +51,19 @@ let package = Package(
             ],
             path: "Sources/DittoDataBrowser"
         ),
-        
+        .target(
+            name: "DittoAddWinsSet",
+            dependencies: [
+                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
+                .product(name: "SwiftCBOR", package: "SwiftCBOR")
+            ],
+            path: "Sources/DittoAddWinsSet"
+        ),
+        .testTarget(
+            name: "DittoAddWinsSetTests",
+            dependencies: ["DittoAddWinsSet"],
+            path: "Tests/DittoAddWinsSet"
+        ),
         .target(
             name: "DittoExportLogs",
             dependencies: [
