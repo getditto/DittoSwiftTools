@@ -25,10 +25,10 @@ class ConstructorTests: XCTestCase {
 
     func testComplexSetDuplicationWithMaps() {
         let addWinsSet = DittoAddWinsSet(dictionary: [
-            "foo": ["a": 1],
+            "foo": ["a": 1, "b": 1],
             "1": 20,
             "2": 20,
-            "zoo": ["a": 1],
+            "zoo": ["b": 1, "a": 1],
         ])
         XCTAssertEqual(addWinsSet.values.count, 2)
     }

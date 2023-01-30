@@ -21,7 +21,7 @@ public struct DittoAddWinsSet {
     func asDictionary() throws -> [String: Any?] {
         var dictionary: [String: Any?] = [:]
         for v in values {
-            let bytes = try SwiftCBOR.CBOR.encodeAny(v)
+            let bytes = (try SwiftCBOR.CBOR.encodeAny(v)).sorted()
             let data = Data(bytes)
             dictionary[data.base64EncodedString()] = v
         }
@@ -46,4 +46,9 @@ extension DittoDocumentPath {
 
 }
 
+extension DittoMutableDocumentPath {
+    func set(_ addWinsSet: DittoAddWinsSet, isDefault: Bool = false) throws{
+        self.set(try addWinsSet.asDictionary())
+    }
+}
 
