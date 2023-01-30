@@ -1,5 +1,5 @@
- # DittoSwiftTools
- <img align="left" src="/Img/Ditto_logo.png" alt="Ditto Logo" width="150">
+ # DittoSwiftTools  
+ <img align="left" src="/Img/Ditto_logo.png" alt="Ditto Logo" width="150">  
 
 DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers, export debug logs, browse collections/documents and see Ditto's disk usage.
 
@@ -9,9 +9,9 @@ DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers, ex
 
 ## Installation
 The reccomended approach to use DittoSwiftTools in your project is using the Swift Package Manager.
-1. With your project open in Xcode go to File -> Add Packages, then search using  "github.com/getditto/DittoSwiftTools" to find the DittoSwiftTools package.
+1. With your project open in Xcode go to File -> Add Packages, then search using  "github.com/getditto/DittoSwiftTools" to find the DittoSwiftTools package.  
 
- <img src="/Img/addPackage.png" alt="Add Package Image" width="350">
+ <img src="/Img/addPackage.png" alt="Add Package Image" width="550">  
 
 2. Select "Add Package"
 3. Select which DittoSwiftTools products you would like, then select "Add Package"
@@ -20,9 +20,9 @@ The reccomended approach to use DittoSwiftTools in your project is using the Swi
 There are four targets in this package: Presence Viewer, Data Browser, Export Logs, Disk Usage.
 
 ### 1. Presence Viewer
-The Presence Viewer displays a mesh graph that allows you to see all connected peers within the mesh and the transport that each peer is using to make a connection.
+The Presence Viewer displays a mesh graph that allows you to see all connected peers within the mesh and the transport that each peer is using to make a connection.  
 
- <img src="/Img/presenceViewer.png" alt="Presence Viewer Image" width="300">
+ <img src="/Img/presenceViewer.png" alt="Presence Viewer Image" width="300">  
 
 First, make sure the "DittoPresenceViewer" was added to your Target.
 Then, use `import DittoPresenceViewer` to import the Presence Viewer
@@ -55,11 +55,11 @@ func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 ```
 
 ### 2. Data Browser
-The Ditto Data Browser allows you to view all your collections, documents within each collection and the propeties/values of a document. With the Data Browser, you can observe any changes that are made to your collections and documents in real time. 
+The Ditto Data Browser allows you to view all your collections, documents within each collection and the propeties/values of a document. With the Data Browser, you can observe any changes that are made to your collections and documents in real time.  
 
- <img src="/Img/collections.png" alt="Collections Image" width="300">
+ <img src="/Img/collections.png" alt="Collections Image" width="300">  
 
- <img src="/Img/document.png" alt="Document Image" width="300">
+ <img src="/Img/document.png" alt="Document Image" width="300">  
 
 First, make sure the "DittoDataBrowser" was added to your Target.
 Then, use `import DittoDataBrowser` to import the Data Browser.
