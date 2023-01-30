@@ -1,6 +1,12 @@
 import DittoSwift
+
+#if canImport(SwiftUI)
 import SwiftUI
+#endif
+
+#if canImport(UIKit)
 import UIKit
+#endif
 
 
 @available(iOS 13.0, *)
