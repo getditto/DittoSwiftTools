@@ -85,7 +85,7 @@ struct Login: View {
                     viewModel.image = image
                 }
             }) */
-            .alert("Check your credentials", isPresented: $viewModel.isPresentingAlert, actions: {
+            .alert("Ditto failed to start.", isPresented: $viewModel.isPresentingAlert, actions: {
                     Button("Dismiss", role: .cancel) { dismiss() }
                     
                 })
