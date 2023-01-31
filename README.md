@@ -6,11 +6,14 @@
  
 DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers, export debug logs, browse collections/documents and see Ditto's disk usage.
 
+Issues and pull requests welcome!
+
 ## Requirements
 * iOS 15.0+
 * Swift 5.0+
 
 ## Installation
+
 The reccomended approach to use DittoSwiftTools in your project is using the Swift Package Manager.
 1. With your project open in Xcode go to File -> Add Packages, then search using  "github.com/getditto/DittoSwiftTools" to find the DittoSwiftTools package.  
 
@@ -19,7 +22,11 @@ The reccomended approach to use DittoSwiftTools in your project is using the Swi
 2. Select "Add Package"
 3. Select which DittoSwiftTools products you would like, then select "Add Package"
 
+*If you are looking for compatibility with Ditto v4, please target the [v4 branch](https://github.com/getditto/DittoSwiftTools/tree/v4) in the Swift Package Manager.*
+
+
 ## Usage
+
 There are four targets in this package: Presence Viewer, Data Browser, Export Logs, Disk Usage.
 
 ### 1. Presence Viewer
@@ -33,6 +40,7 @@ Then, use `import DittoPresenceViewer` to import the Presence Viewer
 You can use the Presence Viewer in SiwftUI or UIKit
 
 **SwiftUI**  
+
 Use `PresenceView(ditto: Ditto)` and pass in your Ditto instance to display the mesh graph.
 ```
 import DittoPresenceViewer
@@ -46,6 +54,7 @@ struct PresenceViewer: View{
 ```
 
 **UIKit**  
+
 Call [present](https://developer.apple.com/documentation/uikit/uiviewcontroller/1621380-present) and pass `DittoPresenceView(ditto: DittoManager.shared.ditto).viewController` as a parameter. Set `animated` to `true`
 ```
 func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -68,6 +77,7 @@ First, make sure the "DittoDataBrowser" was added to your Target.
 Then, use `import DittoDataBrowser` to import the Data Browser.
 
 **SwiftUI**  
+
 Use `DataBrowser(ditto: Ditto)` and pass in your Ditto instance to display the Data Browser.
 ```
 import DittoDataBrowser
@@ -88,14 +98,16 @@ First, make sure the "DittoExportLogs" was added to your Target.
 Then, use `import DittoExportLogs` to import the Export Logs.
 
 **SwiftUI**  
+
 Use `ExportLogs()` to export the logs. It is reccomended to call `ExportLogs` from within a [sheet](https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:)).
 ```
-.sheet(isPresented: $exportLogst) {
+.sheet(isPresented: $exportLogs) {
     ExportLogs()
 }
 ```
 
 ### 4. Disk Usage
+
 Disk Usage allows you to see Ditto's file space usage.  
 
  <img src="/Img/diskUsage.png" alt="Disk Usage Image" width="300">  
@@ -104,7 +116,8 @@ First, make sure the "DittoDiskUsage" was added to your Target.
 Then, use `import DittoDiskUsage` to import the Disk Usage.
 
 **SwiftUI**  
-use `DittoDiskUsageView(ditto: Ditto)` and pass in your Ditto instance.
+
+Use `DittoDiskUsageView(ditto: Ditto)` and pass in your Ditto instance.
 ```
 import DittoDiskUsage
 
@@ -116,7 +129,9 @@ struct DiskUsageViewer: View {
 ```
 
 ## Contact
-* [Contact Us](https://www.ditto.live/about/contact)
+
+Send us an email at support@ditto.live or [submit a form](https://www.ditto.live/about/contact). 
+
 
 ## License (MIT)
 Copyright © 2023 DittoLive
