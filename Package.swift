@@ -14,7 +14,13 @@ let package = Package(
             targets: ["DittoPresenceViewer"]),
         .library(
             name: "DittoDataBrowser",
-             targets: ["DittoDataBrowser"])
+             targets: ["DittoDataBrowser"]),
+        .library(
+            name: "DittoExportLogs",
+            targets: ["DittoExportLogs"]),
+        .library(
+            name: "DittoDiskUsage",
+            targets: ["DittoDiskUsage"]),
     ],
     dependencies: [
         .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.0.0-beta1"),
@@ -44,6 +50,22 @@ let package = Package(
                 .product(name: "OrderedCollections", package: "swift-collections")
             ],
             path: "Sources/DittoDataBrowser"
+        ),
+
+        .target(
+            name: "DittoExportLogs",
+            dependencies: [
+                .product(name: "DittoSwift", package: "DittoSwiftPackage")
+            ],
+            path: "Sources/DittoExportLogs"
+        ),
+
+        .target(
+            name: "DittoDiskUsage",
+            dependencies: [
+                .product(name: "DittoSwift", package: "DittoSwiftPackage")
+            ],
+            path: "Sources/DittoDiskUsage"
         ),
     ]
 )
