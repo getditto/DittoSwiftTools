@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "dittoswifttools",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getditto/DittoSwiftTools",
+      "state" : {
+        "branch" : "main",
+        "revision" : "62fd33eed69e07f3c21fd6c1e11fbda12346a346"
+      }
+    },
+    {
       "identity" : "swift-collections",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections",
