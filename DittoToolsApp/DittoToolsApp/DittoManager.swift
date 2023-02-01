@@ -13,7 +13,7 @@ class AuthDelegate: DittoAuthenticationDelegate {
         print("login with \(token), \(provider)")
     
         authenticator.loginWithToken(token, provider: provider, completion: { err in
-            print("Error authenticating \(err?.localizedDescription)")
+            print("Error authenticating \(String(describing: err?.localizedDescription))")
         })
     }
 
@@ -22,7 +22,7 @@ class AuthDelegate: DittoAuthenticationDelegate {
         let token = DittoManager.shared.config.authenticationToken
         print("Auth token expiring in \(secondsRemaining)")
         authenticator.loginWithToken(token, provider: provider, completion: { err in
-            print("Error authenticating \(err?.localizedDescription)")
+            print("Error authenticating \(String(describing: err?.localizedDescription))")
         })
     }
 }

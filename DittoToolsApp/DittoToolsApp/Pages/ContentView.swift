@@ -41,6 +41,9 @@ struct ContentView: View {
                     NavigationLink(destination: PresenceViewer()) {
                         MenuListItem(title: "Presence Viewer", systemImage: "network", color: .green)
                     }
+                    NavigationLink(destination: DiskUsageViewer()) {
+                        MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .green)
+                    }
                 }
                 Section(header: Text("Configuration")) {
                     NavigationLink(destination: Login()) {
@@ -58,7 +61,6 @@ struct ContentView: View {
                         ExportLogs()
                     }
                 }
-                
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Ditto Tools")
