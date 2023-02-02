@@ -16,7 +16,6 @@ class DocumentsViewModel : ObservableObject {
     var subscription: DittoSubscription?
     var collectionObserver: DittoLiveQuery?
     var ditto: Ditto
-    var isStandAlone: Bool
         
     @Published var docProperties: [String]?
     @Published var docsList: [Document] = []
@@ -28,13 +27,12 @@ class DocumentsViewModel : ObservableObject {
     init(collectionName: String, ditto: Ditto, isStandAlone: Bool) {
         self.collectionName = collectionName
         self.ditto = ditto
-        self.isStandAlone = isStandAlone
-        startSubscription()
+        startSubscription(isStandAlone: isStandAlone)
         findAll_LiveQuery()
     }
         
-    func startSubscription() {
-        if(self.isStandAlone) {
+    func startSubscription(isStandAlone: Bool) {
+        if(isStandAlone) {
             self.subscription = self.ditto.store.collection(collectionName).findAll().limit(1000).subscribe()
         }
     }
