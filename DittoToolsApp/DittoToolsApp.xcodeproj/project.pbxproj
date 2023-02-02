@@ -32,8 +32,6 @@
 		01F34D0528A31147003BDF17 /* PrimaryFormButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0428A31147003BDF17 /* PrimaryFormButton.swift */; };
 		01F34D0728A3119E003BDF17 /* MenuListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0628A3119E003BDF17 /* MenuListItem.swift */; };
 		01F34D0928A31644003BDF17 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0828A31644003BDF17 /* AppDelegate.swift */; };
-		0E1252B72951114B00BCC55E /* DittoDataBrowser in Frameworks */ = {isa = PBXBuildFile; productRef = 0E1252B62951114B00BCC55E /* DittoDataBrowser */; };
-		0E1252B92951114B00BCC55E /* DittoPresenceViewer in Frameworks */ = {isa = PBXBuildFile; productRef = 0E1252B82951114B00BCC55E /* DittoPresenceViewer */; };
 		0EBA54E0298836C600083183 /* DittoExportLogs in Frameworks */ = {isa = PBXBuildFile; productRef = 0EBA54DF298836C600083183 /* DittoExportLogs */; };
 		F87DC47C2988584200899FEC /* DittoDataBrowser in Frameworks */ = {isa = PBXBuildFile; productRef = F87DC47B2988584200899FEC /* DittoDataBrowser */; };
 		F87DC47E2988584200899FEC /* DittoExportLogs in Frameworks */ = {isa = PBXBuildFile; productRef = F87DC47D2988584200899FEC /* DittoExportLogs */; };
@@ -98,9 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0E1252B92951114B00BCC55E /* DittoPresenceViewer in Frameworks */,
 				0EBA54E0298836C600083183 /* DittoExportLogs in Frameworks */,
-				0E1252B72951114B00BCC55E /* DittoDataBrowser in Frameworks */,
 				F87DC47E2988584200899FEC /* DittoExportLogs in Frameworks */,
 				F87DC4802988584200899FEC /* DittoPresenceViewer in Frameworks */,
 				F87DC4832988599C00899FEC /* DittoDiskUsage in Frameworks */,
@@ -267,8 +263,6 @@
 			);
 			name = DittoToolsApp;
 			packageProductDependencies = (
-				0E1252B62951114B00BCC55E /* DittoDataBrowser */,
-				0E1252B82951114B00BCC55E /* DittoPresenceViewer */,
 				0EBA54DF298836C600083183 /* DittoExportLogs */,
 				F87DC47B2988584200899FEC /* DittoDataBrowser */,
 				F87DC47D2988584200899FEC /* DittoExportLogs */,
@@ -748,9 +742,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		0E1252B62951114B00BCC55E /* DittoDataBrowser */ = {
+		0EBA54DF298836C600083183 /* DittoExportLogs */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0E1252B52951114B00BCC55E /* XCRemoteSwiftPackageReference "DittoSwiftTools" */;
+			productName = DittoExportLogs;
+		};
 		F87DC47B2988584200899FEC /* DittoDataBrowser */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DittoDataBrowser;
@@ -762,11 +757,6 @@
 		F87DC47F2988584200899FEC /* DittoPresenceViewer */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DittoPresenceViewer;
-		};
-		0EBA54DF298836C600083183 /* DittoExportLogs */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0E1252B52951114B00BCC55E /* XCRemoteSwiftPackageReference "DittoSwiftTools" */;
-			productName = DittoExportLogs;
 		};
 		F87DC4822988599C00899FEC /* DittoDiskUsage */ = {
 			isa = XCSwiftPackageProductDependency;
