@@ -21,27 +21,29 @@ public struct DataBrowser: View {
     
     public var body: some View {
         if #available(iOS 15.0, *) {
-            VStack {
-                Button {
-                    self.startSubscriptions = true
-                } label: {
-                    Text("Start Subscriptions")
-                }
-                .frame(alignment: .leading)
-                .alert("Stand Alone App?", isPresented: $startSubscriptions) {
-                    Button("Cancel", role: .cancel) { }
-                    Button("Start", role: .none) {
-                        viewModel.startSubscription()
-                        self.isStandAlone = true
+            GeometryReader { geo in
+                VStack {
+                    Button {
+                        self.startSubscriptions = true
+                    } label: {
+                        Text("Start Subscriptions")
                     }
-                } message: {
-                    Text("Only start subscriptions if using the Data Browser in a stand alone application")
-                }
-                List {
-                    Section() {
-                        ForEach(viewModel.collections ?? [], id: \.name) { collection in
-                            NavigationLink(destination: Documents(collectionName: collection.name, ditto: viewModel.ditto, isStandAlone: self.isStandAlone)) {
-                                Text(collection.name)
+                    .frame(width: geo.size.width, alignment: .leading)
+                    .alert("Stand Alone App?", isPresented: $startSubscriptions) {
+                        Button("Cancel", role: .cancel) { }
+                        Button("Start", role: .none) {
+                            viewModel.startSubscription()
+                            self.isStandAlone = true
+                        }
+                    } message: {
+                        Text("Only start subscriptions if using the Data Browser in a stand alone application")
+                    }
+                    List {
+                        Section() {
+                            ForEach(viewModel.collections ?? [], id: \.name) { collection in
+                                NavigationLink(destination: Documents(collectionName: collection.name, ditto: viewModel.ditto, isStandAlone: self.isStandAlone)) {
+                                    Text(collection.name)
+                                }
                             }
                         }
                     }
