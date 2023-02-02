@@ -27,9 +27,10 @@ public struct DataBrowser: View {
                 } label: {
                     Text("Start Subscriptions")
                 }
+                .frame(alignment: .leading)
                 .alert("Stand Alone App?", isPresented: $startSubscriptions) {
                     Button("Cancel", role: .cancel) { }
-                    Button("Start", role: .cancel) {
+                    Button("Start", role: .none) {
                         viewModel.startSubscription()
                         self.isStandAlone = true
                     }
