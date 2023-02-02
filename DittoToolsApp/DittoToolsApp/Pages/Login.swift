@@ -2,10 +2,12 @@
 import SwiftUI
 
 struct Login: View {
+    @Environment(\.dismiss) var dismiss
 
     class ViewModel: ObservableObject {
         @ObservedObject var dittoModel = DittoManager.shared
         @Published var isPresentingAlert = false
+        var error: String = ""
         @Published var useIsolatedDirectories = true
         @Published var config = DittoConfig()
         
@@ -24,11 +26,12 @@ struct Login: View {
             } catch let err {
                 print("Error when starting ditto \(err)")
                 self.isPresentingAlert = true
+                self.error = err.localizedDescription
             }
         }
     }
     
-    @ObservedObject var viewModel = ViewModel()
+    @StateObject var viewModel = ViewModel()
     
     var body: some View {
         NavigationView {
@@ -82,12 +85,11 @@ struct Login: View {
                     viewModel.image = image
                 }
             }) */
-            .alert(isPresented: $viewModel.isPresentingAlert) { () -> Alert in
-                let dismissButton = Alert.Button.default(Text("Ok")) {
-                }
-                return Alert(title: Text("Uh oh!"), message: Text("Failed to start ditto."), dismissButton: dismissButton)
+            .alert("Ditto failed to start.", isPresented: $viewModel.isPresentingAlert, actions: {
+                    Button("Dismiss", role: .cancel) { dismiss() }
+                    
+                })
             }
-        }
         
     }
 }
