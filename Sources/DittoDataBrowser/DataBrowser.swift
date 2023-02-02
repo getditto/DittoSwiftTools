@@ -28,7 +28,7 @@ public struct DataBrowser: View {
                     } label: {
                         Text("Start Subscriptions")
                     }
-                    .frame(width: geo.size.width, alignment: .leading)
+                    .frame(width: geo.size.width, alignment: .leading).padding([.leading], 25)
                     .alert("Stand Alone App?", isPresented: $startSubscriptions) {
                         Button("Cancel", role: .cancel) { }
                         Button("Start", role: .none) {
