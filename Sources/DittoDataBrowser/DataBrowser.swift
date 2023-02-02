@@ -12,6 +12,8 @@ import DittoSwift
 public struct DataBrowser: View {
     
     @StateObject var viewModel: DataBrowserViewModel
+    @State var startSubscriptions: Bool = false
+    @State var isStandAlone: Bool = false
     
     public init(ditto: Ditto) {
         self._viewModel = StateObject(wrappedValue: DataBrowserViewModel(ditto: ditto))
@@ -19,11 +21,27 @@ public struct DataBrowser: View {
     
     public var body: some View {
         if #available(iOS 15.0, *) {
-            List {
-                Section() {
-                    ForEach(viewModel.collections ?? [], id: \.name) { collection in
-                        NavigationLink(destination: Documents(collectionName: collection.name, ditto: viewModel.ditto)) {
-                            Text(collection.name)
+            VStack {
+                Button {
+                    self.startSubscriptions = true
+                } label: {
+                    Text("Start Subscriptions")
+                }
+                .alert("Stand Alone App?", isPresented: $startSubscriptions) {
+                    Button("Cancel", role: .cancel) { }
+                    Button("Start", role: .cancel) {
+                        viewModel.startSubscription()
+                        self.isStandAlone = true
+                    }
+                } message: {
+                    Text("Only start subscriptions if using the Data Browser in a stand alone application")
+                }
+                List {
+                    Section() {
+                        ForEach(viewModel.collections ?? [], id: \.name) { collection in
+                            NavigationLink(destination: Documents(collectionName: collection.name, ditto: viewModel.ditto, isStandAlone: self.isStandAlone)) {
+                                Text(collection.name)
+                            }
                         }
                     }
                 }
