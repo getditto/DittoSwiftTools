@@ -72,9 +72,13 @@ The Ditto Data Browser allows you to view all your collections, documents within
  <img src="/Img/collections.png" alt="Collections Image" width="300">  
 
  <img src="/Img/document.png" alt="Document Image" width="300">  
+ 
+**Standalone App**
+If you are using the Data Browser as a standalone app then there is a button `Start Subscriptions` you must press it in order to start syncing data.
+If you are embedding the Data Browser into another application then you do not need to press `Start Subscriptions` as you should already have your subscriptions running.  
 
 First, make sure the "DittoDataBrowser" was added to your Target.
-Then, use `import DittoDataBrowser` to import the Data Browser.
+Then, use `import DittoDataBrowser` to import the Data Browser.  
 
 **SwiftUI**  
 
@@ -87,7 +91,16 @@ struct DataBrowserView: View {
        DataBrowser(ditto: DittoManager.shared.ditto)
     }
 }
+```  
+
+**UIKit**  
+
+Pass `DataBrowser(ditto: Ditto)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) which will return a view controller that you can use to present.
 ```
+let vc = UIHostingController(rootView: DataBrowser(ditto: DittoManager.shared.ditto))
+
+present(vc, animated: true)
+```  
 
 ### 3. Export Logs
 Export Logs allows you to export a file of the logs from your applcation.  
@@ -104,7 +117,16 @@ Use `ExportLogs()` to export the logs. It is reccomended to call `ExportLogs` fr
 .sheet(isPresented: $exportLogs) {
     ExportLogs()
 }
+```  
+
+**UIKit**  
+
+Pass `ExportLogs()` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) which will return a view controller that you can use to present.
 ```
+let vc = UIHostingController(rootView: ExportLogs())
+
+present(vc, animated: true)
+```  
 
 ### 4. Disk Usage
 
@@ -126,7 +148,16 @@ struct DiskUsageViewer: View {
         DittoDiskUsageView(ditto: DittoManager.shared.ditto)
     }
 }
+```  
+
+**UIKit**  
+
+Pass `DittoDiskUsageView(ditto: Ditto)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) which will return a view controller that you can use to present.
 ```
+let vc = UIHostingController(rootView: DittoDiskUsageView(ditto: DittoManager.shared.ditto))
+
+present(vc, animated: true)
+```  
 
 ## Contact
 
