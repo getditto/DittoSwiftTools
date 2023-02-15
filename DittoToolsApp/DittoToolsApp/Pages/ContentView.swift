@@ -13,6 +13,8 @@ struct ContentView: View {
 
         @Published var isShowingLoginSheet = DittoManager.shared.ditto == nil
 
+        @Published var isShowingChatView = false
+
         var cancellables = Set<AnyCancellable>()
         
         var names: [String] = []
@@ -45,6 +47,14 @@ struct ContentView: View {
                         MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .green)
                     }
                 }
+                Section(header: Text("Playground")) {
+                    Button(action: {
+                        viewModel.isShowingChatView = true
+                    }) {
+                        MenuListItem(title: "Chat View", systemImage: "bubble.left.fill", color: .green)
+                    }
+                    .foregroundStyle(.foreground)
+                }
                 Section(header: Text("Configuration")) {
                     NavigationLink(destination: Login()) {
                         MenuListItem(title: "Change Identity", systemImage: "envelope", color: .green)
@@ -56,7 +66,7 @@ struct ContentView: View {
                     }) {
                         MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
                     }
-                    .foregroundColor(.black)
+                    .foregroundStyle(.foreground)
                     .sheet(isPresented: $exportLogsSheet) {
                         ExportLogs()
                     }
@@ -74,7 +84,6 @@ struct ContentView: View {
                 Text("Compressing the logs may take a few seconds.")
 
             }
-            
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $viewModel.isShowingLoginSheet, content: {
@@ -83,6 +92,12 @@ struct ContentView: View {
                     viewModel.isShowingLoginSheet = false
                 }
         })
+        .sheet(isPresented: $viewModel.isShowingChatView) {
+            ChatView()
+                .onDisappear {
+                    viewModel.isShowingChatView = false
+                }
+        }
         VStack {
             Text("SDK Version: \(dittoModel.ditto?.sdkVersion ?? "N/A")")
         }.padding()

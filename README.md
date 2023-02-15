@@ -128,6 +128,42 @@ struct DiskUsageViewer: View {
 }
 ```
 
+### 5. Chat View
+
+Chat View allows you to add a chat screen on your device! There are many features such as **notification, change user name, unread flag, and change room name**.
+
+ <img src="./Img/chat.jpg" alt="Chat Image" width="500">
+
+First, make sure the "DittoChatView" was added to your Target.
+Then, use `import DittoChatView` to add the chat view.
+
+**SwiftUI**
+```swift
+import DittoChatView
+
+struct ChatView: View {
+
+    var body: some View {
+        chatManager.view
+    }
+
+    var chatManager: DittoChatManager {
+        DittoChatManager(ditto: ditto, chatGroupID: "DittoToolsApp")
+    }
+}
+```
+
+**UIKit**
+```swift
+import DittoChatView
+
+let chatManager = DittoChatManager(ditto: ditto, chatGroupID: "DittoToolsApp")
+
+navigationController?.pushViewController(chatManager.viewController, animated: true)
+```
+
+
+***
 ## Contact
 
 Send us an email at support@ditto.live or [submit a form](https://www.ditto.live/about/contact). 
