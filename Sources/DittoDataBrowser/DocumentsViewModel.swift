@@ -13,7 +13,7 @@ import OrderedCollections
 class DocumentsViewModel : ObservableObject {
     
     let collectionName: String
-    let subscription: DittoSubscription?
+    var subscription: DittoSubscription?
     var collectionObserver: DittoLiveQuery?
     var ditto: Ditto
         
@@ -24,15 +24,21 @@ class DocumentsViewModel : ObservableObject {
     var orderedDict = OrderedDictionary<String, Any?>()
 
     
-    init(collectionName: String, ditto: Ditto) {
+    init(collectionName: String, ditto: Ditto, isStandAlone: Bool) {
         self.collectionName = collectionName
         self.ditto = ditto
-        subscription = self.ditto.store.collection(collectionName).findAll().limit(1000).subscribe()
+        startSubscription(isStandAlone: isStandAlone)
         findAll_LiveQuery()
+    }
+        
+    func startSubscription(isStandAlone: Bool) {
+        if(isStandAlone) {
+            self.subscription = self.ditto.store.collection(collectionName).findAll().limit(1000).subscribe()
+        }
     }
     
     func findAll_LiveQuery() {
-        collectionObserver = self.ditto.store.collection(collectionName).findAll().observeLocal(eventHandler: {docs, event in
+        self.collectionObserver = self.ditto.store.collection(collectionName).findAll().observeLocal(eventHandler: {docs, event in
             self.docsList.removeAll()
             for doc in docs {
                 self.docProperties = doc.value.keys.map{$0}.sorted()

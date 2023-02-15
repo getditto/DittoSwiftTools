@@ -12,13 +12,12 @@ import DittoSwift
 class DataBrowserViewModel: ObservableObject {
     
     @Published var collections: [DittoCollection]?
-    let subscription: DittoSubscription?
+    var subscription: DittoSubscription?
     var collectionsObserver: DittoLiveQuery?
     var ditto: Ditto
     
     init(ditto: Ditto) {
         self.ditto = ditto
-        subscription = ditto.store.collections().subscribe()
         observeCollections()
     }
     
@@ -29,6 +28,10 @@ class DataBrowserViewModel: ObservableObject {
             // self.collections = ditto.store.collectionNames()
             self.collections = self.ditto.store.collections().exec()
         })
+    }
+    
+    func startSubscription() {
+        subscription = ditto.store.collections().subscribe()
     }
     
 }
