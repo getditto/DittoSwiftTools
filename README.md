@@ -74,7 +74,7 @@ The Ditto Data Browser allows you to view all your collections, documents within
  <img src="/Img/document.png" alt="Document Image" width="300">  
  
 **Standalone App**
-If you are using the Data Browser as a standalone app then there is a button `Start Subscriptions` you must press it in order to start syncing data.
+If you are using the Data Browser as a standalone app, there is a button, `Start Subscriptions`, you must press in order to start syncing data.
 If you are embedding the Data Browser into another application then you do not need to press `Start Subscriptions` as you should already have your subscriptions running.  
 
 First, make sure the "DittoDataBrowser" was added to your Target.
