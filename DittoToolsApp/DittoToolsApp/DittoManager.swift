@@ -47,8 +47,8 @@ class DittoManager: ObservableObject {
     var ditto: Ditto? = Ditto()
 
     @Published var config = DittoConfig(
-        appID: "YOUR_APP_ID_HERE",
-        playgroundToken: "YOUR_TOKEN_HERE",
+        appID: "b8d28769-1c50-46c9-86af-75d8d71e002e",//"YOUR_APP_ID_HERE",
+        playgroundToken: "1e0ac446-a515-4df0-8ce2-c53d9dc17c44",//"YOUR_TOKEN_HERE",
         identityType: IdentityType.onlinePlayground,
         offlineLicenseToken: "YOUR_OFFLINE_LICENSE_HERE",
         authenticationProvider: "",
