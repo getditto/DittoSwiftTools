@@ -55,7 +55,7 @@ import SwiftUI
         let uniqueAddresses = Set<DittoAddress>(
             conxs.map { remotePeerAddress(for: peer.address, in: $0) }
         )
-        return Array(uniqueAddresses)
+        return Array(uniqueAddresses).sorted()
     }
     
     func remotePeerAddress(for addr: DittoAddress, in conx: DittoConnection) -> DittoAddress {
@@ -95,6 +95,13 @@ import SwiftUI
     
     deinit {
 //        print("PeersObserverVM -- deinit -- ")
+    }
+}
+
+// For sorting addresses of remote peers in func remotePeerAddresses() above
+extension DittoAddress: Comparable {
+    public static func < (lhs: DittoSwift.DittoAddress, rhs: DittoSwift.DittoAddress) -> Bool {
+        lhs.hashValue < rhs.hashValue
     }
 }
 

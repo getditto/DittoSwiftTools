@@ -15,7 +15,7 @@ public struct PeersListView: View {
     private let dividerColor: Color
     
     static var footerText: String {
-        "BLE approximate distance inaccurate."
+        "BLE approximate distance is inaccurate."
     }
         
     public init(ditto: Ditto) {
@@ -90,6 +90,8 @@ public struct PeersListView: View {
                 }
                 .padding(.leading, 16)
             }
+            
+            Text(vm.peerSDKVersion(peer)).font(.subheadline)//Font.subheadline.weight(.bold))
         }
     }
     
