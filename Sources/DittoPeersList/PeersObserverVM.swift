@@ -28,10 +28,10 @@ import SwiftUI
     public func observePeers() {
         peersObserver = ditto.presence.observe {[weak self] graph in
             guard self?.isPaused == false else { return }
+
             DispatchQueue.main.async {
                 self?.localPeer = graph.localPeer
                 
-//                let oldPeers = self?.peers
                 self?.peers.removeAll()
                 for peer in graph.remotePeers {
 
@@ -39,14 +39,6 @@ import SwiftUI
                         self?.peers.append(peer)
                     }
                 }
-                
-                /* debug print
-                if oldPeers != self?.peers {
-                    DispatchQueue.main.async {
-                        print("DittoService.\(#function): peers changed:\n\(self?.peers ?? [])")
-                    }
-                }
-                 */
             }
         }
     }
