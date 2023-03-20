@@ -39,10 +39,10 @@ struct ContentView: View {
                         NavigationLink(destination: PeersListViewer()) {
                             MenuListItem(title: "Peers List", systemImage: "network", color: .green)
                         }
-                    }
-                    NavigationLink(destination: NetworkPage()) {
-//                        MenuListItem(title: "Peers List", systemImage: "network", color: .green)
-                        MenuListItem(title: "Network Viewer", systemImage: "network", color: .green)
+                    } else {
+                        NavigationLink(destination: NetworkPage()) {
+                            MenuListItem(title: "Peers List", systemImage: "network", color: .green)
+                        }
                     }
                     NavigationLink(destination: PresenceViewer()) {
                         MenuListItem(title: "Presence Viewer", systemImage: "network", color: .green)
