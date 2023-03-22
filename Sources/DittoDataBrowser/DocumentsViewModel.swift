@@ -79,10 +79,10 @@ class DocumentsViewModel : ObservableObject {
         collectionObserver = nil
         
         if(queryString.isEmpty) {
-            findWithFilter_LiveQuery(queryString: queryString)
+            findAll_LiveQuery()
         }
         else {
-            findAll_LiveQuery()
+            findWithFilter_LiveQuery(queryString: queryString)
         }
     }
 }
