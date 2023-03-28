@@ -40,9 +40,9 @@ let package = Package(
             ],
             path: "Sources/DittoPresenceViewer",
             resources: [
-                .copy("Resources/index.html"),
-                .copy("Resources/main.css"),
-                .copy("Resources/main.js"),
+                .copy("Resources/dist/index.html"),
+                .copy("Resources/dist/main.css"),
+                .copy("Resources/dist/main.js"),
             ],
             cxxSettings: [
                 .define("ENABLE_BITCODE", to: "NO")
