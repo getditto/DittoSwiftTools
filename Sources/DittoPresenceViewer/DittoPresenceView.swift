@@ -52,7 +52,7 @@ public class DittoPresenceView: PlatformView {
      */
     public var ditto: Ditto? {
         didSet {
-            observePeers()
+            observePresence()
         }
     }
 
