@@ -25,9 +25,9 @@ class VisJSWebView: JSWebView {
     }
 
     private func setup() {
-        let bundle = Bundle.presenceViewerFrameworkBundle
+        let bundle = Bundle.module
         let webDistDirURL = bundle.bundleURL.appendingPathComponent("dist")
-        let htmlURL = bundle.url(forResource: "index", withExtension: "html", subdirectory: "dist")!
+        let htmlURL = bundle.url(forResource: "index", withExtension: "html")!
         let htmlString = try! String(contentsOf: htmlURL, encoding: .utf8)
         webView.loadHTMLString(htmlString, baseURL: webDistDirURL)
     }
