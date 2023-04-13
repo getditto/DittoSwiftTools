@@ -21,6 +21,9 @@ let package = Package(
         .library(
             name: "DittoDiskUsage",
             targets: ["DittoDiskUsage"]),
+        .library(
+            name: "DittoPeersList",
+            targets: ["DittoPeersList"]),
     ],
     dependencies: [
         // Ditto.diskUsage was added in 3.0.1
@@ -67,6 +70,14 @@ let package = Package(
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
             ],
             path: "Sources/DittoDiskUsage"
+        ),
+        
+        .target(
+            name: "DittoPeersList",
+            dependencies: [
+                .product(name: "DittoSwift", package: "DittoSwiftPackage")
+            ],
+            path: "Sources/DittoPeersList"
         ),
     ]
 )
