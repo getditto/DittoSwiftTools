@@ -26,9 +26,7 @@ public struct PeersListView: View {
     public var body: some View {
         List {
             Section {
-                if let localPeer = vm.localPeer {
-                    peerView(localPeer)
-                }
+                peerView(vm.localPeer)
             } header: {
                 Text("Local (Self) Peer")
                     .font(Font.subheadline.weight(.bold))
