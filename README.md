@@ -159,10 +159,20 @@ let vc = UIHostingController(rootView: DittoDiskUsageView(ditto: DittoManager.sh
 present(vc, animated: true)
 ```  
 
+## Troubleshooting
+
+
+### Could not resolve package dependencies for `Swift tools`
+```
+xcodebuild: error: Could not resolve package dependencies:
+  package at 'http://github.com/getditto/DittoSwiftTools' @ 0ae82dcc1031d25ce5f6f20735b666312ecb2e53 is using Swift tools version 5.6.0 but the installed version is 5.5.0 in http://github.com/getditto/DittoSwiftTools
+```
+
+Solution: Update to the latest version of XCode to get new Swift versions.
+
 ## Contact
 
 Send us an email at support@ditto.live or [submit a form](https://www.ditto.live/about/contact). 
-
 
 ## License (MIT)
 Copyright © 2023 DittoLive
