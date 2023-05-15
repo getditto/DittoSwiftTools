@@ -14,7 +14,7 @@ Issues and pull requests welcome!
 
 ## Installation
 
-The reccomended approach to use DittoSwiftTools in your project is using the Swift Package Manager.
+The recommended approach to use DittoSwiftTools in your project is using the Swift Package Manager.
 1. With your project open in Xcode go to File -> Add Packages, then search using  "github.com/getditto/DittoSwiftTools" to find the DittoSwiftTools package.  
 
  <img src="/Img/addPackage.png" alt="Add Package Image">  
