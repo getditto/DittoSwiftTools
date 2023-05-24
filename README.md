@@ -114,7 +114,7 @@ Then, use `import DittoExportLogs` to import the Export Logs.
 
 Use `ExportLogs()` to export the logs. It is reccomended to call `ExportLogs` from within a [sheet](https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:)).
 ```
-.sheet(isPresented: $exportLogs) {
+.sheet(isPresented: $isPresented) {
     ExportLogs()
 }
 ```  
@@ -157,7 +157,34 @@ Pass `DittoDiskUsageView(ditto: Ditto)` to a [UIHostingController](https://sarun
 let vc = UIHostingController(rootView: DittoDiskUsageView(ditto: DittoManager.shared.ditto))
 
 present(vc, animated: true)
+```
+
+### 5. Export Data Directory
+
+ExportData allows you to export the Ditto store directory as a zip file.
+
+<img src="/Img/exportData.png" alt="Export Data" width="300">
+
+**SwiftUI**
+
+Use `ExportData(ditto: ditto)` to get `UIActivityViewController` and call it within a  [sheet](https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:)).
+
+```swift
+.sheet(isPresented: $isPresented) {
+    ExportData(ditto: ditto)
+}
 ```  
+
+**UIKit**
+
+Pass `UIActivityViewController` (return value of `ExportData(ditto: ditto)`) to [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) which will return a view controller that you can use to present.
+
+```swift
+let vc = UIHostingController(rootView: ExportData(ditto: ditto))
+
+present(vc, animated: true)
+```
+
 
 ## Troubleshooting
 

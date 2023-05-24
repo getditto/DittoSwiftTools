@@ -6,6 +6,7 @@ import SwiftUI
 import DittoSwift
 import Combine
 import DittoExportLogs
+import DittoExportData
 
 struct ContentView: View {
     
@@ -21,13 +22,17 @@ struct ContentView: View {
         }
     }
 
-    @ObservedObject var viewModel = ViewModel()
-    @ObservedObject var dittoModel = DittoManager.shared
-    @State var exportLogsSheet : Bool = false
-    @State var exportLogs : Bool = false
+    @ObservedObject private var viewModel = ViewModel()
+    @ObservedObject private var dittoModel = DittoManager.shared
 
-    
-    
+    // Export Logs
+    @State private var presentExportLogsShare: Bool = false
+    @State private var presentExportLogsAlert: Bool = false
+
+    // Export Ditto Directory
+    @State private var presentExportDataShare: Bool = false
+    @State private var presentExportDataAlert: Bool = false
+
     var body: some View {
         NavigationView {
             List{
@@ -56,32 +61,56 @@ struct ContentView: View {
                         MenuListItem(title: "Change Identity", systemImage: "envelope", color: .green)
                     }
                 }
-                Section(header: Text("Logs")) {
+                Section(header: Text("Exports")) {
+                    // Export Logs
                     Button(action: {
-                        self.exportLogs.toggle()
+                        self.presentExportLogsAlert.toggle()
                     }) {
                         MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
                     }
                     .foregroundColor(.black)
-                    .sheet(isPresented: $exportLogsSheet) {
+                    .sheet(isPresented: $presentExportLogsShare) {
                         ExportLogs()
                     }
+
+                    // Export Ditto Directory
+                    Button(action: {
+                        self.presentExportDataAlert.toggle()
+                    }) {
+                        MenuListItem(title: "Export Data Directory", systemImage: "square.and.arrow.up", color: .green)
+                    }
+                    .foregroundColor(.black)
+                    .sheet(isPresented: $presentExportDataShare) {
+                        ExportData(ditto: dittoModel.ditto!)
+                    }
+
+
                 }
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Ditto Tools")
-            .alert("Export Logs", isPresented: $exportLogs) {
+            // Alerts
+            .alert("Export Logs", isPresented: $presentExportLogsAlert) {
                 Button("Export") {
-                    exportLogsSheet = true
+                    presentExportLogsShare = true
                 }
                 Button("Cancel", role: .cancel) {}
 
             } message: {
                 Text("Compressing the logs may take a few seconds.")
+            }
 
+            .alert("Export Ditto Directory", isPresented: $presentExportDataAlert) {
+                Button("Export") {
+                    presentExportDataShare = true
+                }
+                Button("Cancel", role: .cancel) {}
+
+                } message: {
+                    Text("Compressing the logs may take a while.")
+                }
             }
             
-        }
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $viewModel.isShowingLoginSheet, content: {
             Login()
