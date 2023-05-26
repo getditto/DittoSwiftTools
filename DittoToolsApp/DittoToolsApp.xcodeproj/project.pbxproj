@@ -35,8 +35,8 @@
 		0EBA54E0298836C600083183 /* DittoExportLogs in Frameworks */ = {isa = PBXBuildFile; productRef = 0EBA54DF298836C600083183 /* DittoExportLogs */; };
 		146ED3F629C4F13100A56229 /* DittoPeersList in Frameworks */ = {isa = PBXBuildFile; productRef = 146ED3F529C4F13100A56229 /* DittoPeersList */; };
 		146ED3FA29C4F2A000A56229 /* PeersListViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146ED3F929C4F2A000A56229 /* PeersListViewer.swift */; };
+		CC80DC002A1EACCE004A2A65 /* DittoExportData in Frameworks */ = {isa = PBXBuildFile; productRef = CC80DBFF2A1EACCE004A2A65 /* DittoExportData */; };
 		F87DC47C2988584200899FEC /* DittoDataBrowser in Frameworks */ = {isa = PBXBuildFile; productRef = F87DC47B2988584200899FEC /* DittoDataBrowser */; };
-		F87DC47E2988584200899FEC /* DittoExportLogs in Frameworks */ = {isa = PBXBuildFile; productRef = F87DC47D2988584200899FEC /* DittoExportLogs */; };
 		F87DC4802988584200899FEC /* DittoPresenceViewer in Frameworks */ = {isa = PBXBuildFile; productRef = F87DC47F2988584200899FEC /* DittoPresenceViewer */; };
 		F87DC481298858EC00899FEC /* DiskUsageViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87DC46F298854E600899FEC /* DiskUsageViewer.swift */; };
 		F87DC4832988599C00899FEC /* DittoDiskUsage in Frameworks */ = {isa = PBXBuildFile; productRef = F87DC4822988599C00899FEC /* DittoDiskUsage */; };
@@ -100,7 +100,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0EBA54E0298836C600083183 /* DittoExportLogs in Frameworks */,
-				F87DC47E2988584200899FEC /* DittoExportLogs in Frameworks */,
+				CC80DC002A1EACCE004A2A65 /* DittoExportData in Frameworks */,
 				F87DC4802988584200899FEC /* DittoPresenceViewer in Frameworks */,
 				F87DC4832988599C00899FEC /* DittoDiskUsage in Frameworks */,
 				F87DC47C2988584200899FEC /* DittoDataBrowser in Frameworks */,
@@ -271,10 +271,10 @@
 			packageProductDependencies = (
 				0EBA54DF298836C600083183 /* DittoExportLogs */,
 				F87DC47B2988584200899FEC /* DittoDataBrowser */,
-				F87DC47D2988584200899FEC /* DittoExportLogs */,
 				F87DC47F2988584200899FEC /* DittoPresenceViewer */,
 				F87DC4822988599C00899FEC /* DittoDiskUsage */,
 				146ED3F529C4F13100A56229 /* DittoPeersList */,
+				CC80DBFF2A1EACCE004A2A65 /* DittoExportData */,
 			);
 			productName = debug;
 			productReference = 01F34C9128A2EAE3003BDF17 /* DittoToolsApp.app */;
@@ -766,13 +766,13 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = DittoPeersList;
 		};
+		CC80DBFF2A1EACCE004A2A65 /* DittoExportData */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DittoExportData;
+		};
 		F87DC47B2988584200899FEC /* DittoDataBrowser */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DittoDataBrowser;
-		};
-		F87DC47D2988584200899FEC /* DittoExportLogs */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DittoExportLogs;
 		};
 		F87DC47F2988584200899FEC /* DittoPresenceViewer */ = {
 			isa = XCSwiftPackageProductDependency;
