@@ -42,16 +42,22 @@ struct MenuListItem_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView{
             List {
-                Section {
-                    MenuListItem(title: "Work Orders", systemImage: "doc.append", color: .orange)
-                    MenuListItem(title: "Requests", systemImage: "hand.raised", color: .blue)
-                    MenuListItem(title: "Location", systemImage: "map", color: .pink)
-                    MenuListItem(title: "Assets", systemImage: "shippingbox", color: .secondary)
-                    MenuListItem(title: "Meter Readings", systemImage: "speedometer", color: .purple)
+                Section("Debug") {
+                    MenuListItem(title: "Data Browser", systemImage: "photo", color: .orange)
+                    MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
+                    MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
+                    MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .secondary)
+                }
+                Section("Change Identity") {
+                    MenuListItem(title: "Change Identity", systemImage: "envelope", color: .purple)
+                }
+                Section("Exports") {
+                    MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
+                    MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
                 }
             }
             .listStyle(GroupedListStyle())
-            .navigationTitle("Pluto")
+            .navigationTitle("DittoTools")
         }
         .preferredColorScheme(.dark)
     }

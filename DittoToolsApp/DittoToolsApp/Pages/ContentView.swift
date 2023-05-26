@@ -21,7 +21,7 @@ struct ContentView: View {
         func stopSync() {
         }
     }
-
+    @Environment(\.colorScheme) private var colorScheme
     @ObservedObject private var viewModel = ViewModel()
     @ObservedObject private var dittoModel = DittoManager.shared
 
@@ -33,32 +33,36 @@ struct ContentView: View {
     @State private var presentExportDataShare: Bool = false
     @State private var presentExportDataAlert: Bool = false
 
+    private var textColor: Color {
+        colorScheme == .dark ? .white : .black
+    }
+    
     var body: some View {
         NavigationView {
             List{
                 Section(header: Text("Debug")) {
                     NavigationLink(destination: DataBrowserView()) {
-                        MenuListItem(title: "Data Browser", systemImage: "photo", color: .green)
+                        MenuListItem(title: "Data Browser", systemImage: "photo", color: .orange)
                     }
                     if #available(iOS 15, *) {
                         NavigationLink(destination: PeersListViewer()) {
-                            MenuListItem(title: "Peers List", systemImage: "network", color: .green)
+                            MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
                         }
                     } else {
                         NavigationLink(destination: NetworkPage()) {
-                            MenuListItem(title: "Peers List", systemImage: "network", color: .green)
+                            MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
                         }
                     }
                     NavigationLink(destination: PresenceViewer()) {
-                        MenuListItem(title: "Presence Viewer", systemImage: "network", color: .green)
+                        MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
                     }
                     NavigationLink(destination: DiskUsageViewer()) {
-                        MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .green)
+                        MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .secondary)
                     }
                 }
                 Section(header: Text("Configuration")) {
                     NavigationLink(destination: Login()) {
-                        MenuListItem(title: "Change Identity", systemImage: "envelope", color: .green)
+                        MenuListItem(title: "Change Identity", systemImage: "envelope", color: .purple)
                     }
                 }
                 Section(header: Text("Exports")) {
@@ -66,9 +70,13 @@ struct ContentView: View {
                     Button(action: {
                         self.presentExportLogsAlert.toggle()
                     }) {
-                        MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
+                        HStack {
+                            MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
+                            Spacer()
+                        }
                     }
-                    .foregroundColor(.black)
+                    .foregroundColor(textColor)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .sheet(isPresented: $presentExportLogsShare) {
                         ExportLogs()
                     }
@@ -77,14 +85,16 @@ struct ContentView: View {
                     Button(action: {
                         self.presentExportDataAlert.toggle()
                     }) {
-                        MenuListItem(title: "Export Data Directory", systemImage: "square.and.arrow.up", color: .green)
+                        HStack {
+                            MenuListItem(title: "Export Data Directory", systemImage: "square.and.arrow.up", color: .green)
+                            Spacer()
+                        }
                     }
-                    .foregroundColor(.black)
+                    .foregroundColor(textColor)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .sheet(isPresented: $presentExportDataShare) {
                         ExportData(ditto: dittoModel.ditto!)
                     }
-
-
                 }
             }
             .listStyle(InsetGroupedListStyle())
@@ -107,7 +117,7 @@ struct ContentView: View {
                 Button("Cancel", role: .cancel) {}
 
                 } message: {
-                    Text("Compressing the logs may take a while.")
+                    Text("Compressing the data may take a while.")
                 }
             }
             
@@ -121,7 +131,7 @@ struct ContentView: View {
         VStack {
             Text("SDK Version: \(dittoModel.ditto?.sdkVersion ?? "N/A")")
         }.padding()
-}
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {
