@@ -32,7 +32,7 @@ public struct ExportData: UIViewControllerRepresentable {
 
     private func zipDittoDirectory() -> URL? {
 
-        let destinationURL = fileManager.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).zip")
+        let destinationURL = fileManager.temporaryDirectory.appendingPathComponent("DittoData.zip")
 
         try? FileManager().removeItem(at: destinationURL)
 
