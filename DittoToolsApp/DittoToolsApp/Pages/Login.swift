@@ -10,6 +10,7 @@ struct Login: View {
         var error: String = ""
         @Published var useIsolatedDirectories = true
         @Published var config = DittoConfig()
+        @Published var logLevel: AppSettings.LogLevel = AppSettings.shared.logLevel
         
         init () {
             self.config = dittoModel.config
@@ -28,6 +29,10 @@ struct Login: View {
                 self.isPresentingAlert = true
                 self.error = err.localizedDescription
             }
+        }
+        
+        func setLoggingLevel() {
+            AppSettings.shared.logLevel = self.logLevel
         }
     }
     
@@ -71,8 +76,17 @@ struct Login: View {
                     }
                 }
                 Section {
+                    Picker("Logging Level", selection: $viewModel.logLevel) {
+                        ForEach(AppSettings.LogLevel.allCases, id: \.self) { loggingOption in
+                            Text(loggingOption.description).tag(loggingOption)
+                        }
+                    }
+                }
+                Section {
                     PrimaryFormButton(action: {
+                        viewModel.setLoggingLevel()
                         viewModel.changeIdentity()
+                        dismiss()
                     }, text: "Restart Ditto", textColor: viewModel.isDisabled ? .secondary : .accentColor, isLoading: false, isDisabled: false)
                 }
             }
@@ -87,10 +101,8 @@ struct Login: View {
             }) */
             .alert("Ditto failed to start.", isPresented: $viewModel.isPresentingAlert, actions: {
                     Button("Dismiss", role: .cancel) { dismiss() }
-                    
                 })
             }
-        
     }
 }
 

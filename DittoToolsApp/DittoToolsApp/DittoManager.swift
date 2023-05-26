@@ -69,10 +69,7 @@ class DittoManager: ObservableObject {
 
     private init() {
         // make sure our log level is set _before_ starting ditto.
-        DittoLogger.minimumLogLevel = AppSettings.shared.logLevel
-        if let logFileURL = LogManager.shared.logFileURL {
-            DittoLogger.setLogFileURL(logFileURL)
-        }
+        setupLogging()
     }
 
     func getPersistenceDir (config: DittoConfig) -> URL? {
@@ -82,6 +79,7 @@ class DittoManager: ObservableObject {
             .appendingPathComponent(config.appID)
             .appendingPathComponent(UUID().uuidString)
     }
+    
     // MARK: - Functions
     
     func restartDitto() throws {
@@ -89,6 +87,9 @@ class DittoManager: ObservableObject {
         self.ditto = nil
         let persistenceDir = getPersistenceDir(config: config)
     
+        // make sure our log level is set _before_ starting ditto.
+        setupLogging()
+
         switch (self.config.identityType) {
         case IdentityType.onlinePlayground:
             let appID = UUID(uuidString: self.config.appID)
@@ -128,11 +129,22 @@ class DittoManager: ObservableObject {
     func setupLiveQueries () {
         self.collectionsSubscription = DittoManager.shared.ditto?.store.collections().subscribe()
         self.collectionsObserver = DittoManager.shared.ditto?.store.collections().observeLocal(eventHandler: { event in
-            print("collections changed")
             self.colls = DittoManager.shared.ditto?.store.collections().exec() ?? []
        })
     }
 
+    func setupLogging() {
+        switch AppSettings.shared.logLevel {
+        case .disabled:
+            DittoLogger.enabled = false
+        default:
+            DittoLogger.enabled = true
+            DittoLogger.minimumLogLevel = DittoLogLevel(rawValue: AppSettings.shared.logLevel.rawValue)!
+            if let logFileURL = LogManager.shared.logFileURL {
+                DittoLogger.setLogFileURL(logFileURL)
+            }
+        }
+    }
 }
 
 
