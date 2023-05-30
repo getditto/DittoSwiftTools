@@ -2,9 +2,9 @@
 //  Copyright © 2021 DittoLive Incorporated. All rights reserved.
 //
 
-import Foundation
+import Combine
 import DittoSwift
-
+import Foundation
 
 class AuthDelegate: DittoAuthenticationDelegate {
     func authenticationRequired(authenticator: DittoAuthenticator) {
@@ -56,6 +56,8 @@ class DittoManager: ObservableObject {
         useIsolatedDirectories: true
     )
     @Published var colls = [DittoCollection]()
+    @Published var logLevel: AppSettings.LogLevel
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Singleton
 
@@ -68,8 +70,15 @@ class DittoManager: ObservableObject {
     // MARK: - Private Constructor
 
     private init() {
+        self.logLevel = AppSettings.shared.logLevel
+        
         // make sure our log level is set _before_ starting ditto.
-        setupLogging()
+        $logLevel
+            .sink {[weak self] level in
+                AppSettings.shared.logLevel = level
+                self?.setupLogging()
+            }
+            .store(in: &cancellables)
     }
 
     func getPersistenceDir (config: DittoConfig) -> URL? {
