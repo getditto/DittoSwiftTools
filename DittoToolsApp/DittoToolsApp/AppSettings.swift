@@ -7,8 +7,7 @@ import DittoSwift
 
 extension AppSettings {
     enum LogLevel:Int, CustomStringConvertible, CaseIterable {
-        case disabled = 0
-        case error, warning, info, debug, verbose
+        case disabled = 0, error, warning, info, debug, verbose
         
         var description: String {
             switch self {
@@ -104,7 +103,7 @@ class AppSettings {
         }
     }
 
-    /// This property is initialized in the private init() below, setting UserDefaults with a default value, .disabled, if not yet set.
+    /// This property is initialized in the private init() below, setting UserDefaults with a default value, .debug, if not yet set.
     var logLevel: AppSettings.LogLevel {
         didSet {
             UserDefaults.standard.set(self.logLevel.rawValue, forKey: UserDefaultsKeys.logLevel)
@@ -197,7 +196,7 @@ class AppSettings {
         if let level = UserDefaults.standard.object(forKey: UserDefaultsKeys.logLevel) as? Int {
             self.logLevel = AppSettings.LogLevel(rawValue: level)!
         } else {
-            self.logLevel = AppSettings.LogLevel(rawValue: AppSettings.LogLevel.disabled.rawValue)!
+            self.logLevel = AppSettings.LogLevel(rawValue: AppSettings.LogLevel.debug.rawValue)!
         }
     }
 
