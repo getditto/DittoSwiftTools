@@ -5,6 +5,30 @@
 import UIKit
 import DittoSwift
 
+extension AppSettings {
+    enum LogLevel:Int, CustomStringConvertible, CaseIterable {
+        case disabled = 0
+        case error, warning, info, debug, verbose
+        
+        var description: String {
+            switch self {
+            case .disabled:
+                return "disabled"
+            case .error:
+                return "error"
+            case .warning:
+                return "warning"
+            case .info:
+                return "info"
+            case .debug:
+                return "debug"
+            case .verbose:
+                return "verbose"
+            }
+        }
+    }
+}
+
 /// A singleton instance which manages the app settings. The persisted settings
 /// include enabled transports and list of available servers. These settings are
 /// persisted in `UserDefaults` and so are available on subsequent app launches.
@@ -80,10 +104,10 @@ class AppSettings {
         }
     }
 
-    var logLevel: DittoLogLevel {
+    /// This property is initialized in the private init() below, setting UserDefaults with a default value, .disabled, if not yet set.
+    var logLevel: AppSettings.LogLevel {
         didSet {
             UserDefaults.standard.set(self.logLevel.rawValue, forKey: UserDefaultsKeys.logLevel)
-            DittoLogger.minimumLogLevel = self.logLevel
         }
     }
 
@@ -166,18 +190,22 @@ class AppSettings {
         let websocketServerId: UUID? = Self.loadJSON(key: UserDefaultsKeys.selectedWebsocketServerId, defaultValue: nil)
         self.selectedWebsocketServer = self.servers.first(where: { $0.id == websocketServerId })
 
-        self.backgroundNotificationsEnabled = UserDefaults().bool(
+        self.backgroundNotificationsEnabled = UserDefaults.standard.bool(
             forKey: UserDefaultsKeys.backgroundNotificationsEnabled)
-        self.diagnosticLogsEnabled = UserDefaults().bool(forKey: UserDefaultsKeys.diagnosticsLogsEnabled)
+        self.diagnosticLogsEnabled = UserDefaults.standard.bool(forKey: UserDefaultsKeys.diagnosticsLogsEnabled)
 
-        self.logLevel = DittoLogLevel.init(rawValue: UserDefaults().integer(forKey: UserDefaultsKeys.logLevel))
-            ?? DittoLogLevel.debug
+        if let level = UserDefaults.standard.object(forKey: UserDefaultsKeys.logLevel) as? Int {
+            self.logLevel = AppSettings.LogLevel(rawValue: level)!
+        } else {
+            self.logLevel = AppSettings.LogLevel(rawValue: AppSettings.LogLevel.disabled.rawValue)!
+        }
     }
 
     // MARK: - Static Functions
 
     private static func loadJSON<T: Codable>(key: String, defaultValue: T) -> T {
-        if let value = UserDefaults().object(forKey: key) {
+//        if let value = UserDefaults().object(forKey: key) {
+        if let value = UserDefaults.standard.object(forKey: key) {
             if let data = value as? Data, let decoded = try? JSONDecoder().decode(T.self, from: data) {
                 return decoded
             } else {

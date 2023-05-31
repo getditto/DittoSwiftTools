@@ -8,26 +8,14 @@ import Combine
 import DittoExportLogs
 import DittoExportData
 
+class MainListViewModel: ObservableObject {
+    @Published var isShowingLoginSheet = DittoManager.shared.ditto == nil
+}
+
 struct ContentView: View {
-    
-    class ViewModel: ObservableObject {
-
-        @Published var isShowingLoginSheet = DittoManager.shared.ditto == nil
-
-        var cancellables = Set<AnyCancellable>()
-        
-        var names: [String] = []
-        
-        func stopSync() {
-        }
-    }
     @Environment(\.colorScheme) private var colorScheme
-    @ObservedObject private var viewModel = ViewModel()
+    @StateObject private var viewModel = MainListViewModel()
     @ObservedObject private var dittoModel = DittoManager.shared
-
-    // Export Logs
-    @State private var presentExportLogsShare: Bool = false
-    @State private var presentExportLogsAlert: Bool = false
 
     // Export Ditto Directory
     @State private var presentExportDataShare: Bool = false
@@ -65,20 +53,9 @@ struct ContentView: View {
                         MenuListItem(title: "Change Identity", systemImage: "envelope", color: .purple)
                     }
                 }
-                Section(header: Text("Exports")) {
-                    // Export Logs
-                    Button(action: {
-                        self.presentExportLogsAlert.toggle()
-                    }) {
-                        HStack {
-                            MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
-                            Spacer()
-                        }
-                    }
-                    .foregroundColor(textColor)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .sheet(isPresented: $presentExportLogsShare) {
-                        ExportLogs()
+                Section(header: Text("Exports")) { 
+                    NavigationLink(destination:  LoggingDetailsView()) {
+                        MenuListItem(title: "Logging", systemImage: "square.split.1x2", color: .green)
                     }
 
                     // Export Ditto Directory
@@ -99,17 +76,6 @@ struct ContentView: View {
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Ditto Tools")
-            // Alerts
-            .alert("Export Logs", isPresented: $presentExportLogsAlert) {
-                Button("Export") {
-                    presentExportLogsShare = true
-                }
-                Button("Cancel", role: .cancel) {}
-
-            } message: {
-                Text("Compressing the logs may take a few seconds.")
-            }
-
             .alert("Export Ditto Directory", isPresented: $presentExportDataAlert) {
                 Button("Export") {
                     presentExportDataShare = true

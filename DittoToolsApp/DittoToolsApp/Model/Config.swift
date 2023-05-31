@@ -5,7 +5,9 @@
 //  Created by Rae McKelvey on 8/9/22.
 //
 
+import DittoSwift
 import Foundation
+
 
 struct DittoConfig {
     var appID = ""
@@ -16,3 +18,5 @@ struct DittoConfig {
     var authenticationToken = ""
     var useIsolatedDirectories = true
 }
+
+
