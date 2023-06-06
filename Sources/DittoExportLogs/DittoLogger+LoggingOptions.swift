@@ -26,6 +26,9 @@ public extension DittoLogger {
                 return "info"
             case .debug:
                 return "debug"
+// XXX(rae): Hiding verbose from the UI because users are tempted to use it, 
+// but performance can be impacted by this level and it doesn't add enough
+// extra value for our team over the debug level.
 //            case .verbose:
 //                return "verbose"
             }
