@@ -2,11 +2,10 @@
 //  Copyright © 2022 DittoLive Incorporated. All rights reserved.
 //
 
-import SwiftUI
-import DittoSwift
 import Combine
-import DittoExportLogs
 import DittoExportData
+import DittoSwift
+import SwiftUI
 
 class MainListViewModel: ObservableObject {
     @Published var isShowingLoginSheet = DittoManager.shared.ditto == nil
@@ -54,7 +53,7 @@ struct ContentView: View {
                     }
                 }
                 Section(header: Text("Exports")) { 
-                    NavigationLink(destination:  LoggingDetailsView()) {
+                    NavigationLink(destination:  LoggingDetailsViewer()) {
                         MenuListItem(title: "Logging", systemImage: "square.split.1x2", color: .green)
                     }
 

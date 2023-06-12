@@ -5,28 +5,6 @@
 import UIKit
 import DittoSwift
 
-extension AppSettings {
-    enum LogLevel:Int, CustomStringConvertible, CaseIterable {
-        case disabled = 0, error, warning, info, debug, verbose
-        
-        var description: String {
-            switch self {
-            case .disabled:
-                return "disabled"
-            case .error:
-                return "error"
-            case .warning:
-                return "warning"
-            case .info:
-                return "info"
-            case .debug:
-                return "debug"
-            case .verbose:
-                return "verbose"
-            }
-        }
-    }
-}
 
 /// A singleton instance which manages the app settings. The persisted settings
 /// include enabled transports and list of available servers. These settings are
@@ -44,7 +22,7 @@ class AppSettings {
         static let enabledTransports = "live.ditto.DittoCarsApp.settings.enabled-transports"
         static let backgroundNotificationsEnabled = "live.ditto.DittoCarsApp.settings.background-notifications-enabled"
         static let diagnosticsLogsEnabled = "live.ditto.DittoCarsApp.settings.diagnostics-logs-enabled"
-        static let logLevel = "live.ditto.DittoCarsApp.settings.log-level"
+        static let loggingOption = "live.ditto.DittoCarsApp.settings.loggingOption"
     }
 
     private struct Defaults {
@@ -104,9 +82,9 @@ class AppSettings {
     }
 
     /// This property is initialized in the private init() below, setting UserDefaults with a default value, .debug, if not yet set.
-    var logLevel: AppSettings.LogLevel {
+    var loggingOption: DittoLogger.LoggingOptions {
         didSet {
-            UserDefaults.standard.set(self.logLevel.rawValue, forKey: UserDefaultsKeys.logLevel)
+            UserDefaults.standard.set(self.loggingOption.rawValue, forKey: UserDefaultsKeys.loggingOption)
         }
     }
 
@@ -193,17 +171,16 @@ class AppSettings {
             forKey: UserDefaultsKeys.backgroundNotificationsEnabled)
         self.diagnosticLogsEnabled = UserDefaults.standard.bool(forKey: UserDefaultsKeys.diagnosticsLogsEnabled)
 
-        if let level = UserDefaults.standard.object(forKey: UserDefaultsKeys.logLevel) as? Int {
-            self.logLevel = AppSettings.LogLevel(rawValue: level)!
+        if let logOption = UserDefaults.standard.object(forKey: UserDefaultsKeys.loggingOption) as? Int {
+            self.loggingOption = DittoLogger.LoggingOptions(rawValue: logOption)!
         } else {
-            self.logLevel = AppSettings.LogLevel(rawValue: AppSettings.LogLevel.debug.rawValue)!
+            self.loggingOption = DittoLogger.LoggingOptions(rawValue: DittoLogger.LoggingOptions.debug.rawValue)!
         }
     }
 
     // MARK: - Static Functions
 
     private static func loadJSON<T: Codable>(key: String, defaultValue: T) -> T {
-//        if let value = UserDefaults().object(forKey: key) {
         if let value = UserDefaults.standard.object(forKey: key) {
             if let data = value as? Data, let decoded = try? JSONDecoder().decode(T.self, from: data) {
                 return decoded

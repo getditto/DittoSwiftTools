@@ -56,7 +56,7 @@ class DittoManager: ObservableObject {
         useIsolatedDirectories: true
     )
     @Published var colls = [DittoCollection]()
-    @Published var logLevel: AppSettings.LogLevel
+    @Published var loggingOption: DittoLogger.LoggingOptions
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Singleton
@@ -70,12 +70,12 @@ class DittoManager: ObservableObject {
     // MARK: - Private Constructor
 
     private init() {
-        self.logLevel = AppSettings.shared.logLevel
+        self.loggingOption = AppSettings.shared.loggingOption
         
         // make sure our log level is set _before_ starting ditto.
-        $logLevel
-            .sink {[weak self] level in
-                AppSettings.shared.logLevel = level
+        $loggingOption
+            .sink {[weak self] option in
+                AppSettings.shared.loggingOption = option
                 self?.setupLogging()
             }
             .store(in: &cancellables)
@@ -143,12 +143,13 @@ class DittoManager: ObservableObject {
     }
 
     func setupLogging() {
-        switch AppSettings.shared.logLevel {
+        let logOption = AppSettings.shared.loggingOption
+        switch logOption {
         case .disabled:
             DittoLogger.enabled = false
         default:
             DittoLogger.enabled = true
-            DittoLogger.minimumLogLevel = DittoLogLevel(rawValue: AppSettings.shared.logLevel.rawValue)!
+            DittoLogger.minimumLogLevel = DittoLogLevel(rawValue: logOption.rawValue)!
             if let logFileURL = LogManager.shared.logFileURL {
                 DittoLogger.setLogFileURL(logFileURL)
             }

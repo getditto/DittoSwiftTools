@@ -7,20 +7,26 @@
 //  Copyright © 2023 DittoLive Incorporated. All rights reserved.
 
 import Combine
-import DittoExportLogs
+import DittoSwift
 import SwiftUI
 
-struct LoggingDetailsView: View {
+
+@available(iOS 15, *)
+public struct LoggingDetailsView: View {
     @Environment(\.colorScheme) private var colorScheme
-    @ObservedObject var dittoManager = DittoManager.shared
     @State private var presentExportLogsShare: Bool = false
     @State private var presentExportLogsAlert: Bool = false
+    @Binding var selectedLoggingOption: DittoLogger.LoggingOptions
+    
+    public init(_ selectedOption: Binding<DittoLogger.LoggingOptions>) {
+        self._selectedLoggingOption = selectedOption
+    }
 
     private var textColor: Color {
         colorScheme == .dark ? .white : .black
     }
     
-    var body: some View {
+    public var body: some View {
         List {
             Section {
                 Text("Ditto Logging")
@@ -28,9 +34,9 @@ struct LoggingDetailsView: View {
                     .font(.title)
             }
             Section {
-                Picker("Logging Level", selection: $dittoManager.logLevel) {
-                    ForEach(AppSettings.LogLevel.allCases, id: \.self) { loggingOption in
-                        Text(loggingOption.description).tag(loggingOption)
+                Picker("Logging Level", selection: $selectedLoggingOption) {
+                    ForEach(DittoLogger.LoggingOptions.allCases) { option in
+                        Text(option.description)
                     }
                 }
             }
@@ -40,8 +46,9 @@ struct LoggingDetailsView: View {
                         self.presentExportLogsAlert.toggle()
                     }) {
                         HStack {
-                            MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
+                            Text("Export Logs")
                             Spacer()
+                            Image(systemName: "square.and.arrow.up")
                         }
                     }
                     .foregroundColor(textColor)
@@ -64,8 +71,9 @@ struct LoggingDetailsView: View {
     }
 }
 
+@available(iOS 15, *)
 struct LoggingDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        LoggingDetailsView()
+        LoggingDetailsView(.constant(.debug))
     }
 }
