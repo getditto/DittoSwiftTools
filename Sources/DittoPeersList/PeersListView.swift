@@ -26,7 +26,7 @@ public struct PeersListView: View {
     public var body: some View {
         List {
             Section {
-                peerView(vm.localPeer)
+                peerView(vm.localPeer, showBLEDistance: true)
             } header: {
                 Text("Local (Self) Peer")
                     .font(Font.subheadline.weight(.bold))
@@ -69,41 +69,42 @@ public struct PeersListView: View {
     }
     
     @ViewBuilder
-    func peerView(_ peer: DittoPeer) -> some View {
+    func peerView(_ peer: DittoPeer, showBLEDistance: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             
             // Device name + siteID
             Text("\(peer.deviceName): ").font(Font.body.weight(.bold))
-            + Text("\(vm.siteId(for: peer.address))").font(Font.subheadline.weight(.bold))
-
-            // connection types subview
-            ForEach(vm.remotePeerAddresses(for: peer, in: peer.connections), id: \.self) { addr in
-                VStack(alignment: .leading) {
-                    Divider()
-                        .frame(height: 1)
-                        .overlay(.gray).opacity(0.4)
-
-                    Text("peer: \(vm.siteId(for: addr))")
-                    connectionsView(for: addr, in: peer.connections)
-                }
-                .padding(.leading, 16)
-            }
+            + Text("\(peer.addressSiteId)").font(Font.subheadline.weight(.bold))
             
-            Text(vm.peerSDKVersion(peer)).font(.subheadline)//Font.subheadline.weight(.bold))
+            if vm.isLocalPeer(peer) {
+                ForEach(vm.peers, id: \.self) { conPeer in
+                    VStack(alignment: .leading) {
+                        Divider()
+                            .frame(height: 1)
+                            .overlay(.gray).opacity(0.4)
+                        
+                        Text("peer: \(DittoPeer.addressSiteId(conPeer))")
+                        
+                        peerConnectionsView(conPeer, showBLEDistance: showBLEDistance)
+                    }
+                    .padding(.leading, 16)
+                }
+            }
+            Text(peer.peerSDKVersion).font(.subheadline)
         }
     }
     
     @ViewBuilder
-    func connectionsView(for addr: DittoAddress, in conxs: [DittoConnection]) -> some View {
+    func peerConnectionsView(_ peer: DittoPeer, showBLEDistance: Bool = false) -> some View {
         VStack(alignment: .leading) {
-            ForEach(vm.connectionTypes(for: addr, in: conxs), id: \.self) { conx in
+            ForEach(vm.connectionsWithLocalPeer(peer)) { conx in
                 HStack {
                     Text("-\(conx.type.rawValue)")
                         .padding(.leading, 16)
 
                     Spacer()
 
-                    if conx.type == DittoConnectionType.bluetooth {
+                    if showBLEDistance && conx.type == DittoConnectionType.bluetooth {
                         Text("\(vm.formattedDistanceString(conx.approximateDistanceInMeters))m")
                     } else {
                         Text("-")
