@@ -25,6 +25,8 @@ struct ContentView: View {
     @ObservedObject var dittoModel = DittoManager.shared
     @State var exportLogsSheet : Bool = false
     @State var exportLogs : Bool = false
+    @Environment(\.colorScheme) var colorScheme
+
 
     
     
@@ -56,7 +58,7 @@ struct ContentView: View {
                     }) {
                         MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
                     }
-                    .foregroundColor(.black)
+                    .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                     .sheet(isPresented: $exportLogsSheet) {
                         ExportLogs()
                     }
