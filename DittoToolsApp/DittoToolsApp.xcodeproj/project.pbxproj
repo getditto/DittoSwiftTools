@@ -17,7 +17,6 @@
 		01F34CB028A2EAE5003BDF17 /* DittoToolsAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CAF28A2EAE5003BDF17 /* DittoToolsAppUITests.swift */; };
 		01F34CB228A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CB128A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift */; };
 		01F34CC528A3046C003BDF17 /* DittoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CC428A3046C003BDF17 /* DittoManager.swift */; };
-		01F34CCF28A304F0003BDF17 /* LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CC928A304F0003BDF17 /* LogManager.swift */; };
 		01F34CD028A304F0003BDF17 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CCA28A304F0003BDF17 /* AppSettings.swift */; };
 		01F34CD128A304F0003BDF17 /* AuthorizationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CCB28A304F0003BDF17 /* AuthorizationsManager.swift */; };
 		01F34CE228A30781003BDF17 /* MainThreadMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CE028A30781003BDF17 /* MainThreadMonitor.swift */; };
@@ -75,7 +74,6 @@
 		01F34CB128A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoToolsAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		01F34CC328A2EC4A003BDF17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		01F34CC428A3046C003BDF17 /* DittoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoManager.swift; sourceTree = "<group>"; };
-		01F34CC928A304F0003BDF17 /* LogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogManager.swift; sourceTree = "<group>"; };
 		01F34CCA28A304F0003BDF17 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		01F34CCB28A304F0003BDF17 /* AuthorizationsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationsManager.swift; sourceTree = "<group>"; };
 		01F34CE028A30781003BDF17 /* MainThreadMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainThreadMonitor.swift; sourceTree = "<group>"; };
@@ -160,7 +158,6 @@
 				01F34D0828A31644003BDF17 /* AppDelegate.swift */,
 				01F34CCA28A304F0003BDF17 /* AppSettings.swift */,
 				01F34CCB28A304F0003BDF17 /* AuthorizationsManager.swift */,
-				01F34CC928A304F0003BDF17 /* LogManager.swift */,
 				01F34CC428A3046C003BDF17 /* DittoManager.swift */,
 				01F34C9828A2EAE5003BDF17 /* Assets.xcassets */,
 				01F34C9A28A2EAE5003BDF17 /* Preview Content */,
@@ -397,7 +394,6 @@
 				01F34CD128A304F0003BDF17 /* AuthorizationsManager.swift in Sources */,
 				1474FC932A295A3100C0AC4E /* LoggingDetailsViewer.swift in Sources */,
 				01F34C9728A2EAE3003BDF17 /* ContentView.swift in Sources */,
-				01F34CCF28A304F0003BDF17 /* LogManager.swift in Sources */,
 				01F34CC528A3046C003BDF17 /* DittoManager.swift in Sources */,
 				01F34CF728A30F5E003BDF17 /* DataBrowser.swift in Sources */,
 				01F34CD028A304F0003BDF17 /* AppSettings.swift in Sources */,

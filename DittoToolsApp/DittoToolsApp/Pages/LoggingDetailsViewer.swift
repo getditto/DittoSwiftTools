@@ -14,7 +14,7 @@ struct LoggingDetailsViewer: View {
     @ObservedObject var dittoManager = DittoManager.shared
     
     var body: some View {
-        LoggingDetailsView($dittoManager.loggingOption)
+        LoggingDetailsView(loggingOption: $dittoManager.loggingOption)
     }
 }
 

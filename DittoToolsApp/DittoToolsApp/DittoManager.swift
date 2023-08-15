@@ -3,6 +3,7 @@
 //
 
 import Combine
+import DittoExportLogs
 import DittoSwift
 import Foundation
 
@@ -150,7 +151,7 @@ class DittoManager: ObservableObject {
         default:
             DittoLogger.enabled = true
             DittoLogger.minimumLogLevel = DittoLogLevel(rawValue: logOption.rawValue)!
-            if let logFileURL = LogManager.shared.logFileURL {
+            if let logFileURL = DittoLogManager.shared.logFileURL {
                 DittoLogger.setLogFileURL(logFileURL)
             }
         }
