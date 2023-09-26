@@ -34,4 +34,7 @@ class DataBrowserViewModel: ObservableObject {
         subscription = ditto.store.collections().subscribe()
     }
     
+    func closeLiveQuery() {
+        self.collectionsObserver?.stop()
+    }
 }

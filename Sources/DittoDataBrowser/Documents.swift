@@ -98,6 +98,9 @@ struct Documents: View {
             
         }
         .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, minHeight: 0, maxHeight: UIScreen.main.bounds.height, alignment: .topLeading)
+        .onDisappear(perform: {
+            viewModel.closeLiveQuery()
+        })
     }
 }
 

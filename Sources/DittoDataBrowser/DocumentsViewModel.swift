@@ -79,10 +79,16 @@ class DocumentsViewModel : ObservableObject {
         collectionObserver = nil
         
         if(queryString.isEmpty) {
+            self.collectionObserver?.stop()
             findAll_LiveQuery()
         }
         else {
+            self.collectionObserver?.stop()
             findWithFilter_LiveQuery(queryString: queryString)
         }
+    }
+    
+    func closeLiveQuery() {
+        self.collectionObserver?.stop()
     }
 }
