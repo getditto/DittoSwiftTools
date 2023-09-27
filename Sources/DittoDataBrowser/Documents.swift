@@ -142,5 +142,8 @@ struct SearchBar: View {
             .padding(.trailing)
 
         }
+        .onDisappear(perform: {
+            viewModel.closeLiveQuery()
+        })
     }
 }
