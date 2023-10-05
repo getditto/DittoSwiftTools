@@ -50,6 +50,9 @@ public struct DataBrowser: View {
                 }
             }
             .navigationTitle("Collections")
+            .onDisappear(perform: {
+                viewModel.closeLiveQuery()
+            })
         } else {
             // Fallback on earlier versions
         }
