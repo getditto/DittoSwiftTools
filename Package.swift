@@ -23,7 +23,7 @@ let package = Package(
             targets: ["DittoDiskUsage"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.0.0"),
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", Version(4, 4, 2, prereleaseIdentifiers: ["alpha1"])),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
