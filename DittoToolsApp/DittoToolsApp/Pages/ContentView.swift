@@ -31,14 +31,8 @@ struct ContentView: View {
                     NavigationLink(destination: DataBrowserView()) {
                         MenuListItem(title: "Data Browser", systemImage: "photo", color: .orange)
                     }
-                    if #available(iOS 15, *) {
-                        NavigationLink(destination: PeersListViewer()) {
-                            MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
-                        }
-                    } else {
-                        NavigationLink(destination: NetworkPage()) {
-                            MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
-                        }
+                    NavigationLink(destination: PeersListViewer()) {
+                        MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
                     }
                     NavigationLink(destination: PresenceViewer()) {
                         MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)

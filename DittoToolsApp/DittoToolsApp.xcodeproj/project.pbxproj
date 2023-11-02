@@ -25,7 +25,6 @@
 		01F34CEB28A307CD003BDF17 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CE728A307CD003BDF17 /* Server.swift */; };
 		01F34CEC28A307CD003BDF17 /* ServerConnectionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CE828A307CD003BDF17 /* ServerConnectionType.swift */; };
 		01F34CEE28A307E2003BDF17 /* IdentityType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CED28A307E2003BDF17 /* IdentityType.swift */; };
-		01F34CF028A30E88003BDF17 /* NetworkPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CEF28A30E88003BDF17 /* NetworkPage.swift */; };
 		01F34CF728A30F5E003BDF17 /* DataBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CF628A30F5E003BDF17 /* DataBrowser.swift */; };
 		01F34D0228A310A5003BDF17 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0128A310A5003BDF17 /* Login.swift */; };
 		01F34D0528A31147003BDF17 /* PrimaryFormButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0428A31147003BDF17 /* PrimaryFormButton.swift */; };
@@ -82,7 +81,6 @@
 		01F34CE728A307CD003BDF17 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		01F34CE828A307CD003BDF17 /* ServerConnectionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConnectionType.swift; sourceTree = "<group>"; };
 		01F34CED28A307E2003BDF17 /* IdentityType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityType.swift; sourceTree = "<group>"; };
-		01F34CEF28A30E88003BDF17 /* NetworkPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkPage.swift; sourceTree = "<group>"; };
 		01F34CF628A30F5E003BDF17 /* DataBrowser.swift */ = {isa = PBXFileReference; indentWidth = 3; lastKnownFileType = sourcecode.swift; path = DataBrowser.swift; sourceTree = "<group>"; };
 		01F34D0128A310A5003BDF17 /* Login.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		01F34D0428A31147003BDF17 /* PrimaryFormButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryFormButton.swift; sourceTree = "<group>"; };
@@ -220,7 +218,6 @@
 				F87DC46F298854E600899FEC /* DiskUsageViewer.swift */,
 				1474FC922A295A3100C0AC4E /* LoggingDetailsViewer.swift */,
 				01F34D0128A310A5003BDF17 /* Login.swift */,
-				01F34CEF28A30E88003BDF17 /* NetworkPage.swift */,
 				146ED3F929C4F2A000A56229 /* PeersListViewer.swift */,
 				016757DC28A3313300347491 /* PresenceViewer.swift */,
 			);
@@ -402,7 +399,6 @@
 				01F34CEC28A307CD003BDF17 /* ServerConnectionType.swift in Sources */,
 				01F34D0728A3119E003BDF17 /* MenuListItem.swift in Sources */,
 				01F34CEE28A307E2003BDF17 /* IdentityType.swift in Sources */,
-				01F34CF028A30E88003BDF17 /* NetworkPage.swift in Sources */,
 				01F34CE928A307CD003BDF17 /* Transport.swift in Sources */,
 				01F34D0228A310A5003BDF17 /* Login.swift in Sources */,
 				01F34CEB28A307CD003BDF17 /* Server.swift in Sources */,

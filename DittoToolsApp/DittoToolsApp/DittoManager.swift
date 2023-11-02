@@ -11,20 +11,19 @@ class AuthDelegate: DittoAuthenticationDelegate {
     func authenticationRequired(authenticator: DittoAuthenticator) {
         let provider = DittoManager.shared.config.authenticationProvider
         let token = DittoManager.shared.config.authenticationToken
-        print("login with \(token), \(provider)")
-    
-        authenticator.loginWithToken(token, provider: provider, completion: { err in
+        print("login with \(token), \(provider)")    
+        authenticator.loginWithToken(token, provider: provider) { err in
             print("Error authenticating \(String(describing: err?.localizedDescription))")
-        })
+        }
     }
 
     func authenticationExpiringSoon(authenticator: DittoAuthenticator, secondsRemaining: Int64) {
         let provider = DittoManager.shared.config.authenticationProvider
         let token = DittoManager.shared.config.authenticationToken
         print("Auth token expiring in \(secondsRemaining)")
-        authenticator.loginWithToken(token, provider: provider, completion: { err in
+        authenticator.loginWithToken(token, provider: provider) { err in
             print("Error authenticating \(String(describing: err?.localizedDescription))")
-        })
+        }
     }
 }
 
