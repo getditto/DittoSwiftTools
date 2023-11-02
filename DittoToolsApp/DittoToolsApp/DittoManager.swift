@@ -72,7 +72,7 @@ class DittoManager: ObservableObject {
     private init() {
         self.loggingOption = AppSettings.shared.loggingOption
         
-        // make sure our log level is set _before_ starting ditto.
+        // make sure log level is set _before_ starting ditto
         $loggingOption
             .sink {[weak self] option in
                 AppSettings.shared.loggingOption = option
