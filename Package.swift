@@ -30,7 +30,7 @@ let package = Package(
     ],
     dependencies: [
         // Ditto.diskUsage was added in 3.0.1
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.0.0"),
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", exact: "4.4.2-alpha1"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
