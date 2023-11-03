@@ -31,52 +31,19 @@ import SwiftUI
 
             DispatchQueue.main.async {
                 self?.localPeer = graph.localPeer
-                
-                self?.peers.removeAll()
-                for peer in graph.remotePeers {
-
-                    if !(self?.peers.contains(where: { $0.address == peer.address }) ?? false) {
-                        self?.peers.append(peer)
-                    }
-                }
+                self?.peers = graph.remotePeers
             }
         }
     }
     
-    func remotePeerAddresses(for peer: DittoPeer, in conxs: [DittoConnection]) -> [DittoAddress] {
-        let uniqueAddresses = Set<DittoAddress>(
-            conxs.map { remotePeerAddress(for: peer.address, in: $0) }
-        )
-        return Array(uniqueAddresses).sorted()
+    func isLocalPeer(_ peer: DittoPeer) -> Bool {
+        peer.peerKey == localPeer.peerKey
     }
     
-    func remotePeerAddress(for addr: DittoAddress, in conx: DittoConnection) -> DittoAddress {
-        addr == conx.peer1 ? conx.peer2 : conx.peer1
+    func connectionsWithLocalPeer(_ peer: DittoPeer) -> [DittoConnection] {
+        peer.connections.filter { $0.peer1 == localPeer.peerKey || $0.peer2 == localPeer.peerKey }
     }
-    
-    func remotePeerSiteId(for addr: DittoAddress, in conx: DittoConnection) -> String {
-        return siteId(for: remotePeerAddress(for: addr, in: conx))
-    }
-    
-    func connectionTypes(for addr: DittoAddress, in conxs: [DittoConnection]) -> [DittoConnection] {
-        conxs.filter { $0.peer1 == addr || $0.peer2 == addr }
-    }
-    
-    // parse siteID out of DittoAddress description
-    func siteId(for peerAddress: DittoSwift.DittoAddress) -> String {
-        let prefix = "\(peerAddress)".components(separatedBy: "DittoAddress(siteID: ")
-        let addr = String(prefix.last ?? "").components(separatedBy: ",")
-        return String(addr.first ?? "[siteID N/A]")
-    }
-    
-    func peerSDKVersion(_ peer: DittoPeer) -> String {
-        let sdk = "SDK "
-        if let version = peer.dittoSDKVersion {
-            return sdk + "v\(version)"
-        }
-        return sdk + "N/A"
-    }
-    
+
     func formattedDistanceString(_ dbl: Double?) -> String {
         Double.metricString(dbl ?? 0, digits: 2)
     }
@@ -85,8 +52,29 @@ import SwiftUI
         peersObserver?.stop()
     }
     
-    deinit {
+//    deinit {
 //        print("PeersObserverVM -- deinit -- ")
+//    }
+}
+
+extension DittoPeer {
+    var peerSDKVersion: String {
+        let sdk = "SDK "
+        if let version = dittoSDKVersion {
+            return sdk + "v\(version)"
+        }
+        return sdk + "N/A"
+    }
+        
+    var addressSiteId: String {
+        Self.addressSiteId(self)
+    }
+    
+    static func addressSiteId(_ peer: DittoPeer) -> String {
+        // parse siteID out of DittoAddress description
+        let prefix = "\(peer.address)".components(separatedBy: "DittoAddress(siteID: ")
+        let addr = String(prefix.last ?? "").components(separatedBy: ",")
+        return String(addr.first ?? "[siteID N/A]")
     }
 }
 

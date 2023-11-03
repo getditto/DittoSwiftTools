@@ -3,6 +3,7 @@
 //
 
 import Combine
+import DittoExportLogs
 import DittoSwift
 import Foundation
 
@@ -10,20 +11,19 @@ class AuthDelegate: DittoAuthenticationDelegate {
     func authenticationRequired(authenticator: DittoAuthenticator) {
         let provider = DittoManager.shared.config.authenticationProvider
         let token = DittoManager.shared.config.authenticationToken
-        print("login with \(token), \(provider)")
-    
-        authenticator.loginWithToken(token, provider: provider, completion: { err in
+        print("login with \(token), \(provider)")    
+        authenticator.loginWithToken(token, provider: provider) { err in
             print("Error authenticating \(String(describing: err?.localizedDescription))")
-        })
+        }
     }
 
     func authenticationExpiringSoon(authenticator: DittoAuthenticator, secondsRemaining: Int64) {
         let provider = DittoManager.shared.config.authenticationProvider
         let token = DittoManager.shared.config.authenticationToken
         print("Auth token expiring in \(secondsRemaining)")
-        authenticator.loginWithToken(token, provider: provider, completion: { err in
+        authenticator.loginWithToken(token, provider: provider) { err in
             print("Error authenticating \(String(describing: err?.localizedDescription))")
-        })
+        }
     }
 }
 
@@ -72,7 +72,7 @@ class DittoManager: ObservableObject {
     private init() {
         self.loggingOption = AppSettings.shared.loggingOption
         
-        // make sure our log level is set _before_ starting ditto.
+        // make sure log level is set _before_ starting ditto
         $loggingOption
             .sink {[weak self] option in
                 AppSettings.shared.loggingOption = option
@@ -150,7 +150,7 @@ class DittoManager: ObservableObject {
         default:
             DittoLogger.enabled = true
             DittoLogger.minimumLogLevel = DittoLogLevel(rawValue: logOption.rawValue)!
-            if let logFileURL = LogManager.shared.logFileURL {
+            if let logFileURL = DittoLogManager.shared.logFileURL {
                 DittoLogger.setLogFileURL(logFileURL)
             }
         }

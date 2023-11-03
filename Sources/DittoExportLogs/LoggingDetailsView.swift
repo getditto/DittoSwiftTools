@@ -18,8 +18,8 @@ public struct LoggingDetailsView: View {
     @State private var presentExportLogsAlert: Bool = false
     @Binding var selectedLoggingOption: DittoLogger.LoggingOptions
     
-    public init(_ selectedOption: Binding<DittoLogger.LoggingOptions>) {
-        self._selectedLoggingOption = selectedOption
+    public init(loggingOption: Binding<DittoLogger.LoggingOptions>) {
+        self._selectedLoggingOption = loggingOption
     }
 
     private var textColor: Color {
@@ -74,6 +74,6 @@ public struct LoggingDetailsView: View {
 @available(iOS 15, *)
 struct LoggingDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        LoggingDetailsView(.constant(.debug))
+        LoggingDetailsView(loggingOption: .constant(.debug))
     }
 }

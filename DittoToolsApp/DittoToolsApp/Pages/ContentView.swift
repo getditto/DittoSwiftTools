@@ -28,23 +28,17 @@ struct ContentView: View {
         NavigationView {
             List{
                 Section(header: Text("Debug")) {
-                    NavigationLink(destination: DataBrowserView()) {
-                        MenuListItem(title: "Data Browser", systemImage: "photo", color: .orange)
-                    }
-                    if #available(iOS 15, *) {
-                        NavigationLink(destination: PeersListViewer()) {
-                            MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
-                        }
-                    } else {
-                        NavigationLink(destination: NetworkPage()) {
-                            MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
-                        }
-                    }
                     NavigationLink(destination: PresenceViewer()) {
                         MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
                     }
+                    NavigationLink(destination: PeersListViewer()) {
+                        MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
+                    }
                     NavigationLink(destination: DiskUsageViewer()) {
                         MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .secondary)
+                    }
+                    NavigationLink(destination: DataBrowserView()) {
+                        MenuListItem(title: "Data Browser", systemImage: "photo", color: .orange)
                     }
                 }
                 Section(header: Text("Configuration")) {

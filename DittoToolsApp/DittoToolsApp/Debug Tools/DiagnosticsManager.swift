@@ -66,7 +66,7 @@ class DiagnosticsManager {
             }
         }
 
-        self.observer = DittoManager.shared.ditto!.observePeers { peers in
+        self.observer = DittoManager.shared.ditto!.presence.observe { peers in
             print("Presence Update:")
             dump(peers)
         }

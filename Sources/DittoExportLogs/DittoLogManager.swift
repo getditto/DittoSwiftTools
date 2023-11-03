@@ -27,7 +27,7 @@ private struct Config {
     }()
 }
 
-struct DittoLogManager {
+public struct DittoLogManager {
     public static let shared = DittoLogManager()
 
     private init() {}
