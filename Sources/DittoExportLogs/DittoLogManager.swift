@@ -9,7 +9,7 @@ import Foundation
 
 private struct Config {
     static let logsDirectoryName = "debug-logs"
-    static let zippedLogFileName = "logs.zip"
+    static let zippedLogFileName = "DittoLogs.zip"
 
     static var logsDirectory: URL! = {
         let directory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
@@ -23,7 +23,7 @@ private struct Config {
     
 }
 
-struct DittoLogManager {
+public struct DittoLogManager {
     public static let shared = DittoLogManager()
 
     private init() {}

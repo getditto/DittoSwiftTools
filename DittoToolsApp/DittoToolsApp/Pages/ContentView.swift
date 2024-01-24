@@ -2,82 +2,84 @@
 //  Copyright © 2022 DittoLive Incorporated. All rights reserved.
 //
 
-import SwiftUI
-import DittoSwift
 import Combine
-import DittoExportLogs
+import DittoExportData
+import DittoSwift
+import SwiftUI
+
+class MainListViewModel: ObservableObject {
+    @Published var isShowingLoginSheet = DittoManager.shared.ditto == nil
+}
 
 struct ContentView: View {
-    
-    class ViewModel: ObservableObject {
+    @Environment(\.colorScheme) private var colorScheme
+    @StateObject private var viewModel = MainListViewModel()
+    @ObservedObject private var dittoModel = DittoManager.shared
 
-        @Published var isShowingLoginSheet = DittoManager.shared.ditto == nil
+    // Export Ditto Directory
+    @State private var presentExportDataShare: Bool = false
+    @State private var presentExportDataAlert: Bool = false
 
-        var cancellables = Set<AnyCancellable>()
-        
-        var names: [String] = []
-        
-        func stopSync() {
-        }
+    private var textColor: Color {
+        colorScheme == .dark ? .white : .black
     }
-
-    @ObservedObject var viewModel = ViewModel()
-    @ObservedObject var dittoModel = DittoManager.shared
-    @State var exportLogsSheet : Bool = false
-    @State var exportLogs : Bool = false
-    @Environment(\.colorScheme) var colorScheme
-
-
-    
     
     var body: some View {
         NavigationView {
             List{
                 Section(header: Text("Debug")) {
-                    NavigationLink(destination: DataBrowserView()) {
-                        MenuListItem(title: "Data Browser", systemImage: "photo", color: .green)
-                    }
-                    NavigationLink(destination: NetworkPage()) {
-                        MenuListItem(title: "Peers List", systemImage: "network", color: .green)
-                    }
                     NavigationLink(destination: PresenceViewer()) {
-                        MenuListItem(title: "Presence Viewer", systemImage: "network", color: .green)
+                        MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
+                    }
+                    NavigationLink(destination: PeersListViewer()) {
+                        MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
                     }
                     NavigationLink(destination: DiskUsageViewer()) {
-                        MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .green)
+                        MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .secondary)
+                    }
+                    NavigationLink(destination: DataBrowserView()) {
+                        MenuListItem(title: "Data Browser", systemImage: "photo", color: .orange)
                     }
                 }
                 Section(header: Text("Configuration")) {
                     NavigationLink(destination: Login()) {
-                        MenuListItem(title: "Change Identity", systemImage: "envelope", color: .green)
+                        MenuListItem(title: "Change Identity", systemImage: "envelope", color: .purple)
                     }
                 }
-                Section(header: Text("Logs")) {
-                    Button(action: {
-                        self.exportLogs.toggle()
-                    }) {
-                        MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
+                Section(header: Text("Exports")) { 
+                    NavigationLink(destination:  LoggingDetailsViewer()) {
+                        MenuListItem(title: "Logging", systemImage: "square.split.1x2", color: .green)
                     }
-                    .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
-                    .sheet(isPresented: $exportLogsSheet) {
-                        ExportLogs()
+
+                    // Export Ditto Directory
+                    Button(action: {
+                        self.presentExportDataAlert.toggle()
+                    }) {
+                        HStack {
+                            MenuListItem(title: "Export Data Directory", systemImage: "square.and.arrow.up", color: .green)
+                            Spacer()
+                        }
+                    }
+                    .foregroundColor(textColor)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .sheet(isPresented: $presentExportDataShare) {
+                        ExportData(ditto: dittoModel.ditto!)
                     }
                 }
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Ditto Tools")
-            .alert("Export Logs", isPresented: $exportLogs) {
+            .alert("Export Ditto Directory", isPresented: $presentExportDataAlert) {
                 Button("Export") {
-                    exportLogsSheet = true
+                    presentExportDataShare = true
                 }
                 Button("Cancel", role: .cancel) {}
 
-            } message: {
-                Text("Compressing the logs may take a few seconds.")
-
+                } message: {
+                    Text("Compressing the data may take a while.")
+                }
             }
             
-        }
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $viewModel.isShowingLoginSheet, content: {
             Login()
@@ -88,7 +90,7 @@ struct ContentView: View {
         VStack {
             Text("SDK Version: \(dittoModel.ditto?.sdkVersion ?? "N/A")")
         }.padding()
-}
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {

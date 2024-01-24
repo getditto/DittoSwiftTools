@@ -73,6 +73,7 @@ struct Login: View {
                 Section {
                     PrimaryFormButton(action: {
                         viewModel.changeIdentity()
+                        dismiss()
                     }, text: "Restart Ditto", textColor: viewModel.isDisabled ? .secondary : .accentColor, isLoading: false, isDisabled: false)
                 }
             }
@@ -87,10 +88,8 @@ struct Login: View {
             }) */
             .alert("Ditto failed to start.", isPresented: $viewModel.isPresentingAlert, actions: {
                     Button("Dismiss", role: .cancel) { dismiss() }
-                    
                 })
             }
-        
     }
 }
 

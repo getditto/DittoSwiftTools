@@ -5,10 +5,10 @@
 //  Created by Rae McKelvey on 8/9/22.
 //
 
-import SwiftUI
-import DittoSwift
 import Combine
 import DittoDataBrowser
+import DittoSwift
+import SwiftUI
 
 struct DataBrowserView: View {
    

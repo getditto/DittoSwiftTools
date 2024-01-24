@@ -2,28 +2,28 @@
 //  Copyright © 2021 DittoLive Incorporated. All rights reserved.
 //
 
-import Foundation
+import Combine
+import DittoExportLogs
 import DittoSwift
-
+import Foundation
 
 class AuthDelegate: DittoAuthenticationDelegate {
     func authenticationRequired(authenticator: DittoAuthenticator) {
         let provider = DittoManager.shared.config.authenticationProvider
         let token = DittoManager.shared.config.authenticationToken
-        print("login with \(token), \(provider)")
-    
-        authenticator.loginWithToken(token, provider: provider, completion: { err in
+        print("login with \(token), \(provider)")    
+        authenticator.loginWithToken(token, provider: provider) { err in
             print("Error authenticating \(String(describing: err?.localizedDescription))")
-        })
+        }
     }
 
     func authenticationExpiringSoon(authenticator: DittoAuthenticator, secondsRemaining: Int64) {
         let provider = DittoManager.shared.config.authenticationProvider
         let token = DittoManager.shared.config.authenticationToken
         print("Auth token expiring in \(secondsRemaining)")
-        authenticator.loginWithToken(token, provider: provider, completion: { err in
+        authenticator.loginWithToken(token, provider: provider) { err in
             print("Error authenticating \(String(describing: err?.localizedDescription))")
-        })
+        }
     }
 }
 
@@ -56,6 +56,8 @@ class DittoManager: ObservableObject {
         useIsolatedDirectories: true
     )
     @Published var colls = [DittoCollection]()
+    @Published var loggingOption: DittoLogger.LoggingOptions
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Singleton
 
@@ -68,11 +70,15 @@ class DittoManager: ObservableObject {
     // MARK: - Private Constructor
 
     private init() {
-        // make sure our log level is set _before_ starting ditto.
-        DittoLogger.minimumLogLevel = AppSettings.shared.logLevel
-        if let logFileURL = LogManager.shared.logFileURL {
-            DittoLogger.setLogFileURL(logFileURL)
-        }
+        self.loggingOption = AppSettings.shared.loggingOption
+        
+        // make sure log level is set _before_ starting ditto
+        $loggingOption
+            .sink {[weak self] option in
+                AppSettings.shared.loggingOption = option
+                self?.setupLogging()
+            }
+            .store(in: &cancellables)
     }
 
     func getPersistenceDir (config: DittoConfig) -> URL? {
@@ -82,6 +88,7 @@ class DittoManager: ObservableObject {
             .appendingPathComponent(config.appID)
             .appendingPathComponent(UUID().uuidString)
     }
+    
     // MARK: - Functions
     
     func restartDitto() throws {
@@ -89,6 +96,9 @@ class DittoManager: ObservableObject {
         self.ditto = nil
         let persistenceDir = getPersistenceDir(config: config)
     
+        // make sure our log level is set _before_ starting ditto.
+        setupLogging()
+
         switch (self.config.identityType) {
         case IdentityType.onlinePlayground:
             let appID = UUID(uuidString: self.config.appID)
@@ -128,11 +138,23 @@ class DittoManager: ObservableObject {
     func setupLiveQueries () {
         self.collectionsSubscription = DittoManager.shared.ditto?.store.collections().subscribe()
         self.collectionsObserver = DittoManager.shared.ditto?.store.collections().observeLocal(eventHandler: { event in
-            print("collections changed")
             self.colls = DittoManager.shared.ditto?.store.collections().exec() ?? []
        })
     }
 
+    func setupLogging() {
+        let logOption = AppSettings.shared.loggingOption
+        switch logOption {
+        case .disabled:
+            DittoLogger.enabled = false
+        default:
+            DittoLogger.enabled = true
+            DittoLogger.minimumLogLevel = DittoLogLevel(rawValue: logOption.rawValue)!
+            if let logFileURL = DittoLogManager.shared.logFileURL {
+                DittoLogger.setLogFileURL(logFileURL)
+            }
+        }
+    }
 }
 
 
