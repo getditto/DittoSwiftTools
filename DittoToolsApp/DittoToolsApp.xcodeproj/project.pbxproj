@@ -345,6 +345,7 @@
 			);
 			mainGroup = 01F34C8828A2EAE3003BDF17;
 			packageReferences = (
+				0E523F442B59B1A0007D6665 /* XCRemoteSwiftPackageReference "DittoSwiftTools" */,
 			);
 			productRefGroup = 01F34C9228A2EAE3003BDF17 /* Products */;
 			projectDirPath = "";
@@ -743,6 +744,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0E523F442B59B1A0007D6665 /* XCRemoteSwiftPackageReference "DittoSwiftTools" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getditto/DittoSwiftTools";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		146ED3F529C4F13100A56229 /* DittoPeersList */ = {

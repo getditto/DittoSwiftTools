@@ -9,7 +9,6 @@ import Foundation
 
 private struct Config {
     static let logsDirectoryName = "debug-logs"
-    static let logFileName = "logs.txt"
     static let zippedLogFileName = "DittoLogs.zip"
 
     static var logsDirectory: URL! = {
@@ -17,32 +16,17 @@ private struct Config {
         return directory.appendingPathComponent(logsDirectoryName, isDirectory: true)
     }()
 
-    static var logFileURL: URL! = {
-        return Self.logsDirectory.appendingPathComponent(Config.logFileName)
-    }()
-
     static var zippedLogsURL: URL! = {
         let directory = FileManager.default.temporaryDirectory
         return directory.appendingPathComponent(Config.zippedLogFileName)
     }()
+    
 }
 
 public struct DittoLogManager {
     public static let shared = DittoLogManager()
 
     private init() {}
-
-    public var logFileURL: URL? {
-        do {
-            try FileManager().createDirectory(at: Config.logsDirectory,
-                                              withIntermediateDirectories: true)
-        } catch let error {
-            assertionFailure("Failed to create logs directory: \(error)")
-            return nil
-        }
-
-        return Config.logFileURL
-    }
 
     public func createLogsZip() -> URL? {
         try? FileManager().removeItem(at: Config.zippedLogsURL)
@@ -67,4 +51,5 @@ public struct DittoLogManager {
 
         return Config.zippedLogsURL
     }
+
 }
