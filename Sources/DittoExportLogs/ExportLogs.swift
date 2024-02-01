@@ -30,10 +30,7 @@ public struct ExportLogs: UIViewControllerRepresentable {
     
     
     func getZippedLogs() -> URL? {
-        if let logFileURL = DittoLogManager.shared.logFileURL {
-            DittoLogger.setLogFileURL(logFileURL)
-        }
-        
+
         guard let zippedLogs = DittoLogManager.shared.createLogsZip() else {
             assertionFailure(); return nil
         }

@@ -261,6 +261,54 @@ Allows you to export a file of the logs from your applcation as a zip file.
 First, make sure the "DittoExportLogs" is added to your Target. Then, use `import DittoExportLogs` 
 to import the Export Logs.
 
+**Important**
+
+Before calling `ditto.startSync()` we need to set the `DittoLogger.setLogFileURL(<logFileURL>)`. This registers a file path where logs will be written to, whenever Ditto wants to issue a log (on top of emitting the log to the console). Use the `LogFileConfig` struct:
+
+```
+struct LogFileConfig {
+    static let logsDirectoryName = "debug-logs"
+    static let logFileName = "logs.txt"
+    static let zippedLogFileName = "logs.zip"
+
+    static var logsDirectory: URL! = {
+        let directory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        return directory.appendingPathComponent(logsDirectoryName, isDirectory: true)
+    }()
+
+    static var logFileURL: URL! = {
+        return Self.logsDirectory.appendingPathComponent(logFileName)
+    }()
+
+    static var zippedLogsURL: URL! = {
+        let directory = FileManager.default.temporaryDirectory
+        return directory.appendingPathComponent(zippedLogFileName)
+    }()
+    
+    public static func createLogFileURL() -> URL? {
+        do {
+            try FileManager().createDirectory(at: self.logsDirectory,
+                                              withIntermediateDirectories: true)
+        } catch let error {
+            assertionFailure("Failed to create logs directory: \(error)")
+            return nil
+        }
+
+        return self.logFileURL
+    }
+}
+```
+
+and then before calling `ditto.startSync()` set the log file url with:
+
+```
+if let logFileURL = LogFileConfig.createLogFileURL() {
+    DittoLogger.setLogFileURL(logFileURL)
+}
+```
+
+Now we can call `ExportLogs()`.
+
 **SwiftUI**  
 
 Use `ExportLogs()` to export the logs. It is recommended to call `ExportLogs` from within a [sheet](https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:)).  
