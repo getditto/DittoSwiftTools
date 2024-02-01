@@ -1,12 +1,13 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 5.9
 
 import PackageDescription
 
 let package = Package(
     name: "DittoSwiftTools",
     platforms: [
-        .iOS(.v11),
+        .iOS(.v12),
         .macOS(.v11),
+        .tvOS(.v17),
     ],
     products: [
         .library(
@@ -30,7 +31,7 @@ let package = Package(
     ],
     dependencies: [
         // Ditto.diskUsage was added in 3.0.1
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.0.0"),
+        .package(path: "../DittoSwiftPackage"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [

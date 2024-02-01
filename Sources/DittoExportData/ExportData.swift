@@ -9,6 +9,7 @@ import UIKit
 #endif
 
 
+#if !os(tvOS)
 @available(iOS 13.0, *)
 public struct ExportData: UIViewControllerRepresentable {
 
@@ -60,3 +61,4 @@ public struct ExportData: UIViewControllerRepresentable {
         // Do nothing
     }
 }
+#endif

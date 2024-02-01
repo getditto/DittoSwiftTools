@@ -117,7 +117,12 @@ struct SearchBar: View {
         HStack {
             ZStack {
                 Rectangle()
+                #if !os(tvOS)
                     .foregroundColor(Color(UIColor.systemGray5))
+                #else
+                    .foregroundColor(Color(UIColor.systemGray))
+                #endif
+
                 HStack {
                     Image(systemName: "magnifyingglass")
                     TextField("Query", text: $searchText)

@@ -3,7 +3,9 @@
 //
 
 import Foundation
+#if canImport(Webkit)
 import WebKit
+#endif
 
 #if canImport(UIKit)
 import UIKit
@@ -32,7 +34,9 @@ class JSWebView: PlatformView {
 
     // MARK: - Internal Properties
 
+    #if canImport(Webkit)
     let webView = WKWebView()
+    #endif
 
 
     // MARK: - Private Properties
@@ -62,6 +66,7 @@ class JSWebView: PlatformView {
     }
 
     private func setup() {
+#if canImport(Webkit)
 #if canImport(UIKit)
         if #available(iOS 13.0, *) {
             backgroundColor = .systemBackground
@@ -88,6 +93,7 @@ class JSWebView: PlatformView {
             webView.topAnchor.constraint(equalTo: topAnchor),
             webView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+#endif
         addBackgroundGuards()
     }
 
@@ -118,6 +124,7 @@ class JSWebView: PlatformView {
 
             guard let error = error else { return }
             let nsError = error as NSError
+            #if canImport(Webkit)
             guard nsError.domain == WKErrorDomain, let code = WKError.Code(rawValue: nsError.code) else { return }
 
             switch code {
@@ -143,6 +150,7 @@ class JSWebView: PlatformView {
                 // .attributedStringContentLoadTimedOut (iOS 13)
                 break
             }
+            #endif
         }
 
         if let coalescingIdentifier = coalescingIdentifier {
@@ -183,9 +191,11 @@ class JSWebView: PlatformView {
     private func processPendingInvocations() {
         guard isInitialLoadComplete, !isBackgrounded else { return }
 
+        #if canImport(Webkit)
         pendingInvocations.forEach {
             webView.evaluateJavaScript($0.javascript, completionHandler: $0.completionHandler)
         }
+        #endif
 
         pendingInvocations.removeAll()
     }
@@ -193,7 +203,7 @@ class JSWebView: PlatformView {
 }
 
 //MARK: - WKNavigationDelegate
-
+#if canImport(Webkit)
 extension JSWebView: WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -203,5 +213,5 @@ extension JSWebView: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         print("JSWebView: didFailNavigationWithError: %@", error)
     }
-
 }
+#endif
