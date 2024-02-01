@@ -2,7 +2,9 @@
 //  Copyright © 2020 DittoLive Incorporated. All rights reserved.
 //
 
+#if canImport(Webkit)
 import WebKit
+#endif
 import DittoSwift
 
 #if canImport(UIKit)

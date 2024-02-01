@@ -3,7 +3,9 @@
 //
 
 import Foundation
+#if canImport(Webkit)
 import WebKit
+#endif
 
 /**
  `VisJSWebView` is a simple `UIView` subclass containing a `WKWebView` which it
@@ -29,7 +31,9 @@ class VisJSWebView: JSWebView {
         let webDistDirURL = bundle.bundleURL.appendingPathComponent("dist")
         let htmlURL = bundle.url(forResource: "index", withExtension: "html")!
         let htmlString = try! String(contentsOf: htmlURL, encoding: .utf8)
+        #if canImport(Webkit)
         webView.loadHTMLString(htmlString, baseURL: webDistDirURL)
+        #endif
     }
 
     // MARK: - Functions

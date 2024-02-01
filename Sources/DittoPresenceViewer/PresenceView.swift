@@ -27,13 +27,12 @@ public struct PresenceView: View {
         self.ditto = ditto
     }
 
-    var body: some View {
+    public var body: some View {
         PresenceView(ditto: ditto)
     }
 }
 
 // MARK: - UIViewRepresentable
-#if os(iOS)
 extension PresenceView: UIViewRepresentable {
     public typealias Body = Never
     public typealias UIViewType = UIView
@@ -46,7 +45,6 @@ extension PresenceView: UIViewRepresentable {
         return
     }
 }
-#endif
 
 // MARK: - NSViewRepresentable
 #if os(macOS)

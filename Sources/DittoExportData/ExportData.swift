@@ -8,6 +8,8 @@ import SwiftUI
 import UIKit
 #endif
 
+
+#if !os(tvOS)
 public struct ExportData: UIViewControllerRepresentable {
 
     private let ditto: Ditto
@@ -58,3 +60,4 @@ public struct ExportData: UIViewControllerRepresentable {
         // Do nothing
     }
 }
+#endif

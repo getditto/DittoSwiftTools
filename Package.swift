@@ -1,4 +1,4 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 5.9
 
 import PackageDescription
 
@@ -52,7 +52,7 @@ let package = Package(
             targets: ["DittoAllToolsMenu"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.7.0"),
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.0.0"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [

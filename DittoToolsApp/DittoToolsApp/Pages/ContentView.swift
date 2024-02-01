@@ -74,11 +74,17 @@ struct ContentView: View {
                     .foregroundColor(textColor)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .sheet(isPresented: $presentExportDataShare) {
+                        #if !os(tvOS)
                         ExportData(ditto: dittoModel.ditto!)
+                        #endif
                     }
                 }
             }
+            #if os(tvOS)
+            .listStyle(.grouped)
+            #else
             .listStyle(InsetGroupedListStyle())
+            #endif
             .navigationTitle("Ditto Tools")
             .alert("Export Ditto Directory", isPresented: $presentExportDataAlert) {
                 Button("Export") {
