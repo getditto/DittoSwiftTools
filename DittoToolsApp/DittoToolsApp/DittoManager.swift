@@ -150,9 +150,6 @@ class DittoManager: ObservableObject {
         default:
             DittoLogger.enabled = true
             DittoLogger.minimumLogLevel = DittoLogLevel(rawValue: logOption.rawValue)!
-            if let logFileURL = DittoLogManager.shared.logFileURL {
-                DittoLogger.setLogFileURL(logFileURL)
-            }
         }
     }
 }
