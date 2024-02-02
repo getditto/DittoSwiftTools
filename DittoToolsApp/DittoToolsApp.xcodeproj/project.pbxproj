@@ -36,6 +36,7 @@
 		0EAA7B242B8D41100078B7F0 /* PermissionsHealthViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EAA7B232B8D41100078B7F0 /* PermissionsHealthViewer.swift */; };
 		0ED091502C640FFF00F6403B /* DittoAllToolsMenu in Frameworks */ = {isa = PBXBuildFile; productRef = 0ED0914F2C640FFF00F6403B /* DittoAllToolsMenu */; };
 		0EFAEBC52B99322D00F26744 /* HeartBeatViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */; };
+		073AAD352B6D8F670034254C /* LogFileConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073AAD342B6D8F670034254C /* LogFileConfig.swift */; };
 		146ED3F629C4F13100A56229 /* DittoPeersList in Frameworks */ = {isa = PBXBuildFile; productRef = 146ED3F529C4F13100A56229 /* DittoPeersList */; };
 		146ED3FA29C4F2A000A56229 /* PeersListViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146ED3F929C4F2A000A56229 /* PeersListViewer.swift */; };
 		1474FC932A295A3100C0AC4E /* LoggingDetailsViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1474FC922A295A3100C0AC4E /* LoggingDetailsViewer.swift */; };
@@ -96,6 +97,7 @@
 		0E6F0FA52B7C17270088C0CF /* PresenceDegradationViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenceDegradationViewer.swift; sourceTree = "<group>"; };
 		0EAA7B232B8D41100078B7F0 /* PermissionsHealthViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsHealthViewer.swift; sourceTree = "<group>"; };
 		0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartBeatViewer.swift; sourceTree = "<group>"; };
+		073AAD342B6D8F670034254C /* LogFileConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogFileConfig.swift; sourceTree = "<group>"; };
 		146ED3F929C4F2A000A56229 /* PeersListViewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeersListViewer.swift; sourceTree = "<group>"; };
 		1474FC922A295A3100C0AC4E /* LoggingDetailsViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingDetailsViewer.swift; sourceTree = "<group>"; };
 		F87DC46F298854E600899FEC /* DiskUsageViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskUsageViewer.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 		01F34C9328A2EAE3003BDF17 /* DittoToolsApp */ = {
 			isa = PBXGroup;
 			children = (
+				073AAD332B6D8F670034254C /* Utilities */,
 				01F34CE428A30798003BDF17 /* Model */,
 				01F34D0328A3113A003BDF17 /* Views */,
 				01F34D0028A310A5003BDF17 /* Pages */,
@@ -248,6 +251,14 @@
 				01F34D0628A3119E003BDF17 /* MenuListItem.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		073AAD332B6D8F670034254C /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				073AAD342B6D8F670034254C /* LogFileConfig.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		0E8FA0692947FC5E00B2E38F /* Frameworks */ = {
@@ -415,6 +426,7 @@
 				0EAA7B242B8D41100078B7F0 /* PermissionsHealthViewer.swift in Sources */,
 				016757DD28A3313300347491 /* PresenceViewer.swift in Sources */,
 				0E6F0FA62B7C17270088C0CF /* PresenceDegradationViewer.swift in Sources */,
+				073AAD352B6D8F670034254C /* LogFileConfig.swift in Sources */,
 				01F34CD128A304F0003BDF17 /* AuthorizationsManager.swift in Sources */,
 				1474FC932A295A3100C0AC4E /* LoggingDetailsViewer.swift in Sources */,
 				01F34C9728A2EAE3003BDF17 /* ContentView.swift in Sources */,

@@ -3,7 +3,8 @@
 //
 
 import Foundation
-#if canImport(Webkit)
+
+#if canImport(WebKit)
 import WebKit
 #endif
 
@@ -31,7 +32,7 @@ class VisJSWebView: JSWebView {
         let webDistDirURL = bundle.bundleURL.appendingPathComponent("dist")
         let htmlURL = bundle.url(forResource: "index", withExtension: "html")!
         let htmlString = try! String(contentsOf: htmlURL, encoding: .utf8)
-        #if canImport(Webkit)
+        #if canImport(WebKit)
         webView.loadHTMLString(htmlString, baseURL: webDistDirURL)
         #endif
     }

@@ -30,9 +30,11 @@ struct ContentView: View {
         NavigationView {
             List{
                 Section(header: Text("Debug")) {
+                    #if canImport(WebKit)
                     NavigationLink(destination: PresenceViewer()) {
                         MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
                     }
+                    #endif
                     NavigationLink(destination: PeersListViewer()) {
                         MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
                     }

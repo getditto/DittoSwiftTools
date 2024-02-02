@@ -30,7 +30,7 @@ public struct LoggingDetailsView: View {
         List {
             Section {
                 Text("Ditto Logging")
-                    .frame(width: 400, alignment: .center)
+                    .frame(alignment: .center)
                     .font(.title)
             }
             Section {
@@ -53,11 +53,11 @@ public struct LoggingDetailsView: View {
                     }
                     .foregroundColor(textColor)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                #if !os(tvOS)
                 .sheet(isPresented: $presentExportLogsShare) {
-                    #if !os(tvOS)
                     ExportLogs()
-                    #endif
                 }
+                #endif
             }
         }
         #if !os(tvOS)

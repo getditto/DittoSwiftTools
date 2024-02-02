@@ -37,14 +37,20 @@ public struct PeersListView: View {
             .listRowSeparator(.visible, edges: .top)
             .listRowSeparatorTint(dividerColor)
             #endif
+            #if os(tvOS)
+            Divider()
+            #endif
 
             Section {
                 ForEach(vm.peers, id: \.peerKey) { peer in
                     peerView(peer)
                         .padding(.bottom, 4)
-                    #if !os(tvOS)
+                        #if !os(tvOS)
                         .listRowSeparator(.visible, edges: .top)
                         .listRowSeparatorTint(dividerColor)
+                        #endif
+                    #if os(tvOS)
+                    Divider()
                     #endif
                 }
             } header: {

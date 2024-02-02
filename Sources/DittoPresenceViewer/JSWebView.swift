@@ -3,7 +3,7 @@
 //
 
 import Foundation
-#if canImport(Webkit)
+#if canImport(WebKit)
 import WebKit
 #endif
 
@@ -34,7 +34,7 @@ class JSWebView: PlatformView {
 
     // MARK: - Internal Properties
 
-    #if canImport(Webkit)
+    #if canImport(WebKit)
     let webView = WKWebView()
     #endif
 
@@ -66,7 +66,7 @@ class JSWebView: PlatformView {
     }
 
     private func setup() {
-#if canImport(Webkit)
+#if canImport(WebKit)
 #if canImport(UIKit)
         backgroundColor = .systemBackground
         webView.backgroundColor = .systemBackground
@@ -118,7 +118,7 @@ class JSWebView: PlatformView {
 
             guard let error = error else { return }
             let nsError = error as NSError
-            #if canImport(Webkit)
+            #if canImport(WebKit)
             guard nsError.domain == WKErrorDomain, let code = WKError.Code(rawValue: nsError.code) else { return }
 
             switch code {
@@ -185,7 +185,7 @@ class JSWebView: PlatformView {
     private func processPendingInvocations() {
         guard isInitialLoadComplete, !isBackgrounded else { return }
 
-        #if canImport(Webkit)
+        #if canImport(WebKit)
         pendingInvocations.forEach {
             webView.evaluateJavaScript($0.javascript, completionHandler: $0.completionHandler)
         }
@@ -197,7 +197,7 @@ class JSWebView: PlatformView {
 }
 
 //MARK: - WKNavigationDelegate
-#if canImport(Webkit)
+#if canImport(WebKit)
 extension JSWebView: WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
