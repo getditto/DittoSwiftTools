@@ -103,7 +103,7 @@ public struct DittoDiskUsageView: View {
         List {
             Section {
                 Text("Disk Usage")
-                    .frame(width: 400, alignment: .center)
+                    .frame(alignment: .center)
                     .font(.title)
             }
 
@@ -116,17 +116,19 @@ public struct DittoDiskUsageView: View {
                         ForEach(diskUsage.children, id: \.self) { (child: DiskUsage) in
                             HStack {
                                 Text(child.relativePath)
-                                    .frame(width: 200, alignment: .leading)
+                                    .font(.body)
+                                Spacer()
                                 Text(child.size)
-                                    .frame(width: 100, alignment: .trailing)
+                                    .font(.body)
                             }
                         }
                         HStack {
                             Group {
                                 Text("Total")
-                                    .frame(width: 200, alignment: .leading)
+                                    .font(.body)
+                                Spacer()
                                 Text(diskUsage.totalSize)
-                                    .frame(width: 100, alignment: .trailing)
+                                    .font(.body)
                             }
                         }
                     }
@@ -139,9 +141,10 @@ public struct DittoDiskUsageView: View {
             Section {
                 HStack {
                     Text("Updated at:")
-                        .frame(width: 200, alignment: .leading)
+                        .font(.body)
+                    Spacer()
                     Text(viewModel.diskUsage?.lastUpdated ?? DiskUsageViewModel.dateFormatter.string(from: Date()))
-                        .frame(width: 100, alignment: .trailing)
+                        .font(.body)
                 }
             }
 
@@ -151,6 +154,7 @@ public struct DittoDiskUsageView: View {
                 } label: {
                     // Label was added in iOS 14
                     Label("Close", systemImage: "xmark")
+                        .font(.body)
                 }
             }
         }
