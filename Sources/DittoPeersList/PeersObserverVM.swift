@@ -9,6 +9,8 @@
 import Combine
 import DittoSwift
 import SwiftUI
+import Foundation
+import CryptoKit
 
 @available(iOS 15, *)
 @MainActor public class PeersObserverVM: ObservableObject {
@@ -57,6 +59,7 @@ import SwiftUI
 //    }
 }
 
+@available(iOS 13.0, *)
 extension DittoPeer {
     var peerSDKVersion: String {
         let sdk = "SDK "
@@ -65,16 +68,10 @@ extension DittoPeer {
         }
         return sdk + "N/A"
     }
-        
-    var addressSiteId: String {
-        Self.addressSiteId(self)
-    }
     
-    static func addressSiteId(_ peer: DittoPeer) -> String {
-        // parse siteID out of DittoAddress description
-        let prefix = "\(peer.address)".components(separatedBy: "DittoAddress(siteID: ")
-        let addr = String(prefix.last ?? "").components(separatedBy: ",")
-        return String(addr.first ?? "[siteID N/A]")
+    func convertData(_ data: Data) -> String {
+        let hash = Insecure.MD5.hash(data: data)
+        return hash.map { String(format: "%02hhx", $0) }.joined()
     }
 }
 
