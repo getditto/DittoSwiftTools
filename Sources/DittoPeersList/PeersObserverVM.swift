@@ -10,7 +10,7 @@ import Combine
 import DittoSwift
 import SwiftUI
 import Foundation
-import CryptoKit
+//import CryptoKit
 
 @available(iOS 15, *)
 @MainActor public class PeersObserverVM: ObservableObject {
@@ -57,22 +57,6 @@ import CryptoKit
 //    deinit {
 //        print("PeersObserverVM -- deinit -- ")
 //    }
-}
-
-@available(iOS 13.0, *)
-extension DittoPeer {
-    var peerSDKVersion: String {
-        let sdk = "SDK "
-        if let version = dittoSDKVersion {
-            return sdk + "v\(version)"
-        }
-        return sdk + "N/A"
-    }
-    
-    func convertData(_ data: Data) -> String {
-        let hash = Insecure.MD5.hash(data: data)
-        return hash.map { String(format: "%02hhx", $0) }.joined()
-    }
 }
 
 // For sorting addresses of remote peers in func remotePeerAddresses() above

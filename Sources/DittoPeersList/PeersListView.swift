@@ -74,7 +74,7 @@ public struct PeersListView: View {
             
             // Device name + siteID
             Text("\(peer.deviceName): ").font(Font.body.weight(.bold))
-            + Text("\(peer.convertData(peer.peerKey))").font(Font.subheadline.weight(.bold))
+            + Text("\(peer.peerKey.peerKeyString(from: peer))").font(Font.subheadline.weight(.bold))
             
             if vm.isLocalPeer(peer) {
                 ForEach(vm.peers, id: \.self) { conPeer in
@@ -83,7 +83,7 @@ public struct PeersListView: View {
                             .frame(height: 1)
                             .overlay(.gray).opacity(0.4)
                         
-                        Text("peer: \(peer.convertData(conPeer.peerKey))")
+                        Text("peer: \(peer.peerKey.peerKeyString(from: conPeer))")
 
                         peerConnectionsView(conPeer, showBLEDistance: showBLEDistance)
                     }
