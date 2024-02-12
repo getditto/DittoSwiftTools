@@ -10,7 +10,6 @@ import Combine
 import DittoSwift
 import SwiftUI
 import Foundation
-//import CryptoKit
 
 @available(iOS 15, *)
 @MainActor public class PeersObserverVM: ObservableObject {
