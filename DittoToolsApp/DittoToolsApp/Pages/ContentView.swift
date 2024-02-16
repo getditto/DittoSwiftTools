@@ -7,6 +7,7 @@ import DittoExportData
 import DittoSwift
 import SwiftUI
 
+
 class MainListViewModel: ObservableObject {
     @Published var isShowingLoginSheet = DittoManager.shared.ditto == nil
 }
@@ -39,6 +40,9 @@ struct ContentView: View {
                     }
                     NavigationLink(destination: DataBrowserView()) {
                         MenuListItem(title: "Data Browser", systemImage: "photo", color: .orange)
+                    }
+                    NavigationLink(destination: PresenceDegradationViewer()) {
+                        MenuListItem(title: "Presence Degradation", systemImage: "network", color: .red)
                     }
                 }
                 Section(header: Text("Configuration")) {
