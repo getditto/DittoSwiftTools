@@ -7,6 +7,9 @@ import DittoExportLogs
 import DittoSwift
 import Foundation
 
+//TEST heartbeat
+import DittoHeartbeat
+
 class AuthDelegate: DittoAuthenticationDelegate {
     func authenticationRequired(authenticator: DittoAuthenticator) {
         let provider = DittoManager.shared.config.authenticationProvider
@@ -47,12 +50,12 @@ class DittoManager: ObservableObject {
     var ditto: Ditto? = Ditto()
 
     @Published var config = DittoConfig(
-        appID: "YOUR_APP_ID_HERE",
+        appID: "b8567802-f3cd-41f9-978f-f0f67b4c3ff2",//"YOUR_APP_ID_HERE",
         playgroundToken: "YOUR_TOKEN_HERE",
-        identityType: IdentityType.onlinePlayground,
+        identityType: IdentityType.onlinePlayground, //IdentityType.onlineWithAuthentication,
         offlineLicenseToken: "YOUR_OFFLINE_LICENSE_HERE",
-        authenticationProvider: "",
-        authenticationToken: "",
+        authenticationProvider: "auth-webhook",//"",
+        authenticationToken: "password",//"",
         useIsolatedDirectories: true
     )
     @Published var colls = [DittoCollection]()
@@ -79,6 +82,15 @@ class DittoManager: ObservableObject {
                 self?.setupLogging()
             }
             .store(in: &cancellables)
+        
+//        testHeartbeat()
+    }
+    
+    //TMP: testing heartbeat
+    var heartbeatVM = HeartbeatVM()
+    func testHeartbeat() {
+//        try? restartDitto()
+        heartbeatVM.test(ditto: self.ditto!)
     }
 
     func getPersistenceDir (config: DittoConfig) -> URL? {
@@ -133,6 +145,10 @@ class DittoManager: ObservableObject {
         }
         
         setupLiveQueries()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.testHeartbeat()
+        }
     }
     
     func setupLiveQueries () {
@@ -143,16 +159,16 @@ class DittoManager: ObservableObject {
     }
 
     func setupLogging() {
-        let logOption = AppSettings.shared.loggingOption
+        let logOption = DittoLogger.LoggingOptions.error //AppSettings.shared.loggingOption
         switch logOption {
         case .disabled:
             DittoLogger.enabled = false
         default:
             DittoLogger.enabled = true
             DittoLogger.minimumLogLevel = DittoLogLevel(rawValue: logOption.rawValue)!
-            if let logFileURL = DittoLogManager.shared.logFileURL {
-                DittoLogger.setLogFileURL(logFileURL)
-            }
+//            if let logFileURL = DittoLogManager.shared.logFileURL {
+//                DittoLogger.setLogFileURL(logFileURL)
+//            }
         }
     }
 }

@@ -27,6 +27,9 @@ let package = Package(
         .library(
             name: "DittoExportData",
             targets: ["DittoExportData"]),
+        .library(
+            name: "DittoHeartbeat",
+            targets: ["DittoHeartbeat"]),
     ],
     dependencies: [
         // Ditto.diskUsage was added in 3.0.1
@@ -88,6 +91,13 @@ let package = Package(
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
             ],
             path: "Sources/DittoExportData"
+        ),
+        .target(
+            name: "DittoHeartbeat",
+            dependencies: [
+                .product(name: "DittoSwift", package: "DittoSwiftPackage")
+            ],
+            path: "Sources/DittoHeartbeat"
         ),
     ]
 )
