@@ -47,12 +47,12 @@ class DittoManager: ObservableObject {
     var ditto: Ditto? = Ditto()
 
     @Published var config = DittoConfig(
-        appID: "YOUR_APP_ID_HERE",
+        appID: "b8567802-f3cd-41f9-978f-f0f67b4c3ff2",//"YOUR_APP_ID_HERE",
         playgroundToken: "YOUR_TOKEN_HERE",
-        identityType: IdentityType.onlinePlayground,
+        identityType: IdentityType.onlineWithAuthentication,//IdentityType.onlinePlayground,
         offlineLicenseToken: "YOUR_OFFLINE_LICENSE_HERE",
-        authenticationProvider: "",
-        authenticationToken: "",
+        authenticationProvider: "auth-webhook",//"",
+        authenticationToken: "password",//"",
         useIsolatedDirectories: true
     )
     @Published var colls = [DittoCollection]()
