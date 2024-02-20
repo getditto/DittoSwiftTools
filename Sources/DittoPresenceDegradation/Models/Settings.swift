@@ -23,10 +23,6 @@ public struct Settings {
         self.hasSeenExpectedPeers = hasSeenExpectedPeers
         self.sessionStartedAt = sessionStartedAt
     }
-    
-//    var sessionStartedAtFormatted: Date {
-//        return Date(timeIntervalSince1970: TimeInterval(sessionStartedAt))
-//    }
 }
 
 extension Settings {
