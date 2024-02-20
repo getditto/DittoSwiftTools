@@ -68,7 +68,7 @@ class PresenceDegradationVM: ObservableObject {
                     }
                 }
                 
-                if let peers = self.remotePeers?.values as? [Peer] {
+                if let peers = self.remotePeers?.values {
                     for peer in peers {                    
                         if !graph.remotePeers.contains(where: { self.hashPeerKeyUseCase($0.peerKey) == peer.key}) {
                             self.remotePeers?[peer.key]?.connected = false
