@@ -101,13 +101,6 @@ public struct PresenceDegradationView: View {
                 }
             }
         }
-//        .onChange(of: [vm.settings, vm.localPeer, vm.remotePeers]) { newValues in
-//            let totalPeers = newValues[0] as? Int ?? 0
-//            let apiEnabled = newValues[1] as? Bool ?? false
-//            if apiEnabled {
-//                callback?(totalPeers)
-//            }
-//        }
     }
     
     func connectionText(connectionType: String?, connectionCount: Int?) -> Text {
