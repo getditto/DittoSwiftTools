@@ -12,16 +12,20 @@ import DittoSwift
 public struct PresenceDegradationView: View {
     
     @StateObject var vm: PresenceDegradationVM
-    var callback: ((Int?) -> Void)?
+    var callback: ((Int, [String: Peer]?, Settings?) -> Void)?
 
-    
-    public init(ditto: Ditto, callback: ((Int?) -> Void)?) {
+    public init(ditto: Ditto, callback: ((Int, [String: Peer]?, Settings?) -> Void)?) {
         self._vm = StateObject(wrappedValue: PresenceDegradationVM(ditto: ditto))
         self.callback = callback
     }
 
     public var body: some View {
         VStack(alignment: .leading) {
+            bannerColor
+                .frame(height: 25, alignment: .top)
+                .overlay(
+                    Text(vm.remotePeers?.filter { $0.value.connected } == nil ? "" : ((vm.remotePeers?.filter { $0.value.connected }.count) ?? 0 < vm.expectedPeers) ? "Unhealthy Mesh" : "Healthy Mesh")
+                )
             Text("Expected Minimum Peers: \(vm.expectedPeers )")
             Text("Report API: \(vm.apiEnabled ? "Enabled" : "Disabled")")
             Text("Session started at: \(vm.sessionStartTime ?? "")")
@@ -54,12 +58,11 @@ public struct PresenceDegradationView: View {
             }
             .padding()
             .background(Color(UIColor.systemGreen))
-//            .border(Color.black, width: 1)
             .cornerRadius(10)
-
+            Divider()
             
             Text("Remote Devices (\(vm.remotePeers?.filter { $0.value.connected }.count ?? 0)/\(vm.remotePeers?.count ?? 0))")
-            List {
+            ScrollView {
                 if let values = vm.remotePeers?.values {
                     ForEach(Array(values)) { peer in
                         VStack(alignment: .leading) {
@@ -73,18 +76,16 @@ public struct PresenceDegradationView: View {
                                 connectionText(connectionType: "P2P", connectionCount: peer.transportInfo.p2pConnections)
                                 connectionText(connectionType: "Cloud", connectionCount: peer.transportInfo.cloudConnections)
                             }
-                            
                         }
                         .padding()
-                        .background(vm.remotePeers?.filter { $0.value.connected }.count ?? 0 < vm.expectedPeers ? Color.red : Color.green)
+                        .background(peer.connected ? Color.green : Color.red)
                         .cornerRadius(10)
                     }
                 }
             }
-            
         }
-        .padding()
-        .background(vm.remotePeers?.filter { $0.value.connected } == nil ? Color.white : ((vm.remotePeers?.filter { $0.value.connected }.count) ?? 0 < vm.expectedPeers) ? Color.red : Color.green)
+        .padding([.leading, .trailing])
+//        .background(vm.remotePeers?.filter { $0.value.connected } == nil ? Color.white : ((vm.remotePeers?.filter { $0.value.connected }.count) ?? 0 < vm.expectedPeers) ? Color.red : Color.green)
         .fullScreenCover(isPresented: $vm.isSheetPresented, content: {
             NewSessionView(expectedPeers: $vm.expectedPeers, apiEnabled: $vm.apiEnabled, isPresented: $vm.isSheetPresented, sessionStartTime: $vm.sessionStartTime) {
                 
@@ -92,6 +93,14 @@ public struct PresenceDegradationView: View {
 
             }
         })
+        .onReceive(vm.$expectedPeers.combineLatest(vm.$remotePeers, vm.$settings, vm.$apiEnabled)) { expectedPeers, remotePeers, settings, apiEnabled in
+            // Call the update callback when any of the published properties change
+            if apiEnabled {
+                if let callback = self.callback {
+                    callback(expectedPeers, remotePeers, settings)
+                }
+            }
+        }
 //        .onChange(of: [vm.settings, vm.localPeer, vm.remotePeers]) { newValues in
 //            let totalPeers = newValues[0] as? Int ?? 0
 //            let apiEnabled = newValues[1] as? Bool ?? false
@@ -107,6 +116,11 @@ public struct PresenceDegradationView: View {
         } else {
             return Text("\(connectionType ?? "--"): --")
         }
+    }
+    
+    var bannerColor: some View {
+        Rectangle()
+            .foregroundColor(vm.remotePeers?.filter { $0.value.connected } == nil ? Color.white : ((vm.remotePeers?.filter { $0.value.connected }.count) ?? 0 < vm.expectedPeers) ? Color.red : Color.green)
     }
 }
 

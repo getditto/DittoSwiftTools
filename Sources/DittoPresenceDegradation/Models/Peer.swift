@@ -8,8 +8,8 @@
 import Foundation
 import DittoSwift
 
-struct Peer: Identifiable {
-    var id: String { key }
+public struct Peer: Identifiable {
+    public var id: String { key }
     var name: String
     var transportInfo: PeerTransportInfo
     var connected: Bool

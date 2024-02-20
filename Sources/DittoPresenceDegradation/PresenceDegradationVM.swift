@@ -8,10 +8,11 @@
 import Foundation
 import DittoSwift
 import CryptoKit
+import Combine
 
 @available(iOS 15.0, *)
 class PresenceDegradationVM: ObservableObject {
-    
+        
     @Published var expectedPeers: Int = 0
     @Published var apiEnabled: Bool = false
     @Published var sessionStartTime: String?
@@ -27,9 +28,7 @@ class PresenceDegradationVM: ObservableObject {
     }
     
     func startNewSession() {
-        
-        self.updateSettings()
-        
+                
         if(peersObserver != nil) {
             self.peersObserver?.stop()
         }
@@ -78,8 +77,10 @@ class PresenceDegradationVM: ObservableObject {
                 }
             }
         }
+        
+        self.updateSettings()
     }
-    
+
     func resolveTransportInfo(peer: DittoPeer) -> PeerTransportInfo {
         let lanSet: Set<DittoConnectionType> = [.accessPoint, .webSocket]
 
@@ -103,10 +104,16 @@ class PresenceDegradationVM: ObservableObject {
     }
     
     func updateSettings() {
+        var hasSeenExpectedPeers = false
+        
+        if(self.remotePeers?.count ?? 0 >= self.expectedPeers) {
+            hasSeenExpectedPeers = true
+        }
+        
         self.settings = Settings(
             expectedPeers: self.expectedPeers,
             reportApiEnabled: self.apiEnabled,
-            hasSeenExpectedPeers: false,
+            hasSeenExpectedPeers: hasSeenExpectedPeers,
             sessionStartedAt: self.sessionStartTime ?? ""
         )
     }

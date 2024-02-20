@@ -8,7 +8,7 @@
 import Foundation
 import DittoSwift
 
-struct Settings {
+public struct Settings {
     let expectedPeers: Int
     let reportApiEnabled: Bool
     let hasSeenExpectedPeers: Bool
