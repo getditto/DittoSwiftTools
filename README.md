@@ -362,6 +362,8 @@ present(vc, animated: true)
 
 Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected. Provides a callback function that will allow you to monitor the status of the mesh.
 
+<img width="248" alt="Screenshot 2024-02-20 at 5 14 18 PM" src="https://github.com/getditto/DittoSwiftTools/assets/60948031/9cf81503-4557-4480-a843-1236314c926b">
+
 You can use the Presence Degradation Reporter in SiwftUI or UIKit
 
 data provided in callback
