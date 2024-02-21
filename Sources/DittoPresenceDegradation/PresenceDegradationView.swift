@@ -46,7 +46,7 @@ public struct PresenceDegradationView: View {
             Text("Local Device")
             VStack(alignment: .leading) {
                 Text("device name: \(vm.localPeer?.name ?? "")")
-                Text("pk: \(vm.localPeer?.key  ?? "")")
+                Text("\(vm.localPeer?.key  ?? "")")
                 Text("last Seen \(vm.localPeer?.lastSeenFormatted ?? "")")
                 Divider()
                 HStack {

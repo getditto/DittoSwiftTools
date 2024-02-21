@@ -29,9 +29,7 @@ class PresenceDegradationVM: ObservableObject {
     
     func startNewSession() {
                 
-        if(peersObserver != nil) {
-            self.peersObserver?.stop()
-        }
+        self.peersObserver?.stop()
         
         self.peersObserver = self.ditto.presence.observe { graph in
             DispatchQueue.main.async {
@@ -99,8 +97,8 @@ class PresenceDegradationVM: ObservableObject {
     }
     
     func hashPeerKeyUseCase(_ data: Data) -> String {
-        let hash = Insecure.MD5.hash(data: data)
-        return hash.map { String(format: "%02hhx", $0) }.joined()
+        let base64String = data.base64EncodedString()
+        return "pk:" + base64String
     }
     
     func updateSettings() {
