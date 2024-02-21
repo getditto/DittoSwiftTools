@@ -14,6 +14,7 @@ public struct NewSessionView: View {
     @Binding private var apiEnabled: Bool
     @Binding var isPresented: Bool
     @Binding var sessionStartTime: String?
+    @State private var showAlert = false
     var onDismiss: () -> Void
     
     public init(expectedPeers: Binding<Int>, apiEnabled: Binding<Bool>, isPresented: Binding<Bool>, sessionStartTime: Binding<String?>, onDismiss: @escaping () -> Void) {
@@ -31,11 +32,7 @@ public struct NewSessionView: View {
                 TextField("0", value: $expectedPeers, formatter: NumberFormatter())
                     .keyboardType(.numberPad)
                     .frame(maxWidth: 50)
-                    .onChange(of: expectedPeers) { newValue in
-                        if newValue < 0 {
-                            expectedPeers = 0 
-                        }
-                    }
+
             }
             .padding()
             HStack() {
@@ -46,9 +43,13 @@ public struct NewSessionView: View {
             .padding()
             
             Button{
-                self.sessionStartTime = getStartTime()
-                self.isPresented = false
-                self.onDismiss()
+                if self.expectedPeers > 0 {
+                    self.sessionStartTime = getStartTime()
+                    self.isPresented = false
+                    self.onDismiss()
+                } else {
+                    self.showAlert.toggle()
+                }
             } label: {
                 Text("Save")
                     .padding(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
@@ -61,8 +62,9 @@ public struct NewSessionView: View {
                     )
             }
             .padding()
-            
-            
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Alert"), message: Text("Expected peer count must be a number greater than 0"), dismissButton: .default(Text("OK")))
+            }
         }
     }
 }
