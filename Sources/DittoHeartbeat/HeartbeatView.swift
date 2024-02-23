@@ -61,7 +61,9 @@ private class PrivateHeartbeatVM: ObservableObject {
             let docs = result.items.compactMap { item in
                 DittoHeartbeatInfo(item.value)
             }
-            infoDocs = docs
+            withAnimation {
+                self.infoDocs = docs
+            }
         }
     }
 }
@@ -79,10 +81,30 @@ public struct HeartbeatView: View {
     
     public var body: some View {
         VStack {
-            List {
-                ForEach(vm.infoDocs) { info in
-                    HeartbeatInfoRowItem(info: info)
+            if vm.isPaused && vm.infoDocs.count < 1 {
+                VStack(alignment: .center) {
+                    Text(String.getStartedText)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 28)
+                    
+                    Button(action: {
+                        vm.isPaused.toggle()
+                    }, label: {
+                        Image(systemName: String.imgPlay)
+                            .symbolRenderingMode(.multicolor)
+                            .font(.system(size: 60))
+                    })
+                    
+                    Spacer()
                 }
+            } else {
+                List {
+                    ForEach(vm.infoDocs) { info in
+                        HeartbeatInfoRowItem(info: info)
+                    }
+                }
+                .listRowSeparator(.visible, edges: .top)
+                .listRowSeparatorTint(dividerColor)
             }
         }
         .onDisappear { vm.stopHeartbeat() }

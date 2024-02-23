@@ -34,4 +34,11 @@ public extension String {
     static var sdk = "sdk"
     static var sdkNA = "sdk N/A"
     static var sdkVersionNA = ": N/A"
+    
+    static var getStartedText = "To demo the Heartbeat feature, just hit the play button. "
+    + "Mock HeartbeatConfig data will be used to begin updating a local device heartbeat document "
+    + " in the `devices` collection every 10 seconds.\n\n"
+    + "If you are using the standalone DittoToolsApp, you must first reset the identity to activate "
+    + "Ditto. Note that every time the Ditto identity is reset in this way, the Ditto instance will "
+    + "be seen as a new local peer and will create a new HeartbeatInfo document."
 }
