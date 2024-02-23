@@ -70,7 +70,7 @@ public struct HeartbeatView: View {
         }
          */
     }
-    
+    /*
     @ViewBuilder
     func peerView(_ peer: DittoPeer, showBLEDistance: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: 2) {
@@ -116,4 +116,5 @@ public struct HeartbeatView: View {
             }
         }
     }
+     */
 }

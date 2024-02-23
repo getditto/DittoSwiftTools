@@ -11,21 +11,17 @@ import CryptoKit
 import DittoSwift
 import SwiftUI
 
-public extension DateFormatter {
-    static var isoDate: ISO8601DateFormatter {
-        let f = ISO8601DateFormatter()
-        return f
-    }
-}
 
 public struct HeartbeatConfig {
     var id: [String: String]
+    var metadata: [String: Any]
     var interval: TimeInterval
     var collectionName: String
 }
 
 public struct HeartbeatInfo {
     var id: [String: String]
+    var metadata: [String: Any] // pass-through HeartbeatConfig.metadata
     var lastUpdated: String
     var presence: Presence?
 }
@@ -75,6 +71,7 @@ public class HeartbeatVM: ObservableObject {
         hbCallback = callback
         hbInfo = HeartbeatInfo(
             id: createCompositeId(config: config.id),
+            metadata: config.metadata,
             lastUpdated: DateFormatter.isoDate.string(from: Date.now),
             presence: nil
         )
@@ -147,9 +144,10 @@ public class HeartbeatVM: ObservableObject {
         let doc: [String:Any?] = [
             "_id": info.id,
             "interval": "\(Int(config.interval)) sec",
+            "metadata": config.metadata,
             "remotePeersCount": presence.remotePeersCount,
             "lastUpdated": info.lastUpdated,
-            "presence": getConnections()
+            "presence": peerConnections()
         ]
         Task {
             do {
@@ -168,13 +166,14 @@ public class HeartbeatVM: ObservableObject {
         }
     }
     
-    private func getConnections() -> [String: Any?] {
+    private func peerConnections() -> [String: Any?] {
         guard let info = hbInfo, let presence = info.presence else {
             print("HeartbeatVM.\(#function): bhInfo and/or hbInfo.presence is NIL --> Return")
             return [:]
         }
         
         var connections = [String: Any]()
+        let peerKeyString = peerKeyString
         
         for peer in presence.peers {
             let types = connectionTypeCounts(peer: peer)
@@ -187,7 +186,7 @@ public class HeartbeatVM: ObservableObject {
                 "lan": types["lan"]
             ]
             
-            connections["dittoPeerKey"] = connection
+            connections[peerKeyString] = connection
         }
         
         return connections
@@ -212,40 +211,18 @@ public class HeartbeatVM: ObservableObject {
     
     private func createCompositeId(config: [String: String]) -> [String: String] {
         var compositeId = config
-        compositeId["dittoPeerKey"] = peerKeyHash(ditto?.presence.graph.localPeer.peerKey ?? Data())
+//        compositeId["dittoPeerKey"] = peerKeyHash(ditto?.presence.graph.localPeer.peerKey ?? Data())
+        compositeId["dittoPeerKey"] = peerKeyString
         return compositeId
+    }
+    
+    private var peerKeyString: String {
+        peerKeyHash(ditto?.presence.graph.localPeer.peerKey ?? Data())
     }
     
     private func peerKeyHash(_ data: Data) -> String {
         let hash = Insecure.MD5.hash(data: data)
         return hash.map { String(format: "%02hhx", $0) }.joined()
-    }
-    
-    //TMP: for HeartbeatView
-    public var peers: [DittoPeer] {
-        hbInfo?.presence?.peers ?? []
-    }
-    
-    /* from orig */
-    func isLocalPeer(_ peer: DittoPeer) -> Bool {
-        //        peer.peerKey == localPeer.peerKey
-        guard let presence = ditto?.presence else { return false }
-        return peer.peerKey == presence.graph.localPeer.peerKey
-    }
-    
-    func connectionsWithLocalPeer(_ peer: DittoPeer) -> [DittoConnection] {
-        //        peer.connections.filter { $0.peer1 == localPeer.peerKey || $0.peer2 == localPeer.peerKey }
-        guard let presence = ditto?.presence else { return [] }
-        let localPeer = presence.graph.localPeer
-        return peer.connections.filter { $0.peer1 == localPeer.peerKey || $0.peer2 == localPeer.peerKey }
-    }
-    
-    func formattedDistanceString(_ dbl: Double?) -> String {
-        Double.metricString(dbl ?? 0, digits: 2)
-    }
-    
-    func cleanup() {
-        peersObserver?.stop()
     }
 }
 
@@ -265,8 +242,19 @@ extension HeartbeatVM {
             query: hbSubscription!.queryString,
             arguments: hbSubscription!.queryArguments
         ) { result in
-            let _ = result.items.compactMap { print("Heartbeat query item: \($0.value)") }
+            let _ = result.items.compactMap { print("Heartbeat doc: \($0.value)") }
         }
+    }
+}
+
+extension HeartbeatConfig {
+    static var mock: HeartbeatConfig {
+        HeartbeatConfig(
+            id: ["location": "loc_abc123", "venue": "ven_def456"],
+            metadata: ["metadata-key1": "metadata-value1", "metadata-key2": "metadata-value2"],
+            interval: 10,
+            collectionName: "devices"
+        )
     }
 }
 
@@ -278,55 +266,12 @@ extension DittoPeer {
         }
         return sdk + "N/A"
     }
-        
-    var addressSiteId: String {
-        Self.addressSiteId(self)
-    }
-    
-    static func addressSiteId(_ peer: DittoPeer) -> String {
-        // parse siteID out of DittoAddress description
-        let prefix = "\(peer.address)".components(separatedBy: "DittoAddress(siteID: ")
-        let addr = String(prefix.last ?? "").components(separatedBy: ",")
-        return String(addr.first ?? "[siteID N/A]")
+}
+
+public extension DateFormatter {
+    static var isoDate: ISO8601DateFormatter {
+        let f = ISO8601DateFormatter()
+        return f
     }
 }
 
-// For sorting addresses of remote peers in func remotePeerAddresses() above
-extension DittoAddress: Comparable {
-    public static func < (lhs: DittoSwift.DittoAddress, rhs: DittoSwift.DittoAddress) -> Bool {
-        lhs.hashValue < rhs.hashValue
-    }
-}
-
-extension Double {
-    private static var decimalFormatter: NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-    }
-
-    static func metricString(_ dbl: Double, digits: Int) -> String {
-        let formatter = Self.decimalFormatter
-        formatter.maximumFractionDigits = digits
-        return formatter.string(from: dbl as NSNumber) ?? "N/A"
-    }
-}
-
-@available(iOS 15, *)
-//public extension HeartbeatVM {
-////    func test(ditto: Ditto, config: HeartbeatConfig, callback: HeartbeatCallback) {
-//    func test(ditto: Ditto) {
-//        startHeartbeat(ditto: ditto, config: HeartbeatConfig.mock) { info in
-//            print("HeartbeatVM.\(#function): info:\n\(info)")
-//        }
-//    }
-//}
-extension HeartbeatConfig {
-    static var mock: HeartbeatConfig {
-        HeartbeatConfig(
-            id: ["location": "loc_abc123", "venue": "ven_def456"],
-            interval: 10,
-            collectionName: "devices"
-        )
-    }
-}
