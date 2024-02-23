@@ -7,9 +7,6 @@ import DittoExportLogs
 import DittoSwift
 import Foundation
 
-//TEST heartbeat
-import DittoHeartbeat
-
 class AuthDelegate: DittoAuthenticationDelegate {
     func authenticationRequired(authenticator: DittoAuthenticator) {
         let provider = DittoManager.shared.config.authenticationProvider
@@ -76,10 +73,6 @@ class DittoManager: ObservableObject {
 
     // MARK: - Private Constructor
 
-    //TMP: testing heartbeat
-    let TEST_HEARTBEAT = true
-    var heartbeatVM: HeartbeatVM? // = HeartbeatVM()
-    
     private init() {
         self.loggingOption = AppSettings.shared.loggingOption
         
@@ -90,31 +83,6 @@ class DittoManager: ObservableObject {
                 self?.setupLogging()
             }
             .store(in: &cancellables)
-      
-        if TEST_HEARTBEAT {
-            heartbeatVM = HeartbeatVM()
-            testingInit()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.testHeartbeat()
-            }
-        }
-    }
-    
-    //TMP: testing heartbeat
-    func testingInit() {
-        self.ditto = Ditto(
-            identity: .onlineWithAuthentication(
-                appID: self.config.appID, authenticationDelegate: self.authDelegate
-            ), persistenceDirectory: topLevelDittoDir()
-        )
-        do {
-            try ditto!.startSync()
-        } catch {
-            assertionFailure(error.localizedDescription)
-        }
-    }
-    func testHeartbeat() {
-        heartbeatVM?.test(ditto: self.ditto!)
     }
 
     func getPersistenceDir (config: DittoConfig) -> URL? {
@@ -179,8 +147,7 @@ class DittoManager: ObservableObject {
     }
 
     func setupLogging() {
-        //TEST Heartbeat
-        let logOption = DittoLogger.LoggingOptions.error //AppSettings.shared.loggingOption
+        let logOption = AppSettings.shared.loggingOption
         switch logOption {
         case .disabled:
             DittoLogger.enabled = false

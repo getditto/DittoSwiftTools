@@ -6,61 +6,93 @@
 //
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 
+import Combine
 import DittoSwift
 import SwiftUI
 
+
+@available(iOS 15, *)
+private class PrivateHeartbeatVM: ObservableObject {
+    @Published private(set) var infoDocs = [DittoHeartbeatInfo]()
+    @Published fileprivate var isPaused = true
+    
+    @ObservedObject private var hbVM: HeartbeatVM
+    var config: DittoHeartbeatConfig
+    private var cancellable = AnyCancellable({})
+    private var infoObserver: DittoStoreObserver?
+    private let ditto: Ditto
+    private let collName = "devices" // default
+    private let queryString: String
+    
+    init(ditto: Ditto, config: DittoHeartbeatConfig) {
+        self.ditto = ditto
+        self.config = config
+        hbVM = HeartbeatVM(ditto: ditto)
+        queryString = "SELECT * FROM \(collName)"
+        
+        cancellable = $isPaused
+            .sink {[weak self] paused in
+                guard let self = self else { return }
+                if paused {
+                    stopHeartbeat()
+                } else {
+                    startHeartbeat()
+                }
+            }
+    }
+    
+    func startHeartbeat() {
+        hbVM.startHeartbeat(ditto: ditto, config: DittoHeartbeatConfig.mock) { [weak self] info in
+            guard let self = self else { return }
+            if infoObserver == nil {
+               startInfoObserver()
+            }
+        }
+    }
+    
+    func stopHeartbeat() {
+        hbVM.stopHeartbeat()
+    }
+    
+    private func startInfoObserver() {
+        infoObserver = try? ditto.store.registerObserver(query: queryString) {[weak self] result in
+            guard let self = self else { return }
+            
+            let docs = result.items.compactMap { item in
+                DittoHeartbeatInfo(item.value)
+            }
+            infoDocs = docs
+        }
+    }
+}
+
 @available(iOS 15, *)
 public struct HeartbeatView: View {
-    @StateObject var vm = HeartbeatVM()
-    private let dividerColor: Color
+    @StateObject fileprivate var vm: PrivateHeartbeatVM
+    private let dividerColor: Color = .accentColor
     
-//    static var footerText: String {
-//        "BLE approximate distance is inaccurate."
-//    }
-        
-    public init(ditto: Ditto) {
-//        self._vm = StateObject(wrappedValue: HeartbeatVM(ditto: ditto))
-        self.dividerColor = .accentColor
+    public init(ditto: Ditto, config: DittoHeartbeatConfig) {
+        _vm = StateObject(
+            wrappedValue: PrivateHeartbeatVM(ditto: ditto, config: config)
+        )
     }
     
     public var body: some View {
-        EmptyView()
-        /*
-        List {
-            Section {
-                peerView(vm.localPeer, showBLEDistance: true)
-            } header: {
-                Text("Local (Self) Peer")
-                    .font(Font.subheadline.weight(.bold))
-            } footer: {
-                Text(Self.footerText)
-            }
-            .listRowSeparator(.visible, edges: .top)
-            .listRowSeparatorTint(dividerColor)
-            
-            Section {
-                ForEach(vm.peers, id: \.address) { peer in
-                    peerView(peer)
-                        .padding(.bottom, 4)
-                        .listRowSeparator(.visible, edges: .top)
-                        .listRowSeparatorTint(dividerColor)
+        VStack {
+            List {
+                ForEach(vm.infoDocs) { info in
+                    HeartbeatInfoRowItem(info: info)
                 }
-            } header: {
-                Text("Remote Peers")
-                    .font(Font.subheadline.weight(.bold))
-            } footer: {
-                Text(Self.footerText)
             }
         }
-        .onDisappear { vm.cleanup() }
-        .navigationTitle("Peers List")
-        .navigationBarTitleDisplayMode(.inline)
+        .onDisappear { vm.stopHeartbeat() }
+        .navigationTitle(String.hbInfoTitle)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     vm.isPaused.toggle()
                 } label: {
-                    Image(systemName: vm.isPaused ? "play.circle" : "pause.circle")
+                    Image(systemName: vm.isPaused ? String.imgPlay : String.imgPause)
                         .symbolRenderingMode(.multicolor)
                 }
                 .font(.system(size: 24))
@@ -68,53 +100,5 @@ public struct HeartbeatView: View {
                 .buttonStyle(.borderless)
             }
         }
-         */
     }
-    /*
-    @ViewBuilder
-    func peerView(_ peer: DittoPeer, showBLEDistance: Bool = false) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            
-            // Device name + siteID
-            Text("\(peer.deviceName): ").font(Font.body.weight(.bold))
-            + Text("\(peer.addressSiteId)").font(Font.subheadline.weight(.bold))
-            
-            if vm.isLocalPeer(peer) {
-                ForEach(vm.peers, id: \.self) { conPeer in
-                    VStack(alignment: .leading) {
-                        Divider()
-                            .frame(height: 1)
-                            .overlay(.gray).opacity(0.4)
-                        
-                        Text("peer: \(DittoPeer.addressSiteId(conPeer))")
-                        
-                        peerConnectionsView(conPeer, showBLEDistance: showBLEDistance)
-                    }
-                    .padding(.leading, 16)
-                }
-            }
-            Text(peer.peerSDKVersion).font(.subheadline)
-        }
-    }
-    
-    @ViewBuilder
-    func peerConnectionsView(_ peer: DittoPeer, showBLEDistance: Bool = false) -> some View {
-        VStack(alignment: .leading) {
-            ForEach(vm.connectionsWithLocalPeer(peer)) { conx in
-                HStack {
-                    Text("-\(conx.type.rawValue)")
-                        .padding(.leading, 16)
-
-                    Spacer()
-
-                    if showBLEDistance && conx.type == DittoConnectionType.bluetooth {
-                        Text("\(vm.formattedDistanceString(conx.approximateDistanceInMeters))m")
-                    } else {
-                        Text("-")
-                    }
-                }
-            }
-        }
-    }
-     */
 }

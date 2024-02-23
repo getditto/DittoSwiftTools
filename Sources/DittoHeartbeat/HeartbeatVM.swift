@@ -12,68 +12,40 @@ import DittoSwift
 import SwiftUI
 
 
-public struct HeartbeatConfig {
-    var id: [String: String]
-    var metadata: [String: Any]
-    var interval: TimeInterval
-    var collectionName: String
-}
-
-public struct HeartbeatInfo {
-    var id: [String: String]
-    var metadata: [String: Any] // pass-through HeartbeatConfig.metadata
-    var lastUpdated: String
-    var presence: Presence?
-}
-
-public struct Presence {
-    var peers: [DittoPeer]
-    var remotePeersCount: Int
-    init(peers: [DittoPeer], remoteCount: Int) {
-        self.peers = peers
-        self.remotePeersCount = remoteCount
-    }
-}
-
-public typealias HeartbeatCallback = (HeartbeatInfo) -> Void
+public typealias HeartbeatCallback = (DittoHeartbeatInfo) -> Void
 
 @available(iOS 15, *)
 public class HeartbeatVM: ObservableObject {
     @Published var isEnabled = false
-    private var hbConfig: HeartbeatConfig?
-    private var hbInfo: HeartbeatInfo?
+    private var hbConfig: DittoHeartbeatConfig?
+    private var hbInfo: DittoHeartbeatInfo?
     private var hbCallback: HeartbeatCallback?
     private var hbSubscription: DittoSyncSubscription?
     private var insertQuery: String?
-    private var ditto: Ditto?
-    private var presence: Presence?
+    private var ditto: Ditto
+    private var peers = [DittoPeer]()
     private var peersObserver: DittoSwift.DittoObserver?
     private var timer: Timer.TimerPublisher?
     private var cancellable = AnyCancellable({})
-    private var infoCurrentValueSubject = CurrentValueSubject<HeartbeatInfo?, Never>(nil)
+    private var infoCurrentValueSubject = CurrentValueSubject<DittoHeartbeatInfo?, Never>(nil)
     private var subjectCancellable = AnyCancellable({})
-    public var infoPublisher: AnyPublisher<HeartbeatInfo?, Never> {
+    public var infoPublisher: AnyPublisher<DittoHeartbeatInfo?, Never> {
         infoCurrentValueSubject.eraseToAnyPublisher()
     }
-    
-    //TEST
-    var testObserver: DittoStoreObserver?
 
-    
-    public init(ditto: Ditto? = nil) {
+    public init(ditto: Ditto) {
         self.ditto = ditto
     }
     
-    public func startHeartbeat(ditto: Ditto, config: HeartbeatConfig, callback: @escaping HeartbeatCallback) {
+    public func startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback) {
         self.ditto = ditto
         isEnabled = true
         hbConfig = config
         hbCallback = callback
-        hbInfo = HeartbeatInfo(
-            id: createCompositeId(config: config.id),
-            metadata: config.metadata,
-            lastUpdated: DateFormatter.isoDate.string(from: Date.now),
-            presence: nil
+        hbInfo = DittoHeartbeatInfo(
+            id: createCompositeId(configId: config.id),
+            secondsInterval: config.secondsInterval,
+            metadata: config.metadata ?? [:]
         )
         observePeers()
         startTimer()
@@ -96,7 +68,7 @@ public class HeartbeatVM: ObservableObject {
         }
         
         timer?.connect().cancel()
-        timer = Timer.publish(every: config.interval, on: .main, in: .common)
+        timer = Timer.publish(every: Double(config.secondsInterval), on: .main, in: .common)
         
         cancellable = timer!
             .autoconnect()
@@ -116,13 +88,12 @@ public class HeartbeatVM: ObservableObject {
     
     private func observePeers() {
         guard isEnabled else { return }
-        
-        peersObserver = ditto?.presence.observe {[weak self] graph in
+
+        peersObserver = ditto.presence.observe {[weak self] graph in
             DispatchQueue.main.async {[weak self] in
                 guard let self = self else { return }
-                let peers = graph.remotePeers
-                presence = Presence(peers: peers, remoteCount: peers.count)
-                hbInfo?.presence = presence
+                peers = graph.remotePeers
+                hbInfo?.peerConnections = connections()
             }
         }
     }
@@ -136,23 +107,15 @@ public class HeartbeatVM: ObservableObject {
     }
     
     private func updateCollection() {
-        guard let config = hbConfig, let info = hbInfo, let presence = info.presence else {
-            print("HeartbeatVM.\(#function): hbConfig and/or bhInfo and/or hbInfo.presence is NIL --> Return")
+        guard let doc = hbInfo?.value else {
+            print("DittoHeartbeatVM.\(#function): ERROR updatingCollection: bhInfo is NIL --> Return")
             return
         }
         
-        let doc: [String:Any?] = [
-            "_id": info.id,
-            "interval": "\(Int(config.interval)) sec",
-            "metadata": config.metadata,
-            "remotePeersCount": presence.remotePeersCount,
-            "lastUpdated": info.lastUpdated,
-            "presence": peerConnections()
-        ]
         Task {
             do {
                 if let query = insertQuery {
-                    try await ditto?.store.execute(query: query, arguments: ["doc": doc])
+                    try await ditto.store.execute(query: query, arguments: ["doc": doc])
                 } else {
                     print("HeartbeatVM.\(#function): ERROR: insertQuery should not be NIL")
                 }
@@ -166,36 +129,26 @@ public class HeartbeatVM: ObservableObject {
         }
     }
     
-    private func peerConnections() -> [String: Any?] {
-        guard let info = hbInfo, let presence = info.presence else {
-            print("HeartbeatVM.\(#function): bhInfo and/or hbInfo.presence is NIL --> Return")
-            return [:]
-        }
-        
-        var connections = [String: Any]()
-        let peerKeyString = peerKeyString
-        
-        for peer in presence.peers {
+    private func connections() -> [DittoPeerConnection] {
+        var connections = [DittoPeerConnection]()
+        for peer in self.peers {
             let types = connectionTypeCounts(peer: peer)
-            let connection: [String: Any?] =
-            [
-                "deviceName": peer.deviceName,
-                "isConnectedToDittoCloud": peer.isConnectedToDittoCloud,
-                "bluetooth": types["bt"],
-                "p2pWifi": types["p2pWifi"],
-                "lan": types["lan"]
-            ]
-            
-            connections[peerKeyString] = connection
+            let cx = DittoPeerConnection(
+                deviceName: peer.deviceName,
+                sdk: peer.platformSDK,
+                isConnectedToDittoCloud: peer.isConnectedToDittoCloud,
+                bluetooth: types[String.bt] as Int? ?? 0,
+                p2pWifi: types[String.p2pWifi] as Int? ?? 0,
+                lan: types[String.lan] as Int? ?? 0,
+                peerKey: peerKeyHash(peer.peerKey)
+            )
+            connections.append(cx)
         }
-        
         return connections
     }
-    
+
     private func connectionTypeCounts(peer: DittoPeer) -> [String: Int] {
-        var bt = 0
-        var wifi = 0
-        var lan = 0
+        var bt = 0, wifi = 0, lan = 0
         
         for cx in peer.connections {
             switch cx.type {
@@ -206,65 +159,31 @@ public class HeartbeatVM: ObservableObject {
                 break
             }
         }
-        return ["bt": bt, "p2pWifi": wifi, "lan": lan]
+        return [String.bt: bt, String.p2pWifi: wifi, String.lan: lan]
     }
     
-    private func createCompositeId(config: [String: String]) -> [String: String] {
-        var compositeId = config
-//        compositeId["dittoPeerKey"] = peerKeyHash(ditto?.presence.graph.localPeer.peerKey ?? Data())
-        compositeId["dittoPeerKey"] = peerKeyString
+    private func createCompositeId(configId: [String: String]) -> [String: String] {
+        var compositeId = configId
+        compositeId[String.pk] = localPeerKeyString
         return compositeId
     }
     
-    private var peerKeyString: String {
-        peerKeyHash(ditto?.presence.graph.localPeer.peerKey ?? Data())
+    private var localPeerKeyString: String {
+        peerKeyHash(ditto.presence.graph.localPeer.peerKey)
     }
     
     private func peerKeyHash(_ data: Data) -> String {
-        let hash = Insecure.MD5.hash(data: data)
-        return hash.map { String(format: "%02hhx", $0) }.joined()
+        "\(String.pk)\(data.base64EncodedString())"
     }
 }
 
-@available(iOS 15, *)
-extension HeartbeatVM {
-    public func test(ditto: Ditto) {
-        startHeartbeat(ditto: ditto, config: HeartbeatConfig.mock) { [weak self] info in
-            guard let self = self else { return }
-            if testObserver == nil {
-               startTestObserver()
-            }
-            print("HeartbeatVM.\(#function): info.presence.peersCount: \(info.presence?.remotePeersCount ?? -1)")
-        }
-    }
-    func startTestObserver() {
-        testObserver = try? ditto!.store.registerObserver(
-            query: hbSubscription!.queryString,
-            arguments: hbSubscription!.queryArguments
-        ) { result in
-            let _ = result.items.compactMap { print("Heartbeat doc: \($0.value)") }
-        }
-    }
-}
 
-extension HeartbeatConfig {
-    static var mock: HeartbeatConfig {
-        HeartbeatConfig(
-            id: ["location": "loc_abc123", "venue": "ven_def456"],
-            metadata: ["metadata-key1": "metadata-value1", "metadata-key2": "metadata-value2"],
-            interval: 10,
-            collectionName: "devices"
-        )
-    }
-}
-
-extension DittoPeer {
-    var peerSDKVersion: String {
-        let sdk = "SDK "
-        if let version = dittoSDKVersion {
-            return sdk + "v\(version)"
-        }
-        return sdk + "N/A"
+//MARK: Extensions
+private extension DittoPeer {
+    var platformSDK: String {
+        let platform = self.os ?? String.osNA
+        let sdk = self.dittoSDKVersion ?? String.sdkVersionNA
+        return "\(platform) v\(sdk)"
     }
 }
 
@@ -274,4 +193,5 @@ public extension DateFormatter {
         return f
     }
 }
+
 
