@@ -358,6 +358,53 @@ let vc = UIHostingController(rootView: ExportData(ditto: ditto))
 present(vc, animated: true)
 ```
 
+### 7. Presence Degradation Reporter
+
+Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected. Provides a callback function that will allow you to monitor the status of the mesh.
+
+<img width="248" alt="Screenshot 2024-02-20 at 5 14 18 PM" src="https://github.com/getditto/DittoSwiftTools/assets/60948031/9cf81503-4557-4480-a843-1236314c926b">
+
+You can use the Presence Degradation Reporter in SiwftUI or UIKit
+
+data provided in callback
+```
+settings: Settings
+struct Settings {
+    let expectedPeers: Int
+    let reportApiEnabled: Bool
+    let hasSeenExpectedPeers: Bool
+    let sessionStartedAt: String
+}
+```
+
+**SwiftUI**  
+
+Use `PresenceDegradationView(ditto: DittoManager.shared.ditto!) { expectedPeers, remotePeers, settings in //handle data}`, passing in your Ditto instance to display the peers list.  
+
+```
+import DittoPresenceDegradation
+
+struct PresenceDegradationViewer: View {
+    
+    var body: some View {
+        PresenceDegradationView(ditto: <diito>) { expectedPeers, remotePeers, settings in
+            //handle data
+        }
+    }
+}
+```
+
+**UIKit**  
+
+Pass `PresenceDegradationView(ditto: <diito>)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
+which will return a view controller you can use to present.  
+
+```
+let vc = UIHostingController(rootView: PresenceDegradationView(ditto: <diito>))
+
+present(vc, animated: true)
+```
+
 ## Ditto Tools Example App
 The [Ditto Tools Example App](https://github.com/getditto/DittoSwiftTools/tree/main/DittoToolsApp) 
 included in this repo allows you to try the DittoSwiftTools package in a standalone app. Open 
