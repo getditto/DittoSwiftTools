@@ -405,6 +405,35 @@ let vc = UIHostingController(rootView: PresenceDegradationView(ditto: <diito>))
 present(vc, animated: true)
 ```
 
+### 8. Permissions Health
+
+Permissions Health allows you to see the status of ditto's required services and permissions.
+
+Example: Wi-Fi, Bluetooth, Missing Permissions.
+
+**SwiftUI**
+
+```
+import DittoPermissionsHealth
+
+struct PermissionsHealthViewer: View {
+    var body: some View {
+        PermissionsHealth()
+    }
+}
+```
+
+**UIKit**
+
+Pass `UIActivityViewController` (return value of `PermissionsHealth()`) to [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
+which will return a view controller you can use to present.
+
+```swift
+let vc = UIHostingController(rootView: PermissionsHealth())
+
+present(vc, animated: true)
+```
+
 ## Ditto Tools Example App
 The [Ditto Tools Example App](https://github.com/getditto/DittoSwiftTools/tree/main/DittoToolsApp) 
 included in this repo allows you to try the DittoSwiftTools package in a standalone app. Open 

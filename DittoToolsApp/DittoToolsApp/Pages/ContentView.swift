@@ -44,6 +44,9 @@ struct ContentView: View {
                     NavigationLink(destination: PresenceDegradationViewer()) {
                         MenuListItem(title: "Presence Degradation", systemImage: "network", color: .red)
                     }
+                    NavigationLink(destination: PermissionsHealthViewer()) {
+                        MenuListItem(title: "Permissions Health", systemImage: "stethoscope", color: .purple)
+                    }
                 }
                 Section(header: Text("Configuration")) {
                     NavigationLink(destination: Login()) {
