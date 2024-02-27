@@ -411,6 +411,8 @@ Permissions Health allows you to see the status of ditto's required services and
 
 Example: Wi-Fi, Bluetooth, Missing Permissions.
 
+<img width="386" alt="Screenshot 2024-02-27 at 10 40 08 AM" src="https://github.com/getditto/DittoSwiftTools/assets/60948031/9e11fad0-d797-41b9-aa02-dd2fc360a38e">
+
 **SwiftUI**
 
 ```
