@@ -45,10 +45,7 @@ struct ContentView: View {
                     NavigationLink(destination: PresenceDegradationViewer()) {
                         MenuListItem(title: "Presence Degradation", systemImage: "network", color: .red)
                     }
-                    NavigationLink(
-                        destination:
-                            HeartbeatView(ditto: dittoModel.ditto!, config: DittoHeartbeatConfig.mock)
-                    ) {
+                    NavigationLink(destination: HeartbeatView(ditto: dittoModel.ditto!)) {
                         MenuListItem(title: "Heartbeat", systemImage: "heart.fill", color: .red)
                     }
                 }

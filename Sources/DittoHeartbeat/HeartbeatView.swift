@@ -17,14 +17,14 @@ private class PrivateHeartbeatVM: ObservableObject {
     @Published fileprivate var isPaused = true
     
     @ObservedObject private var hbVM: HeartbeatVM
-    var config: DittoHeartbeatConfig
+    var config: DittoHeartbeatConfig?
     private var cancellable = AnyCancellable({})
     private var infoObserver: DittoStoreObserver?
     private let ditto: Ditto
     private let collName = "devices" // default
     private let queryString: String
     
-    init(ditto: Ditto, config: DittoHeartbeatConfig) {
+    init(ditto: Ditto, config: DittoHeartbeatConfig?) {
         self.ditto = ditto
         self.config = config
         hbVM = HeartbeatVM(ditto: ditto)
@@ -42,7 +42,10 @@ private class PrivateHeartbeatVM: ObservableObject {
     }
     
     func startHeartbeat() {
-        hbVM.startHeartbeat(ditto: ditto, config: DittoHeartbeatConfig.mock) { [weak self] info in
+        // Use mock config for demo if nil
+        let hbConfig = config ?? DittoHeartbeatConfig.mock
+        
+        hbVM.startHeartbeat(ditto: ditto, config: hbConfig) { [weak self] info in
             guard let self = self else { return }
             if infoObserver == nil {
                startInfoObserver()
@@ -73,7 +76,7 @@ public struct HeartbeatView: View {
     @StateObject fileprivate var vm: PrivateHeartbeatVM
     private let dividerColor: Color = .accentColor
     
-    public init(ditto: Ditto, config: DittoHeartbeatConfig) {
+    public init(ditto: Ditto, config: DittoHeartbeatConfig? = nil) {
         _vm = StateObject(
             wrappedValue: PrivateHeartbeatVM(ditto: ditto, config: config)
         )
@@ -85,7 +88,7 @@ public struct HeartbeatView: View {
                 VStack(alignment: .center) {
                     Text(String.getStartedText)
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 28)
+                        .padding(.vertical, 24)
                     
                     Button(action: {
                         vm.isPaused.toggle()
@@ -101,10 +104,9 @@ public struct HeartbeatView: View {
                 List {
                     ForEach(vm.infoDocs) { info in
                         HeartbeatInfoRowItem(info: info)
+                            .listRowSeparatorTint(dividerColor)
                     }
                 }
-                .listRowSeparator(.visible, edges: .top)
-                .listRowSeparatorTint(dividerColor)
             }
         }
         .onDisappear { vm.stopHeartbeat() }

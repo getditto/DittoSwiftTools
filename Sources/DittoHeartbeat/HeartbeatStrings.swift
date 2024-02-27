@@ -36,9 +36,11 @@ public extension String {
     static var sdkVersionNA = ": N/A"
     
     static var getStartedText = "To demo the Heartbeat feature, just hit the play button. "
-    + "Mock HeartbeatConfig data will be used to begin updating a local device heartbeat document "
-    + " in the `devices` collection every 10 seconds.\n\n"
-    + "If you are using the standalone DittoToolsApp, you must first reset the identity to activate "
+    + "A hearbeat document for this device will be added to the `devices` collection, and mock "
+    + "HeartbeatConfig data will be used to update the document every 10 seconds. "
+    + "Hearbeat documents for this and other devices with the heartbeat feature enabled "
+    + "will appear in a list here.\n\n"
+    + "If using the standalone DittoToolsApp, you must first reset the identity to activate "
     + "Ditto. Note that every time the Ditto identity is reset in this way, the Ditto instance will "
-    + "be seen as a new local peer and will create a new HeartbeatInfo document."
+    + "be seen as a new local peer and will create a new HeartbeatInfo document with a new unique ID."
 }
