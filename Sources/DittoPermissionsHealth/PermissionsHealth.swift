@@ -1,74 +1,84 @@
 //
 //  SwiftUIView.swift
-//  
+//
 //
 //  Created by Walker Erekson on 2/26/24.
 //
 
 import SwiftUI
+import CoreBluetooth
+import Combine
 
 @available(iOS 13.0, *)
+class BluetoothManager: NSObject, ObservableObject {
+    private var centralManager: CBCentralManager!
+    private var cancellables = Set<AnyCancellable>()
+
+    @Published var authorizationStatus: CBManagerAuthorization = .notDetermined
+    @Published var managerState: CBManagerState = .unknown
+
+    override init() {
+        super.init()
+        
+        centralManager = CBCentralManager(delegate: self, queue: nil)
+        
+        // Watch for changes in authorization status
+        centralManager.publisher(for: \.authorization)
+            .sink { [weak self] authorization in
+                self?.authorizationStatus = authorization
+            }
+            .store(in: &cancellables)
+        
+        // Watch for changes in manager state
+        centralManager.publisher(for: \.state)
+            .sink { [weak self] state in
+                self?.managerState = state
+            }
+            .store(in: &cancellables)
+    }
+}
+
+@available(iOS 13.0, *)
+extension BluetoothManager: CBCentralManagerDelegate {
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        // This delegate method is called when there's a change in the manager's state.
+        // We don't need to do anything here since we're observing the state using Combine.
+    }
+}
+
+
+
+@available(iOS 14.0, *)
 public struct PermissionsHealth: View {
+    @ObservedObject var bluetoothManager = BluetoothManager()
+    @ObservedObject var networkManager = NetworkManager()
     
     public init() {}
-    
-    @State private var bluetoothAlwaysUsageDescription: String?
-    @State private var bluetoothPeripheralUsageDescription: String?
-    @State private var localNetworkUsageDescription: String?
-    @State private var bonjourServices: [String]?
-    
-    @ObservedObject var networkManager = NetworkManager()
 
-    
     public var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                ZStack {
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text("Permissions")
-                                .font(.title)
-                                .fontWeight(.bold)
-                            
-                            Spacer()
-                            
-                            Image(systemName: permissionsEnabled ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
-                                .foregroundColor(permissionsEnabled ? .green : .gray)
-                                .font(.title)
-                        }
-                        Divider()
-                        Text("Bluetooth Always Usage: \(bluetoothAlwaysUsageDescription != nil ? "Enabled" : "Disabled")")
-                        Text("Bluetooth Peripheral Usage: \(bluetoothPeripheralUsageDescription != nil ? "Enabled" : "Disabled")")
-                        Text("Local Network Usage: \(localNetworkUsageDescription != nil ? "Enabled" : "Disabled")")
-                        Text("Bonjour Services: \(bonjourServices != nil ? "Enabled" : "Disabled")")
-                    }
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10) // Adjust as needed for the roundness of the corners
-                    .shadow(radius: 5) // Adjust the radius for the intensity of the shadow
-                }
-                .padding()
                 
                 ZStack {
                     VStack(alignment: .leading) {
                         HStack {
-                            Text("Bluetooth Status")
+                            Text("Bluetooth Permission")
                                 .font(.title)
                                 .fontWeight(.bold)
                             
                             Spacer()
-                            Image(systemName: networkManager.isBluetoothEnabled ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
-                                .foregroundColor(networkManager.isBluetoothEnabled ? .green : .gray)
+                            Image(systemName: checkBluetoothState(state: authorizationStatusDescription) ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                                .foregroundColor(checkBluetoothState(state: authorizationStatusDescription) ? .green : .gray)
                                 .font(.title)
                         }
                         Divider()
-                        Text("Bluetooth: \(networkManager.isBluetoothEnabled ? "Enabled" : "Disabled")")
-                        if !networkManager.isBluetoothEnabled {
+                        Text("Permission: \(authorizationStatusDescription)")
+                        if !checkBluetoothState(state: authorizationStatusDescription) {
                             Divider()
                             Button(action: {
                                 openBluetoothSettings()
                             }) {
-                                Text("Enable Bluetooth")
+                                Text("Authorize Bluetooth")
                                     .foregroundColor(.white)
                                     .padding(7)
                                     .background(Color.blue)
@@ -78,11 +88,47 @@ public struct PermissionsHealth: View {
                     }
                     .padding()
                     .background(Color.white)
-                    .cornerRadius(10) // Adjust as needed for the roundness of the corners
-                    .shadow(radius: 5) // Adjust the radius for the intensity of the shadow
+                    .cornerRadius(10)
+                    .shadow(radius: 5) 
                 }
                 .padding()
-                
+                ZStack {
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text("Bluetooth Status")
+                                .font(.title)
+                                .fontWeight(.bold)
+                            
+                            Spacer()
+                            Image(systemName: checkBluetoothState(state: managerStateDescription) ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                                .foregroundColor(checkBluetoothState(state: managerStateDescription) ? .green : .gray)
+                                .font(.title)
+                        }
+                        Divider()
+                        Text("Bluetooth: \(managerStateDescription)")
+                        if !checkBluetoothState(state: managerStateDescription) {
+                            Divider()
+                            if(managerStateDescription == "Unauthorized") {
+                                Text("*See Bluetooth Authorization")
+                            } else {
+                                Button(action: {
+                                    openBluetoothSettings()
+                                }) {
+                                    Text("Enable Bluetooth")
+                                        .foregroundColor(.white)
+                                        .padding(7)
+                                        .background(Color.blue)
+                                        .cornerRadius(10)
+                                }
+                            }
+                        }
+                    }
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
+                }
+                .padding()
                 ZStack {
                     VStack(alignment: .leading) {
                         HStack {
@@ -112,28 +158,46 @@ public struct PermissionsHealth: View {
                     }
                     .padding()
                     .background(Color.white)
-                    .cornerRadius(10) // Adjust as needed for the roundness of the corners
-                    .shadow(radius: 5) // Adjust the radius for the intensity of the shadow
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
                 }
                 .padding()
             }
         }
-        .padding()
-        .onAppear {
-            if let infoDict = Bundle.main.infoDictionary {
-                bluetoothAlwaysUsageDescription = infoDict["NSBluetoothAlwaysUsageDescription"] as? String
-                bluetoothPeripheralUsageDescription = infoDict["NSBluetoothPeripheralUsageDescription"] as? String
-                localNetworkUsageDescription = infoDict["NSLocalNetworkUsageDescription"] as? String
-                bonjourServices = infoDict["NSBonjourServices"] as? [String]
-            }
+    }
+
+    private var authorizationStatusDescription: String {
+        switch bluetoothManager.authorizationStatus {
+        case .notDetermined:
+            return "Not Determined"
+        case .restricted:
+            return "Restricted"
+        case .denied:
+            return "Denied"
+        case .allowedAlways:
+            return "Allowed Always"
+        @unknown default:
+            return "Unknown"
         }
     }
-    
-    var permissionsEnabled: Bool {
-        return bluetoothAlwaysUsageDescription != nil &&
-               bluetoothPeripheralUsageDescription != nil &&
-               localNetworkUsageDescription != nil &&
-               bonjourServices != nil
+
+    private var managerStateDescription: String {
+        switch bluetoothManager.managerState {
+        case .unknown:
+            return "Unknown"
+        case .resetting:
+            return "Resetting"
+        case .unsupported:
+            return "Unsupported"
+        case .unauthorized:
+            return "Unauthorized"
+        case .poweredOff:
+            return "Off"
+        case .poweredOn:
+            return "On"
+        @unknown default:
+            return "Unknown"
+        }
     }
     
     func openBluetoothSettings() {
@@ -147,4 +211,17 @@ public struct PermissionsHealth: View {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }
+    
+    func checkBluetoothState(state: String) -> Bool {
+        switch state {
+        case "Allowed Always":
+            return true
+        case "On":
+            return true
+        default:
+            return false
+        }
+    }
 }
+
+
