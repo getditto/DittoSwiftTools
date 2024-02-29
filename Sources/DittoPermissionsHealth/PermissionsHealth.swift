@@ -146,7 +146,7 @@ public struct PermissionsHealth: View {
                         if !networkManager.isWifiEnabled {
                             Divider()
                             Button(action: {
-                                openBluetoothSettings()
+                                openWifiSettings()
                             }) {
                                 Text("Enable Wi-fi")
                                     .foregroundColor(.white)
