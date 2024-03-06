@@ -30,6 +30,9 @@ let package = Package(
         .library(
             name: "DittoPresenceDegradation",
             targets: ["DittoPresenceDegradation"]),
+        .library(
+            name: "DittoPermissionsHealth",
+            targets: ["DittoPermissionsHealth"]),
     ],
     dependencies: [
         // Ditto.diskUsage was added in 3.0.1
@@ -98,6 +101,13 @@ let package = Package(
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
             ],
             path: "Sources/DittoPresenceDegradation"
+        ),
+        .target(
+            name: "DittoPermissionsHealth",
+            dependencies: [
+                .product(name: "DittoSwift", package: "DittoSwiftPackage")
+            ],
+            path: "Sources/DittoPermissionsHealth"
         ),
     ]
 )
