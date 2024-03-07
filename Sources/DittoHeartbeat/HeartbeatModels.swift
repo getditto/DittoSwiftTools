@@ -14,6 +14,13 @@ public struct DittoHeartbeatConfig {
     public var secondsInterval: Int
     public var collectionName: String
     public var metadata: [String: Any]?
+    
+    public init(id: [String : String], secondsInterval: Int, collectionName: String, metadata: [String : Any]? = nil) {
+        self.id = id
+        self.secondsInterval = secondsInterval
+        self.collectionName = collectionName
+        self.metadata = metadata
+    }
 }
 
 //MARK: HeartbeatInfo

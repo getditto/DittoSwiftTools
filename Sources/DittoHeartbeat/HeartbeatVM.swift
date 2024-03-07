@@ -37,8 +37,7 @@ public class HeartbeatVM: ObservableObject {
         self.ditto = ditto
     }
     
-    public func startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback) {
-        self.ditto = ditto
+    public func startHeartbeat(config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback) {
         isEnabled = true
         hbConfig = config
         hbCallback = callback

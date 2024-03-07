@@ -45,7 +45,7 @@ private class PrivateHeartbeatVM: ObservableObject {
         // Use mock config for demo if nil
         let hbConfig = config ?? DittoHeartbeatConfig.mock
         
-        hbVM.startHeartbeat(ditto: ditto, config: hbConfig) { [weak self] info in
+        hbVM.startHeartbeat(config: hbConfig) { [weak self] info in
             guard let self = self else { return }
             if infoObserver == nil {
                startInfoObserver()

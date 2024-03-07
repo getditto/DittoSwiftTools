@@ -45,7 +45,7 @@ struct ContentView: View {
                     NavigationLink(destination: PresenceDegradationViewer()) {
                         MenuListItem(title: "Presence Degradation", systemImage: "network", color: .red)
                     }
-                    NavigationLink(destination: HeartbeatView(ditto: dittoModel.ditto!)) {
+                    NavigationLink(destination: HeartBeatViewer()) {
                         MenuListItem(title: "Heartbeat", systemImage: "heart.fill", color: .red)
                     }
                 }

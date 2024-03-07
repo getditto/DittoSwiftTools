@@ -396,13 +396,106 @@ struct PresenceDegradationViewer: View {
 
 **UIKit**  
 
-Pass `PresenceDegradationView(ditto: <diito>)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
+Pass `PresenceDegradationView(ditto: <ditto>)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
 which will return a view controller you can use to present.  
 
 ```
 let vc = UIHostingController(rootView: PresenceDegradationView(ditto: <diito>))
 
 present(vc, animated: true)
+```
+
+### 9. Heartbeat
+
+The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh.
+
+**Configure Heartbeat**
+
+There are three values you need to provide to the Heartbeat:
+1. Id/Id's - Provide all the Id's needed in order to identify a peer
+2. Interval - The frequency at which the Heartbeat will scrape the data
+3. Collection Name - The Ditto collection you want to add this data to
+4. Meta Data -  This field is optional
+
+There is a `DittoHeartbeatConfig` struct you can use to construct your configuration.
+
+```swift
+// Provided with the Heartbeat tool
+public struct DittoHeartbeatConfig {
+    public var id: [String: String]
+    public var secondsInterval: Int
+    public var collectionName: String
+    public var metadata: [String: Any]?
+    
+    public init(id: [String : String], secondsInterval: Int, collectionName: String, metadata: [String : Any]? = nil) {
+        self.id = id
+        self.secondsInterval = secondsInterval
+        self.collectionName = collectionName
+        self.metadata = metadata
+    }
+}
+```
+
+This tool generates a `DittoHeartbeatInfo` object with the given data:
+```swift
+public struct DittoHeartbeatInfo: Identifiable {
+    public var id: [String: String]
+    public var secondsInterval: Int
+    public var lastUpdated: String
+    public var sdk: String
+    public var remotePeersCount: Int { peerConnections.count }
+    public var peerConnections: [DittoPeerConnection]
+    public var metadata: [String: Any]
+}
+
+public struct DittoPeerConnection {
+    public var deviceName: String
+    public var sdk: String
+    public var isConnectedToDittoCloud: Bool
+    public var bluetooth: Int
+    public var p2pWifi: Int
+    public var lan: Int
+    public var peerKey: String
+}
+```
+
+You can either use the provided UI from this tool or you can read the `DittoHeartbeatInfo` data and create your own UI/use the data as you please.
+
+**Use provided UI:**
+
+**SwiftUI**  
+
+Use `HeartbeatView(ditto: dittoModel.ditto!, config: heartbeatConfig)`, passing in your Ditto instance and your DittoHeartbeatConfig object.  
+
+```
+import DittoHeartbeat
+
+struct HeartbeatViewer: View {
+    var body: some View {
+        HeartbeatView(ditto: <ditto>, config: <heartbeatConfig>)
+    }
+}
+```
+
+**UIKit**  
+
+Pass `HeartbeatView(ditto: <ditto>, config: <heartbeatConfig>)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
+which will return a view controller you can use to present.  
+
+```
+let vc = UIHostingController(rootView: HeartbeatView(ditto: <ditto>, config: <heartbeatConfig>))
+
+present(vc, animated: true)
+```
+
+**Read data only:**
+
+Create a `HeartbeatVM(ditto: <ditto>` object and then call `startHeartbeat(config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback)`. You can access the data in the callback of `startHeartbeat`
+```swift
+var heartBeatVm = HeartbeatVM(ditto: DittoManager.shared.ditto!)
+heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(id: [String:String], secondsInterval: Int, collectionName: String, metadata: metadata: [String:Any]? )) { heartbeatInfo in
+        //use data
+} 
 ```
 
 ## Ditto Tools Example App
