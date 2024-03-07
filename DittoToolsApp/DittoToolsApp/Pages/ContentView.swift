@@ -4,6 +4,7 @@
 
 import Combine
 import DittoExportData
+import DittoHeartbeat
 import DittoSwift
 import SwiftUI
 
@@ -44,6 +45,8 @@ struct ContentView: View {
                     NavigationLink(destination: PresenceDegradationViewer()) {
                         MenuListItem(title: "Presence Degradation", systemImage: "network", color: .red)
                     }
+                    NavigationLink(destination: HeartBeatViewer()) {
+                        MenuListItem(title: "Heartbeat", systemImage: "heart.fill", color: .red)
                     NavigationLink(destination: PermissionsHealthViewer()) {
                         MenuListItem(title: "Permissions Health", systemImage: "stethoscope", color: .purple)
                     }

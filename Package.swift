@@ -11,25 +11,36 @@ let package = Package(
     products: [
         .library(
             name: "DittoPresenceViewer",
-            targets: ["DittoPresenceViewer"]),
+            targets: ["DittoPresenceViewer"]
+        ),
         .library(
             name: "DittoDataBrowser",
-             targets: ["DittoDataBrowser"]),
+             targets: ["DittoDataBrowser"]
+        ),
         .library(
             name: "DittoExportLogs",
-            targets: ["DittoExportLogs"]),
+            targets: ["DittoExportLogs"]
+        ),
         .library(
             name: "DittoDiskUsage",
-            targets: ["DittoDiskUsage"]),
+            targets: ["DittoDiskUsage"]
+        ),
         .library(
             name: "DittoPeersList",
-            targets: ["DittoPeersList"]),
+            targets: ["DittoPeersList"]
+        ),
         .library(
             name: "DittoExportData",
-            targets: ["DittoExportData"]),
+            targets: ["DittoExportData"]
+        ),
         .library(
             name: "DittoPresenceDegradation",
-            targets: ["DittoPresenceDegradation"]),
+            targets: ["DittoPresenceDegradation"]
+        ),
+        .library(
+            name: "DittoHeartbeat",
+            targets: ["DittoHeartbeat"]
+        ),
         .library(
             name: "DittoPermissionsHealth",
             targets: ["DittoPermissionsHealth"]),
@@ -54,8 +65,7 @@ let package = Package(
             cxxSettings: [
                 .define("ENABLE_BITCODE", to: "NO")
             ]
-        ),
-        
+        ),        
         .target(
             name: "DittoDataBrowser",
             dependencies: [
@@ -64,7 +74,6 @@ let package = Package(
             ],
             path: "Sources/DittoDataBrowser"
         ),
-
         .target(
             name: "DittoExportLogs",
             dependencies: [
@@ -72,7 +81,6 @@ let package = Package(
             ],
             path: "Sources/DittoExportLogs"
         ),
-
         .target(
             name: "DittoDiskUsage",
             dependencies: [
@@ -80,7 +88,6 @@ let package = Package(
             ],
             path: "Sources/DittoDiskUsage"
         ),
-        
         .target(
             name: "DittoPeersList",
             dependencies: [
@@ -101,6 +108,13 @@ let package = Package(
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
             ],
             path: "Sources/DittoPresenceDegradation"
+        ),
+        .target(
+            name: "DittoHeartbeat",
+            dependencies: [
+                .product(name: "DittoSwift", package: "DittoSwiftPackage")
+            ],
+            path: "Sources/DittoHeartbeat"
         ),
         .target(
             name: "DittoPermissionsHealth",
