@@ -405,6 +405,37 @@ let vc = UIHostingController(rootView: PresenceDegradationView(ditto: <diito>))
 present(vc, animated: true)
 ```
 
+### 8. Permissions Health
+
+Permissions Health allows you to see the status of ditto's required services and permissions.
+
+Example: Wi-Fi, Bluetooth, Missing Permissions.
+
+<img width="371" alt="Screenshot 2024-02-28 at 12 47 28 PM" src="https://github.com/getditto/DittoSwiftTools/assets/60948031/1059ff07-d2f6-463c-8185-ce9fa206edea">
+
+**SwiftUI**
+
+```
+import DittoPermissionsHealth
+
+struct PermissionsHealthViewer: View {
+    var body: some View {
+        PermissionsHealth()
+    }
+}
+```
+
+**UIKit**
+
+Pass `UIActivityViewController` (return value of `PermissionsHealth()`) to [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
+which will return a view controller you can use to present.
+
+```swift
+let vc = UIHostingController(rootView: PermissionsHealth())
+
+present(vc, animated: true)
+```
+
 ### 9. Heartbeat
 
 The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh.
@@ -467,7 +498,7 @@ You can either use the provided UI from this tool or you can read the `DittoHear
 
 Use `HeartbeatView(ditto: dittoModel.ditto!, config: heartbeatConfig)`, passing in your Ditto instance and your DittoHeartbeatConfig object.  
 
-```
+```swift
 import DittoHeartbeat
 
 struct HeartbeatViewer: View {
@@ -484,9 +515,6 @@ which will return a view controller you can use to present.
 
 ```
 let vc = UIHostingController(rootView: HeartbeatView(ditto: <ditto>, config: <heartbeatConfig>))
-
-present(vc, animated: true)
-```
 
 **Read data only:**
 

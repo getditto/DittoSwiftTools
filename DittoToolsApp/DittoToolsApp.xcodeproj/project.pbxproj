@@ -30,9 +30,11 @@
 		01F34D0528A31147003BDF17 /* PrimaryFormButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0428A31147003BDF17 /* PrimaryFormButton.swift */; };
 		01F34D0728A3119E003BDF17 /* MenuListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0628A3119E003BDF17 /* MenuListItem.swift */; };
 		01F34D0928A31644003BDF17 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0828A31644003BDF17 /* AppDelegate.swift */; };
+		0E03301C2B8D3C0100C20156 /* DittoPermissionsHealth in Frameworks */ = {isa = PBXBuildFile; productRef = 0E03301B2B8D3C0100C20156 /* DittoPermissionsHealth */; };
 		0E60040F2B7BFCD500C27FAF /* DittoPresenceDegradation in Frameworks */ = {isa = PBXBuildFile; productRef = 0E60040E2B7BFCD500C27FAF /* DittoPresenceDegradation */; };
 		0E6F0FA62B7C17270088C0CF /* PresenceDegradationViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F0FA52B7C17270088C0CF /* PresenceDegradationViewer.swift */; };
 		0EFAEBC52B99322D00F26744 /* HeartBeatViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */; };
+		0EAA7B242B8D41100078B7F0 /* PermissionsHealthViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EAA7B232B8D41100078B7F0 /* PermissionsHealthViewer.swift */; };
 		146ED3F629C4F13100A56229 /* DittoPeersList in Frameworks */ = {isa = PBXBuildFile; productRef = 146ED3F529C4F13100A56229 /* DittoPeersList */; };
 		146ED3FA29C4F2A000A56229 /* PeersListViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146ED3F929C4F2A000A56229 /* PeersListViewer.swift */; };
 		1474FC932A295A3100C0AC4E /* LoggingDetailsViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1474FC922A295A3100C0AC4E /* LoggingDetailsViewer.swift */; };
@@ -92,6 +94,7 @@
 		01F34D0828A31644003BDF17 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0E6F0FA52B7C17270088C0CF /* PresenceDegradationViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenceDegradationViewer.swift; sourceTree = "<group>"; };
 		0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartBeatViewer.swift; sourceTree = "<group>"; };
+		0EAA7B232B8D41100078B7F0 /* PermissionsHealthViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsHealthViewer.swift; sourceTree = "<group>"; };
 		146ED3F929C4F2A000A56229 /* PeersListViewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeersListViewer.swift; sourceTree = "<group>"; };
 		1474FC922A295A3100C0AC4E /* LoggingDetailsViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingDetailsViewer.swift; sourceTree = "<group>"; };
 		F87DC46F298854E600899FEC /* DiskUsageViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskUsageViewer.swift; sourceTree = "<group>"; };
@@ -107,6 +110,7 @@
 				F87DC4802988584200899FEC /* DittoPresenceViewer in Frameworks */,
 				F87DC4832988599C00899FEC /* DittoDiskUsage in Frameworks */,
 				0E60040F2B7BFCD500C27FAF /* DittoPresenceDegradation in Frameworks */,
+				0E03301C2B8D3C0100C20156 /* DittoPermissionsHealth in Frameworks */,
 				F87DC47C2988584200899FEC /* DittoDataBrowser in Frameworks */,
 				14B7342C2A296A4E0081CEF2 /* DittoExportLogs in Frameworks */,
 				14E35DB12B7F345C0018EC3B /* DittoHeartbeat in Frameworks */,
@@ -221,6 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */,
+				0EAA7B232B8D41100078B7F0 /* PermissionsHealthViewer.swift */,
 				0E6F0FA52B7C17270088C0CF /* PresenceDegradationViewer.swift */,
 				016757D828A32E9400347491 /* CollectionView.swift */,
 				01F34C9628A2EAE3003BDF17 /* ContentView.swift */,
@@ -283,6 +288,7 @@
 				14B7342B2A296A4E0081CEF2 /* DittoExportLogs */,
 				0E60040E2B7BFCD500C27FAF /* DittoPresenceDegradation */,
 				14E35DB02B7F345C0018EC3B /* DittoHeartbeat */,
+				0E03301B2B8D3C0100C20156 /* DittoPermissionsHealth */,
 			);
 			productName = debug;
 			productReference = 01F34C9128A2EAE3003BDF17 /* DittoToolsApp.app */;
@@ -402,6 +408,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				0EFAEBC52B99322D00F26744 /* HeartBeatViewer.swift in Sources */,
+				0EAA7B242B8D41100078B7F0 /* PermissionsHealthViewer.swift in Sources */,
+				016757DD28A3313300347491 /* PresenceViewer.swift in Sources */,
 				0E6F0FA62B7C17270088C0CF /* PresenceDegradationViewer.swift in Sources */,
 				01F34CD128A304F0003BDF17 /* AuthorizationsManager.swift in Sources */,
 				1474FC932A295A3100C0AC4E /* LoggingDetailsViewer.swift in Sources */,
@@ -410,7 +418,6 @@
 				01F34CF728A30F5E003BDF17 /* DataBrowser.swift in Sources */,
 				01F34CD028A304F0003BDF17 /* AppSettings.swift in Sources */,
 				01F34CE328A30781003BDF17 /* DiagnosticsManager.swift in Sources */,
-				016757DD28A3313300347491 /* PresenceViewer.swift in Sources */,
 				01F34CEC28A307CD003BDF17 /* ServerConnectionType.swift in Sources */,
 				01F34D0728A3119E003BDF17 /* MenuListItem.swift in Sources */,
 				01F34CEE28A307E2003BDF17 /* IdentityType.swift in Sources */,
@@ -775,6 +782,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0E03301B2B8D3C0100C20156 /* DittoPermissionsHealth */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DittoPermissionsHealth;
+		};
 		0E60040E2B7BFCD500C27FAF /* DittoPresenceDegradation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DittoPresenceDegradation;
