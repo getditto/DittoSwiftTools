@@ -526,6 +526,16 @@ heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(id: [String:String], sec
 } 
 ```
 
+**Read data only:**
+
+Create a `HeartbeatVM(ditto: <ditto>` object and then call `startHeartbeat(config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback)`. You can access the data in the callback of `startHeartbeat`
+```swift
+var heartBeatVm = HeartbeatVM(ditto: DittoManager.shared.ditto!)
+heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(id: [String:String], secondsInterval: Int, collectionName: String, metadata: metadata: [String:Any]? )) { heartbeatInfo in
+        //use data
+} 
+```
+
 ## Ditto Tools Example App
 The [Ditto Tools Example App](https://github.com/getditto/DittoSwiftTools/tree/main/DittoToolsApp) 
 included in this repo allows you to try the DittoSwiftTools package in a standalone app. Open 
