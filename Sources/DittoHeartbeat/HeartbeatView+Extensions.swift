@@ -18,14 +18,14 @@ public struct HeartbeatInfoView: View {
 
     public var body: some View {
         VStack(alignment: .leading) {
-            Text("\(String.id): \(info.idString)")
+            Text("\(String.id): \(info.id)")
                 .lineLimit(3)
                 .fixedSize(horizontal: false, vertical: true)
             Text("\(String.secondsInterval): \(info.secondsInterval) sec")
             Text("\(String.lastUpdatedText): \(info.lastUpdated)")
             Text("\(String.metadata): \(info.metadataString)")
-            Text("\(String.remotePeersCount): \(info.peerConnections.isEmpty ? 0 : info.remotePeersCount)")
-            if info.remotePeersCount > 0 {
+            Text("\(String.presenceSnapshotDirectlyConnectedPeersCount): \(info.presenceSnapshotDirectlyConnectedPeers.isEmpty ? 0 : info.presenceSnapshotDirectlyConnectedPeersCount)")
+            if info.presenceSnapshotDirectlyConnectedPeersCount > 0 {
                 Text("\(String.remotePeers):\n\(info.peersString)")
             }
         }
@@ -47,20 +47,6 @@ public struct HeartbeatInfoRowItem: View {
 
 public extension DittoHeartbeatInfo {
     
-    var idString: String {
-        let indent = "     "
-        let meta = id[String.pk]
-        var retStr = ""
-        
-        for key in Array(id.keys).sorted() {
-            if key == String.pk { continue }
-            retStr += "\(key): \(id[key]!)\n\(indent)"
-        }
-        if let meta = meta { retStr += (.pk + ": \(meta)") }
-        
-        return retStr
-    }
-    
     var metadataString: String {
         var retStr = ""
         let indent = "     "
@@ -75,7 +61,7 @@ public extension DittoHeartbeatInfo {
     
     var peersString: String {
         var str = ""
-        for cx in peerConnections.sorted(by: { $0.peerKey < $1.peerKey }) {
+        for cx in presenceSnapshotDirectlyConnectedPeers.sorted(by: { $0.peerKey < $1.peerKey }) {
             str += "\(cx)\n"
         }
         return str
