@@ -47,6 +47,7 @@ struct ContentView: View {
                     }
                     NavigationLink(destination: HeartBeatViewer()) {
                         MenuListItem(title: "Heartbeat", systemImage: "heart.fill", color: .red)
+                    }
                     NavigationLink(destination: PermissionsHealthViewer()) {
                         MenuListItem(title: "Permissions Health", systemImage: "stethoscope", color: .purple)
                     }

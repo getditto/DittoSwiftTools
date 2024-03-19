@@ -474,8 +474,8 @@ public struct DittoHeartbeatInfo: Identifiable {
     public var secondsInterval: Int
     public var lastUpdated: String
     public var sdk: String
-    public var remotePeersCount: Int { peerConnections.count }
-    public var peerConnections: [DittoPeerConnection]
+    public var presenceSnapshotDirectlyConnectedPeersCount: Int { presenceSnapshotDirectlyConnectedPeers.count }
+    public var presenceSnapshotDirectlyConnectedPeers: [DittoPeerConnection]
     public var metadata: [String: Any]
 }
 

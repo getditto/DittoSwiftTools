@@ -42,7 +42,7 @@ public class HeartbeatVM: ObservableObject {
         hbConfig = config
         hbCallback = callback
         hbInfo = DittoHeartbeatInfo(
-            id: createCompositeId(configId: config.id),
+            id: localPeerKeyString,
             secondsInterval: config.secondsInterval,
             metadata: config.metadata ?? [:]
         )
@@ -92,7 +92,7 @@ public class HeartbeatVM: ObservableObject {
             DispatchQueue.main.async {[weak self] in
                 guard let self = self else { return }
                 peers = graph.remotePeers
-                hbInfo?.peerConnections = connections()
+                hbInfo?.presenceSnapshotDirectlyConnectedPeers = connections()
             }
         }
     }
@@ -159,12 +159,6 @@ public class HeartbeatVM: ObservableObject {
             }
         }
         return [String.bt: bt, String.p2pWifi: wifi, String.lan: lan]
-    }
-    
-    private func createCompositeId(configId: [String: String]) -> [String: String] {
-        var compositeId = configId
-        compositeId[String.pk] = localPeerKeyString
-        return compositeId
     }
     
     private var localPeerKeyString: String {
