@@ -87,7 +87,7 @@ public struct PeersListView: View {
                             .lineLimit(1)
                             .fixedSize(horizontal: false, vertical: true)
                         
-                        peerConnectionsView(conPeer, showBLEDistance: showBLEDistance)
+                        presenceSnapshotDirectlyConnectedPeersView(conPeer, showBLEDistance: showBLEDistance)
                     }
                     .padding(.leading, 12)
                 }
@@ -97,7 +97,7 @@ public struct PeersListView: View {
     }
     
     @ViewBuilder
-    func peerConnectionsView(_ peer: DittoPeer, showBLEDistance: Bool = false) -> some View {
+    func presenceSnapshotDirectlyConnectedPeersView(_ peer: DittoPeer, showBLEDistance: Bool = false) -> some View {
         VStack(alignment: .leading) {
             ForEach(vm.connectionsWithLocalPeer(peer)) { conx in
                 HStack {
