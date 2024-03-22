@@ -16,7 +16,7 @@ public typealias HeartbeatCallback = (DittoHeartbeatInfo) -> Void
 
 @available(iOS 15, *)
 public class HeartbeatVM: ObservableObject {
-    @Published var isEnabled = false
+    @Published public var isEnabled = false
     private var hbConfig: DittoHeartbeatConfig?
     private var hbInfo: DittoHeartbeatInfo?
     private var hbCallback: HeartbeatCallback?
