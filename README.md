@@ -445,8 +445,7 @@ The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers i
 There are three values you need to provide to the Heartbeat:
 1. Id/Id's - Provide all the Id's needed in order to identify a peer
 2. Interval - The frequency at which the Heartbeat will scrape the data
-3. Collection Name - The Ditto collection you want to add this data to
-4. Meta Data -  This field is optional
+3. Meta Data -  This field is optional
 
 There is a `DittoHeartbeatConfig` struct you can use to construct your configuration.
 
@@ -454,12 +453,10 @@ There is a `DittoHeartbeatConfig` struct you can use to construct your configura
 // Provided with the Heartbeat tool
 public struct DittoHeartbeatConfig {
     public var secondsInterval: Int
-    public var collectionName: String
     public var metadata: [String: Any]?
     
-    public init(secondsInterval: Int, collectionName: String, metadata: [String : Any]? = nil) {
+    public init(secondsInterval: Int, metadata: [String : Any]? = nil) {
         self.secondsInterval = secondsInterval
-        self.collectionName = collectionName
         self.metadata = metadata
     }
 }
@@ -469,6 +466,7 @@ This tool generates a `DittoHeartbeatInfo` object with the given data:
 ```swift
 public struct DittoHeartbeatInfo: Identifiable {
     public var id: String
+    public var schema: String
     public var secondsInterval: Int
     public var lastUpdated: String
     public var sdk: String
@@ -519,7 +517,7 @@ let vc = UIHostingController(rootView: HeartbeatView(ditto: <ditto>, config: <he
 Create a `HeartbeatVM(ditto: <ditto>` object and then call `startHeartbeat(config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback)`. You can access the data in the callback of `startHeartbeat`
 ```swift
 var heartBeatVm = HeartbeatVM(ditto: DittoManager.shared.ditto!)
-heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(secondsInterval: Int, collectionName: String, metadata: metadata: [String:Any]? )) { heartbeatInfo in
+heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(secondsInterval: Int, metadata: metadata: [String:Any]? )) { heartbeatInfo in
         //use data
 } 
 ```
@@ -529,7 +527,7 @@ heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(secondsInterval: Int, co
 Create a `HeartbeatVM(ditto: <ditto>` object and then call `startHeartbeat(config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback)`. You can access the data in the callback of `startHeartbeat`
 ```swift
 var heartBeatVm = HeartbeatVM(ditto: DittoManager.shared.ditto!)
-heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(secondsInterval: Int, collectionName: String, metadata: metadata: [String:Any]? )) { heartbeatInfo in
+heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(secondsInterval: Int, metadata: metadata: [String:Any]? )) { heartbeatInfo in
         //use data
 } 
 ```
