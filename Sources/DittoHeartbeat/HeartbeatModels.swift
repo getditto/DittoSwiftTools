@@ -11,8 +11,6 @@ import Foundation
 //MARK: HeartbeatConfig
 public struct DittoHeartbeatConfig {
     public var secondsInterval: Int
-    //Remove:
-//    public var collectionName: String
     public var metadata: [String: Any]?
     
     public init(secondsInterval: Int, metadata: [String : Any]? = nil) {
