@@ -11,12 +11,12 @@ import Foundation
 //MARK: HeartbeatConfig
 public struct DittoHeartbeatConfig {
     public var secondsInterval: Int
-    public var collectionName: String
+    //Remove:
+//    public var collectionName: String
     public var metadata: [String: Any]?
     
-    public init(secondsInterval: Int, collectionName: String, metadata: [String : Any]? = nil) {
+    public init(secondsInterval: Int, metadata: [String : Any]? = nil) {
         self.secondsInterval = secondsInterval
-        self.collectionName = collectionName
         self.metadata = metadata
     }
 }
@@ -24,6 +24,7 @@ public struct DittoHeartbeatConfig {
 //MARK: HeartbeatInfo
 public struct DittoHeartbeatInfo: Identifiable {
     public var id: String
+    public var schema: String
     public var secondsInterval: Int
     public var lastUpdated: String
     public var sdk: String
@@ -33,6 +34,7 @@ public struct DittoHeartbeatInfo: Identifiable {
     
     public init(
         id: String,
+        schema: String,
         secondsInterval: Int = Int.max,
         lastUpdated: String = DateFormatter.isoDate.string(from: Date()),
         sdk: String = "",
@@ -41,6 +43,7 @@ public struct DittoHeartbeatInfo: Identifiable {
         metadata: [String: Any] = [:]
     ) {
         self.id = id
+        self.schema = schema
         self.secondsInterval = secondsInterval
         self.lastUpdated = lastUpdated
         self.sdk = sdk
@@ -52,6 +55,7 @@ public struct DittoHeartbeatInfo: Identifiable {
 public extension DittoHeartbeatInfo {
     init(_ resultItem: [String:Any?]) {
         id = resultItem[String._id] as? String ?? ""
+        schema = resultItem[String._schema] as? String ?? ""
         secondsInterval = resultItem[String.secondsInterval] as? Int ?? 0
         lastUpdated = resultItem[String.lastUpdated] as? String ?? String.NA
         sdk = resultItem[String.sdk] as? String ?? String.NA
@@ -66,6 +70,7 @@ public extension DittoHeartbeatInfo {
     var value: [String:Any] {
         [
             String._id: id,
+            String._schema: schema,
             String.secondsInterval: secondsInterval,
             String.lastUpdated: lastUpdated,
             String.sdk: sdk,
@@ -125,7 +130,6 @@ public extension DittoHeartbeatConfig {
     static var mock: DittoHeartbeatConfig {
         DittoHeartbeatConfig(
             secondsInterval: 10,
-            collectionName: "devices",
             metadata: ["metadata-key1": "metadata-value1", "metadata-key2": "metadata-value2"]
         )
     }

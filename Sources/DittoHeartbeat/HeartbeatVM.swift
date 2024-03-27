@@ -43,6 +43,7 @@ public class HeartbeatVM: ObservableObject {
         hbCallback = callback
         hbInfo = DittoHeartbeatInfo(
             id: localPeerKeyString,
+            schema: String._schemaValue,
             secondsInterval: config.secondsInterval,
             sdk: ditto.presence.graph.localPeer.platformSDK,
             metadata: config.metadata ?? [:]
@@ -50,8 +51,8 @@ public class HeartbeatVM: ObservableObject {
         observePeers()
         startTimer()
         
-        hbSubscription = try? ditto.sync.registerSubscription(query: "SELECT * FROM \(config.collectionName)")
-        insertQuery = "INSERT INTO \(config.collectionName) DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE"
+        hbSubscription = try? ditto.sync.registerSubscription(query: "SELECT * FROM \(String.collectionName)")
+        insertQuery = "INSERT INTO \(String.collectionName) DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE"
     }
     
     public func stopHeartbeat() {
@@ -122,7 +123,7 @@ public class HeartbeatVM: ObservableObject {
             } catch {
                 print(
                     "HeartbeatVM.\(#function) - ERROR updating collection: " +
-                    "\(hbConfig?.collectionName ?? "collection name N/A")\n" +
+                    "\(String.collectionName)\n" +
                     "error: \(error.localizedDescription)"
                 )
             }
