@@ -442,10 +442,9 @@ The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers i
 
 **Configure Heartbeat**
 
-There are three values you need to provide to the Heartbeat:
-1. Id/Id's - Provide all the Id's needed in order to identify a peer
-2. Interval - The frequency at which the Heartbeat will scrape the data
-3. Meta Data -  This field is optional
+There are the values you need to provide to the Heartbeat:
+1. Interval - The frequency at which the Heartbeat will scrape the data
+2. Meta Data -  This field is optional
 
 There is a `DittoHeartbeatConfig` struct you can use to construct your configuration.
 
