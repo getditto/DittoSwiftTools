@@ -42,8 +42,9 @@ public class HeartbeatVM: ObservableObject {
         hbConfig = config
         hbCallback = callback
         hbInfo = DittoHeartbeatInfo(
-            id: localPeerKeyString,
+            id: config.id,
             schema: String._schemaValue,
+            peerKey: localPeerKeyString,
             secondsInterval: config.secondsInterval,
             sdk: ditto.presence.graph.localPeer.platformSDK,
             metadata: config.metadata ?? [:]

@@ -10,10 +10,12 @@ import Foundation
 
 //MARK: HeartbeatConfig
 public struct DittoHeartbeatConfig {
+    public var id: String
     public var secondsInterval: Int
     public var metadata: [String: Any]?
     
-    public init(secondsInterval: Int, metadata: [String : Any]? = nil) {
+    public init(id: String, secondsInterval: Int, metadata: [String : Any]? = nil) {
+        self.id = id
         self.secondsInterval = secondsInterval
         self.metadata = metadata
     }
@@ -23,6 +25,7 @@ public struct DittoHeartbeatConfig {
 public struct DittoHeartbeatInfo: Identifiable {
     public var id: String
     public var schema: String
+    public var peerKey: String
     public var secondsInterval: Int
     public var lastUpdated: String
     public var sdk: String
@@ -33,6 +36,7 @@ public struct DittoHeartbeatInfo: Identifiable {
     public init(
         id: String,
         schema: String,
+        peerKey: String,
         secondsInterval: Int = Int.max,
         lastUpdated: String = DateFormatter.isoDate.string(from: Date()),
         sdk: String = "",
@@ -42,6 +46,7 @@ public struct DittoHeartbeatInfo: Identifiable {
     ) {
         self.id = id
         self.schema = schema
+        self.peerKey = peerKey
         self.secondsInterval = secondsInterval
         self.lastUpdated = lastUpdated
         self.sdk = sdk
@@ -54,6 +59,7 @@ public extension DittoHeartbeatInfo {
     init(_ resultItem: [String:Any?]) {
         id = resultItem[String._id] as? String ?? ""
         schema = resultItem[String._schema] as? String ?? ""
+        peerKey = resultItem[String.pk] as? String ?? ""
         secondsInterval = resultItem[String.secondsInterval] as? Int ?? 0
         lastUpdated = resultItem[String.lastUpdated] as? String ?? String.NA
         sdk = resultItem[String.sdk] as? String ?? String.NA
@@ -69,6 +75,7 @@ public extension DittoHeartbeatInfo {
         [
             String._id: id,
             String._schema: schema,
+            String.pk: peerKey,
             String.secondsInterval: secondsInterval,
             String.lastUpdated: lastUpdated,
             String.sdk: sdk,
@@ -127,6 +134,7 @@ extension DittoPeerConnection {
 public extension DittoHeartbeatConfig {
     static var mock: DittoHeartbeatConfig {
         DittoHeartbeatConfig(
+            id: UUID().uuidString,
             secondsInterval: 10,
             metadata: ["metadata-key1": "metadata-value1", "metadata-key2": "metadata-value2"]
         )

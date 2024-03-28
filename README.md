@@ -442,19 +442,22 @@ The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers i
 
 **Configure Heartbeat**
 
-There are the values you need to provide to the Heartbeat:
-1. Interval - The frequency at which the Heartbeat will scrape the data
-2. Meta Data -  This field is optional
+These are the values you need to provide to the Heartbeat:
+1. Id - Unique value that identifies the device
+2. Interval - The frequency at which the Heartbeat will scrape the data
+3. Meta Data -  This field is optional
 
 There is a `DittoHeartbeatConfig` struct you can use to construct your configuration.
 
 ```swift
 // Provided with the Heartbeat tool
 public struct DittoHeartbeatConfig {
+    public var id: String
     public var secondsInterval: Int
     public var metadata: [String: Any]?
     
-    public init(secondsInterval: Int, metadata: [String : Any]? = nil) {
+    public init(id: String, secondsInterval: Int, metadata: [String : Any]? = nil) {
+        self.id = id
         self.secondsInterval = secondsInterval
         self.metadata = metadata
     }
