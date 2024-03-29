@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -33,8 +33,8 @@
 		0E03301C2B8D3C0100C20156 /* DittoPermissionsHealth in Frameworks */ = {isa = PBXBuildFile; productRef = 0E03301B2B8D3C0100C20156 /* DittoPermissionsHealth */; };
 		0E60040F2B7BFCD500C27FAF /* DittoPresenceDegradation in Frameworks */ = {isa = PBXBuildFile; productRef = 0E60040E2B7BFCD500C27FAF /* DittoPresenceDegradation */; };
 		0E6F0FA62B7C17270088C0CF /* PresenceDegradationViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F0FA52B7C17270088C0CF /* PresenceDegradationViewer.swift */; };
-		0EFAEBC52B99322D00F26744 /* HeartBeatViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */; };
 		0EAA7B242B8D41100078B7F0 /* PermissionsHealthViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EAA7B232B8D41100078B7F0 /* PermissionsHealthViewer.swift */; };
+		0EFAEBC52B99322D00F26744 /* HeartBeatViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */; };
 		146ED3F629C4F13100A56229 /* DittoPeersList in Frameworks */ = {isa = PBXBuildFile; productRef = 146ED3F529C4F13100A56229 /* DittoPeersList */; };
 		146ED3FA29C4F2A000A56229 /* PeersListViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146ED3F929C4F2A000A56229 /* PeersListViewer.swift */; };
 		1474FC932A295A3100C0AC4E /* LoggingDetailsViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1474FC922A295A3100C0AC4E /* LoggingDetailsViewer.swift */; };
@@ -93,8 +93,8 @@
 		01F34D0628A3119E003BDF17 /* MenuListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListItem.swift; sourceTree = "<group>"; };
 		01F34D0828A31644003BDF17 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0E6F0FA52B7C17270088C0CF /* PresenceDegradationViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenceDegradationViewer.swift; sourceTree = "<group>"; };
-		0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartBeatViewer.swift; sourceTree = "<group>"; };
 		0EAA7B232B8D41100078B7F0 /* PermissionsHealthViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsHealthViewer.swift; sourceTree = "<group>"; };
+		0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartBeatViewer.swift; sourceTree = "<group>"; };
 		146ED3F929C4F2A000A56229 /* PeersListViewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeersListViewer.swift; sourceTree = "<group>"; };
 		1474FC922A295A3100C0AC4E /* LoggingDetailsViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingDetailsViewer.swift; sourceTree = "<group>"; };
 		F87DC46F298854E600899FEC /* DiskUsageViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskUsageViewer.swift; sourceTree = "<group>"; };
@@ -364,6 +364,7 @@
 			mainGroup = 01F34C8828A2EAE3003BDF17;
 			packageReferences = (
 				14E35DB22B7F356A0018EC3B /* XCRemoteSwiftPackageReference "DittoSwiftPackage" */,
+				0E3768B92BB73C47009A7053 /* XCLocalSwiftPackageReference ".." */,
 			);
 			productRefGroup = 01F34C9228A2EAE3003BDF17 /* Products */;
 			projectDirPath = "";
@@ -769,6 +770,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		0E3768B92BB73C47009A7053 /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
 		14E35DB22B7F356A0018EC3B /* XCRemoteSwiftPackageReference "DittoSwiftPackage" */ = {
