@@ -21,7 +21,7 @@ private class PrivateHeartbeatVM: ObservableObject {
     private var cancellable = AnyCancellable({})
     private var infoObserver: DittoStoreObserver?
     private let ditto: Ditto
-    private let collName = "devices" // default
+    private let collName = String.collectionName // default
     private let queryString: String
     
     init(ditto: Ditto, config: DittoHeartbeatConfig?) {
