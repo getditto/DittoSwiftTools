@@ -21,7 +21,6 @@ public class HeartbeatVM: ObservableObject {
     private var hbInfo: DittoHeartbeatInfo?
     private var hbCallback: HeartbeatCallback?
     private var hbSubscription: DittoSyncSubscription?
-//    private var insertQuery: String?
     private var ditto: Ditto
     private var peers = [DittoPeer]()
     private var peersObserver: DittoSwift.DittoObserver?
@@ -53,7 +52,6 @@ public class HeartbeatVM: ObservableObject {
         startTimer()
         
         hbSubscription = try? ditto.sync.registerSubscription(query: "SELECT * FROM \(String.collectionName)")
-//        insertQuery = "INSERT INTO \(String.collectionName) DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE"
     }
     
     public func stopHeartbeat() {
@@ -115,7 +113,7 @@ public class HeartbeatVM: ObservableObject {
         }
         
         do {
-            let docId = try ditto.store.collection(String.collectionName).upsert(doc)
+            let _ = try ditto.store.collection(String.collectionName).upsert(doc)
         } catch {
             print(
                 "HeartbeatVM.\(#function) - ERROR updating collection: " +
@@ -123,22 +121,6 @@ public class HeartbeatVM: ObservableObject {
                 "error: \(error.localizedDescription)"
             )
         }
-        
-//        Task {
-//            do {
-//                if let query = insertQuery {
-//                    try await ditto.store.execute(query: query, arguments: ["doc": doc])
-//                } else {
-//                    print("HeartbeatVM.\(#function): ERROR: insertQuery should not be NIL")
-//                }
-//            } catch {
-//                print(
-//                    "HeartbeatVM.\(#function) - ERROR updating collection: " +
-//                    "\(String.collectionName)\n" +
-//                    "error: \(error.localizedDescription)"
-//                )
-//            }
-//        }
     }
     
     private func connections() -> [DittoPeerConnection] {
