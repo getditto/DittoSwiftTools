@@ -23,7 +23,7 @@ public struct HeartbeatInfoView: View {
                 .fixedSize(horizontal: false, vertical: true)
             Text("\(String.secondsInterval): \(info.secondsInterval) sec")
             Text("\(String.lastUpdatedText): \(info.lastUpdated)")
-            Text("\(String.metadata): \(info.metadataString)")
+            Text("\(String.metaData): \(info.metaDataString)")
             Text("\(String.presenceSnapshotDirectlyConnectedPeersCount): \(info.presenceSnapshotDirectlyConnectedPeers.isEmpty ? 0 : info.presenceSnapshotDirectlyConnectedPeersCount)")
             if info.presenceSnapshotDirectlyConnectedPeersCount > 0 {
                 Text("\(String.remotePeers):\n\(info.peersString)")
@@ -47,11 +47,11 @@ public struct HeartbeatInfoRowItem: View {
 
 public extension DittoHeartbeatInfo {
     
-    var metadataString: String {
+    var metaDataString: String {
         var retStr = ""
         let indent = "     "
-        for key in Array(metadata.keys).sorted() {
-            let val = metadata[key]
+        for key in Array(metaData.keys).sorted() {
+            let val = metaData[key]
             let valStr = val as? String ?? String(describing: val)
             retStr += "\n\(indent)\(key): \(valStr)"
         }
@@ -82,7 +82,7 @@ extension DittoPeerConnection: CustomStringConvertible {
              \(String.bluetooth): \(bluetooth)
              \(String.p2pWifi): \(p2pWifi)
              \(String.lan): \(lan)
-             \(String.pk): \(peerKey)
+             \(String.peerKey): \(peerKey)
         """
     }
 }
