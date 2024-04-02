@@ -12,12 +12,12 @@ import Foundation
 public struct DittoHeartbeatConfig {
     public var id: String
     public var secondsInterval: Int
-    public var metadata: [String: Any]?
+    public var metaData: [String: Any]?
     
-    public init(id: String, secondsInterval: Int, metadata: [String : Any]? = nil) {
+    public init(id: String, secondsInterval: Int, metaData: [String : Any]? = nil) {
         self.id = id
         self.secondsInterval = secondsInterval
-        self.metadata = metadata
+        self.metaData = metaData
     }
 }
 
@@ -31,7 +31,7 @@ public struct DittoHeartbeatInfo: Identifiable {
     public var sdk: String
     public var presenceSnapshotDirectlyConnectedPeersCount: Int { presenceSnapshotDirectlyConnectedPeers.count }
     public var presenceSnapshotDirectlyConnectedPeers: [DittoPeerConnection]
-    public var metadata: [String: Any]
+    public var metaData: [String: Any]
     
     public init(
         id: String,
@@ -42,7 +42,7 @@ public struct DittoHeartbeatInfo: Identifiable {
         sdk: String = "",
         presenceSnapshotDirectlyConnectedPeersCount: Int = 0,
         presenceSnapshotDirectlyConnectedPeers: [DittoPeerConnection] = [],
-        metadata: [String: Any] = [:]
+        metaData: [String: Any] = [:]
     ) {
         self.id = id
         self.schema = schema
@@ -51,7 +51,7 @@ public struct DittoHeartbeatInfo: Identifiable {
         self.lastUpdated = lastUpdated
         self.sdk = sdk
         self.presenceSnapshotDirectlyConnectedPeers = presenceSnapshotDirectlyConnectedPeers
-        self.metadata = metadata
+        self.metaData = metaData
     }
 }
 
@@ -59,12 +59,12 @@ public extension DittoHeartbeatInfo {
     init(_ resultItem: [String:Any?]) {
         id = resultItem[String._id] as? String ?? ""
         schema = resultItem[String._schema] as? String ?? ""
-        peerKey = resultItem[String.pk] as? String ?? ""
+        peerKey = resultItem[String.peerKey] as? String ?? ""
         secondsInterval = resultItem[String.secondsInterval] as? Int ?? 0
         lastUpdated = resultItem[String.lastUpdated] as? String ?? String.NA
         sdk = resultItem[String.sdk] as? String ?? String.NA
         presenceSnapshotDirectlyConnectedPeers = Self.connections(resultItem[String.presenceSnapshotDirectlyConnectedPeers] as? [String:Any] ?? [:])
-        metadata = resultItem[String.metadata] as? [String:Any] ?? [:]
+        metaData = resultItem[String.metaData] as? [String:Any] ?? [:]
     }
     
     fileprivate static func connections(_ cxs: [String:Any]) -> [DittoPeerConnection] {
@@ -75,13 +75,13 @@ public extension DittoHeartbeatInfo {
         [
             String._id: id,
             String._schema: schema,
-            String.pk: peerKey,
+            String.peerKey: peerKey,
             String.secondsInterval: secondsInterval,
             String.lastUpdated: lastUpdated,
             String.sdk: sdk,
             String.presenceSnapshotDirectlyConnectedPeersCount: presenceSnapshotDirectlyConnectedPeers.count,
             String.presenceSnapshotDirectlyConnectedPeers: connectionsValue(),
-            String.metadata: metadata
+            String.metaData: metaData
         ]
     }
     
@@ -136,7 +136,7 @@ public extension DittoHeartbeatConfig {
         DittoHeartbeatConfig(
             id: UUID().uuidString,
             secondsInterval: 10,
-            metadata: ["metadata-key1": "metadata-value1", "metadata-key2": "metadata-value2"]
+            metaData: ["metaData-key1": "metaData-value1", "metaData-key2": "metaData-value2"]
         )
     }
 }
