@@ -27,7 +27,7 @@ public struct PresenceView: View {
         self.ditto = ditto
     }
 
-    var body: some View {
+    public var body: some View {
         PresenceView(ditto: ditto)
     }
 }
