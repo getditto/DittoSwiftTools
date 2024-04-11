@@ -27,17 +27,17 @@ struct Documents: View {
         VStack {
             Text("Collection: " + viewModel.collectionName)
                 .font(.title2)
-                .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, alignment: .topLeading)
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
                 .padding(.leading)
             SearchBar(searchText: $querySearch, viewModel: viewModel)
-            if(!viewModel.docsList.isEmpty) {
+            if (!viewModel.docsList.isEmpty) {
                 Text("Docs Count: " + String(viewModel.docsList.count))
-                .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, alignment: .topLeading)
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
                 .padding(.leading)
             }
             else {
                 Text("Docs Count: 0")
-                .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, alignment: .topLeading)
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
                 .padding(.leading)
             }
             HStack {
@@ -58,7 +58,7 @@ struct Documents: View {
                     
                 }
             }
-            .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, alignment: .topLeading)
+            .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
 
                 Divider()
                     .frame(height: 4)
@@ -84,10 +84,10 @@ struct Documents: View {
                                     }
                                     
                                 }
-                                .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, minHeight: 0, maxHeight: UIScreen.main.bounds.height, alignment: .topLeading)
+                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
                                 
                                 Divider()
-                                    .frame(width: UIScreen.main.bounds.width)
+                                    .frame(width: .infinity)
                                 
                             }
                         }
@@ -97,7 +97,7 @@ struct Documents: View {
             }
             
         }
-        .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, minHeight: 0, maxHeight: UIScreen.main.bounds.height, alignment: .topLeading)
+        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 
