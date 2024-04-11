@@ -13,7 +13,7 @@ public extension String {
     static var bluetooth = "bluetooth"
     static var deviceName = "deviceName"
     static var deviceNameNA = "deviceName N/A"
-    static var collectionName = "__dittotools_devices"
+    static var collectionName = "dittotools_devices"
     static var hbInfoTitle = "Heartbeat Info"
     static var _id = "_id"
     static var _schema = "_schema"
