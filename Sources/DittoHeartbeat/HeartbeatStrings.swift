@@ -25,7 +25,8 @@ public extension String {
     static var lan = "lan"
     static var lastUpdated = "lastUpdated"
     static var lastUpdatedText = "last updated"
-    static var metaData = "metaData"
+    static var metadata = "metadata"
+    static var healthMetrics = "healthMetrics"
     static var NA = "N/A"
     static var osNA = "OS: N/A"
     static var p2pWifi = "p2pWifi"
@@ -38,7 +39,10 @@ public extension String {
     static var sdk = "sdk"
     static var sdkNA = "sdk N/A"
     static var sdkVersionNA = ": N/A"
-    
+    static var metricName = "metricName"
+    static var isHealthy = "isHealthy"
+    static var details = "details"
+
     static var getStartedText = "To demo the Heartbeat feature, just hit the play button. "
     + "A hearbeat document for this device will be added to the `devices` collection, and mock "
     + "HeartbeatConfig data will be used to update the document every 10 seconds. "

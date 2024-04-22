@@ -46,7 +46,7 @@ public class HeartbeatVM: ObservableObject {
             peerKey: localPeerKeyString,
             secondsInterval: config.secondsInterval,
             sdk: ditto.presence.graph.localPeer.platformSDK,
-            metaData: config.metaData ?? [:]
+            metadata: config.metadata ?? [:]
         )
         observePeers()
         startTimer()
