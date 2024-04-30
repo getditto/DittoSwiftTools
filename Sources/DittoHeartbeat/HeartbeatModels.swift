@@ -7,7 +7,6 @@
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 
 import Foundation
-import DittoSwift
 
 //MARK: HeartbeatConfig
 public struct DittoHeartbeatConfig {
@@ -148,8 +147,8 @@ extension DittoPeerConnection {
 
 //MARK: HealthMetric
 public struct HealthMetric {
-    public var isHealthy: Bool
-    public var details: [String: String]
+    public let isHealthy: Bool
+    public let details: [String: String]
 
     public init(isHealthy: Bool, details: [String: String]) {
         self.isHealthy = isHealthy
@@ -165,7 +164,6 @@ public struct HealthMetric {
         self.isHealthy = isHealthy
         self.details = details
     }
-
 }
 
 //MARK: HeartbeatConfig Mock
