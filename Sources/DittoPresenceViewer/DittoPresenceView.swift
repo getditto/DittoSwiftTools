@@ -88,7 +88,7 @@ public class DittoPresenceView: PlatformView {
        to visualize presence status for.
      */
     public convenience init(ditto: Ditto) {
-        self.init(frame: .zero)
+        self.init(frame: .infinite)
         self.ditto = ditto
 
         setup()

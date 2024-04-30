@@ -19,7 +19,7 @@ import UIKit
 import AppKit
 #endif
 
-@available(iOS 13, macOS 10.15, *)
+@available(iOS 13, visionOS 1, macOS 10.15, *)
 public struct PresenceView: View {
     public var ditto: Ditto
 
@@ -33,7 +33,7 @@ public struct PresenceView: View {
 }
 
 // MARK: - UIViewRepresentable
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 @available(iOS 13, *)
 extension PresenceView: UIViewRepresentable {
     public typealias Body = Never
@@ -65,3 +65,10 @@ extension PresenceView: NSViewRepresentable {
     }
 }
 #endif
+
+
+//struct SettingsScreen_Previews: PreviewProvider {
+//    static var previews: some View {
+//        PresenceView()
+//    }
+//}

@@ -63,7 +63,7 @@ class JSWebView: PlatformView {
 
     private func setup() {
 #if canImport(UIKit)
-        if #available(iOS 13.0, *) {
+        if #available(iOS 13.0, visionOS 1, *) {
             backgroundColor = .systemBackground
             webView.backgroundColor = .systemBackground
             webView.scrollView.backgroundColor = .systemBackground
