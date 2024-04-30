@@ -28,6 +28,10 @@ public struct HeartbeatInfoView: View {
             if info.presenceSnapshotDirectlyConnectedPeersCount > 0 {
                 Text("\(String.remotePeers):\n\(info.peersString)")
             }
+            if !info.healthMetrics.isEmpty {
+                Text("Health Metrics:\n")
+            }
+            // TODO Health Metrics details
         }
     }
 }

@@ -39,7 +39,6 @@ public extension String {
     static var sdk = "sdk"
     static var sdkNA = "sdk N/A"
     static var sdkVersionNA = ": N/A"
-    static var metricName = "metricName"
     static var isHealthy = "isHealthy"
     static var details = "details"
 

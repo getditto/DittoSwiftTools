@@ -7,6 +7,7 @@
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 
 import Foundation
+import DittoSwift
 
 //MARK: HeartbeatConfig
 public struct DittoHeartbeatConfig {
@@ -32,7 +33,9 @@ public struct DittoHeartbeatInfo: Identifiable {
     public var presenceSnapshotDirectlyConnectedPeersCount: Int { presenceSnapshotDirectlyConnectedPeers.count }
     public var presenceSnapshotDirectlyConnectedPeers: [DittoPeerConnection]
     public var metadata: [String: Any]
-    public var healthMetrics: [HealthMetric]
+
+    /// The current state of any `HealthMetric`s tracked by the Heartbeat Tool. Populated by setting up `HeartbeatProvider`s in `HeartbeatVM`
+    public var healthMetrics: [String: HealthMetric] = [:]
 
     public init(
         id: String,
@@ -43,8 +46,7 @@ public struct DittoHeartbeatInfo: Identifiable {
         sdk: String = "",
         presenceSnapshotDirectlyConnectedPeersCount: Int = 0,
         presenceSnapshotDirectlyConnectedPeers: [DittoPeerConnection] = [],
-        metadata: [String: Any] = [:],
-        healthMetrics: [HealthMetric] = []
+        metadata: [String: Any] = [:]
     ) {
         self.id = id
         self.schema = schema
@@ -54,7 +56,10 @@ public struct DittoHeartbeatInfo: Identifiable {
         self.sdk = sdk
         self.presenceSnapshotDirectlyConnectedPeers = presenceSnapshotDirectlyConnectedPeers
         self.metadata = metadata
-        self.healthMetrics = healthMetrics
+    }
+
+    public func update(healthMetric: HealthMetric) {
+        
     }
 }
 
@@ -68,15 +73,19 @@ public extension DittoHeartbeatInfo {
         sdk = resultItem[String.sdk] as? String ?? String.NA
         presenceSnapshotDirectlyConnectedPeers = Self.connections(resultItem[String.presenceSnapshotDirectlyConnectedPeers] as? [String: Any] ?? [:])
         metadata = resultItem[String.metadata] as? [String: Any] ?? [:]
-        healthMetrics = Self.healthMetrics(resultItem[String.healthMetrics] as? [[String: Any]] ?? [])
+        healthMetrics = Self.healthMetrics(resultItem[String.healthMetrics] as? [String: Any] ?? [:])
     }
     
     private static func connections(_ cxs: [String: Any]) -> [DittoPeerConnection] {
         cxs.map { (key, val) in DittoPeerConnection(key, cx: val as! [String: Any]) }
     }
 
-    private static func healthMetrics(_ metrics: [[String: Any]]) -> [HealthMetric] {
-        metrics.compactMap({ HealthMetric($0) })
+    private static func healthMetrics(_ metrics: [String: Any]) -> [String: HealthMetric] {
+        var result: [String: HealthMetric] = [:]
+        for (key, val) in metrics {
+            result[key] = HealthMetric(val as? [String: Any])
+        }
+        return result
     }
 
     var value: [String: Any] {
@@ -139,20 +148,24 @@ extension DittoPeerConnection {
 
 //MARK: HealthMetric
 public struct HealthMetric {
-    public var metricName: String
     public var isHealthy: Bool
-    public var details: [String: Any]
+    public var details: [String: String]
 
-    public init?(_ dictionary: [String: Any]) {
-        guard let metricName = dictionary[String.metricName] as? String,
-              let isHealthy = dictionary[String.isHealthy] as? Bool,
-              let details = dictionary[String.details] as? [String: Any] else {
-            return nil
-        }
-        self.metricName = metricName
+    public init(isHealthy: Bool, details: [String: String]) {
         self.isHealthy = isHealthy
         self.details = details
     }
+
+    init?(_ dictionary: [String: Any]?) {
+        guard let dictionary = dictionary,
+              let isHealthy = dictionary[String.isHealthy] as? Bool,
+              let details = dictionary[String.details] as? [String: String] else {
+            return nil
+        }
+        self.isHealthy = isHealthy
+        self.details = details
+    }
+
 }
 
 //MARK: HeartbeatConfig Mock

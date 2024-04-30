@@ -1,6 +1,6 @@
 ///
 //  HeartbeatVM.swift
-//  DittoChat
+//  DittoSwiftTools
 //
 //  Created by Eric Turner on 02/01/24.
 //
@@ -31,9 +31,11 @@ public class HeartbeatVM: ObservableObject {
     public var infoPublisher: AnyPublisher<DittoHeartbeatInfo?, Never> {
         infoCurrentValueSubject.eraseToAnyPublisher()
     }
+    private let healthMetricProviders: [HealthMetricProvider]
 
-    public init(ditto: Ditto) {
+    public init(ditto: Ditto, healthMetricProviders: [HealthMetricProvider] = []) {
         self.ditto = ditto
+        self.healthMetricProviders = healthMetricProviders
     }
     
     public func startHeartbeat(config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback) {
@@ -60,7 +62,16 @@ public class HeartbeatVM: ObservableObject {
         peersObserver?.stop()
         hbSubscription?.cancel()
     }
-    
+
+    private func updateHealthMetrics() {
+        guard var hbInfo = hbInfo else { return }
+        var newHealthMetrics: [String: HealthMetric] = [:]
+        healthMetricProviders.forEach { provider in
+            newHealthMetrics[provider.metricName] = provider.getCurrentState()
+        }
+        hbInfo.healthMetrics = newHealthMetrics
+    }
+
     private func startTimer() {
         guard let config = hbConfig else {
             print("HeartbeatVM.\(#function): config is NIL --> Return")
@@ -68,13 +79,14 @@ public class HeartbeatVM: ObservableObject {
         }
         
         timer?.connect().cancel()
-        timer = Timer.publish(every: Double(config.secondsInterval), on: .main, in: .common)
-        
+        timer = Timer.publish(every: TimeInterval(config.secondsInterval), on: .main, in: .common)
+
         cancellable = timer!
             .autoconnect()
             .receive(on: DispatchQueue.main)
             .sink {[weak self] date in
                 guard let self = self else { return }
+                updateHealthMetrics()
                 hbInfo?.lastUpdated = DateFormatter.isoDate.string(from: Date.now)
                 updateCollection()
                 emit()
@@ -181,5 +193,3 @@ public extension DateFormatter {
         return f
     }
 }
-
-
