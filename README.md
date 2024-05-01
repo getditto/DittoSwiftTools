@@ -455,11 +455,13 @@ public struct DittoHeartbeatConfig {
     public var id: String
     public var secondsInterval: Int
     public var metadata: [String: Any]?
-    
-    public init(id: String, secondsInterval: Int, metadata: [String : Any]? = nil) {
+    public var healthMetricProviders: [HealthMetricProvider]
+
+    public init(id: String, secondsInterval: Int, metadata: [String : Any]? = nil, healthMetricProviders: [HealthMetricProvider] = []) {
         self.id = id
         self.secondsInterval = secondsInterval
         self.metadata = metadata
+        self.healthMetricProviders = healthMetricProviders
     }
 }
 ```
@@ -488,6 +490,7 @@ public struct DittoPeerConnection {
     public var peerKey: String
 }
 
+// See DittoToolsSharedModels
 public struct HealthMetric {
     public var isHealthy: Bool
     public var details: [String: String]
