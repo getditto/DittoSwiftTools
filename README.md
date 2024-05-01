@@ -475,7 +475,7 @@ public struct DittoHeartbeatInfo: Identifiable {
     public var presenceSnapshotDirectlyConnectedPeersCount: Int { presenceSnapshotDirectlyConnectedPeers.count }
     public var presenceSnapshotDirectlyConnectedPeers: [DittoPeerConnection]
     public var metadata: [String: Any]
-    public var healthMetrics: [HealthMetric]
+    public var healthMetrics: [String: HealthMetric]
 }
 
 public struct DittoPeerConnection {
@@ -489,9 +489,8 @@ public struct DittoPeerConnection {
 }
 
 public struct HealthMetric {
-    public var metricName: String
     public var isHealthy: Bool
-    public var details: [String: Any]
+    public var details: [String: String]
 }
 ```
 
