@@ -13,11 +13,13 @@ public struct DittoHeartbeatConfig {
     public var id: String
     public var secondsInterval: Int
     public var metadata: [String: Any]?
+    public var healthMetricProviders: [HealthMetricProvider]
 
-    public init(id: String, secondsInterval: Int, metadata: [String : Any]? = nil) {
+    public init(id: String, secondsInterval: Int, metadata: [String : Any]? = nil, healthMetricProviders: [HealthMetricProvider] = []) {
         self.id = id
         self.secondsInterval = secondsInterval
         self.metadata = metadata
+        self.healthMetricProviders = healthMetricProviders
     }
 }
 

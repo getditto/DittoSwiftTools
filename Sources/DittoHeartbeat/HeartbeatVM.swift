@@ -31,11 +31,9 @@ public class HeartbeatVM: ObservableObject {
     public var infoPublisher: AnyPublisher<DittoHeartbeatInfo?, Never> {
         infoCurrentValueSubject.eraseToAnyPublisher()
     }
-    private let healthMetricProviders: [HealthMetricProvider]
 
-    public init(ditto: Ditto, healthMetricProviders: [HealthMetricProvider] = []) {
+    public init(ditto: Ditto) {
         self.ditto = ditto
-        self.healthMetricProviders = healthMetricProviders
     }
     
     public func startHeartbeat(config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback) {
@@ -64,9 +62,10 @@ public class HeartbeatVM: ObservableObject {
     }
 
     private func updateHealthMetrics() {
-        guard var hbInfo = hbInfo else { return }
+        guard var hbInfo = hbInfo,
+            let hbConfig = hbConfig else { return }
         var newHealthMetrics: [String: HealthMetric] = [:]
-        healthMetricProviders.forEach { provider in
+        hbConfig.healthMetricProviders.forEach { provider in
             newHealthMetrics[provider.metricName] = provider.getCurrentState()
         }
         hbInfo.healthMetrics = newHealthMetrics
