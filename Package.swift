@@ -10,6 +10,10 @@ let package = Package(
     ],
     products: [
         .library(
+            name: "DittoToolsSharedModels",
+            targets: ["DittoToolsSharedModels"]
+        ),
+        .library(
             name: "DittoPresenceViewer",
             targets: ["DittoPresenceViewer"]
         ),
@@ -50,12 +54,12 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
+        .target(name: "DittoToolsSharedModels"),
         .target(
             name: "DittoPresenceViewer",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
             ],
-            path: "Sources/DittoPresenceViewer",
             resources: [
                 .copy("Resources/index.html"),
                 .copy("Resources/main.css"),
@@ -70,57 +74,51 @@ let package = Package(
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
                 .product(name: "OrderedCollections", package: "swift-collections")
-            ],
-            path: "Sources/DittoDataBrowser"
+            ]
         ),
         .target(
             name: "DittoExportLogs",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoExportLogs"
+            ]
         ),
         .target(
             name: "DittoDiskUsage",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoDiskUsage"
+            ]
         ),
         .target(
             name: "DittoPeersList",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoPeersList"
+            ]
         ),
         .target(
             name: "DittoExportData",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoExportData"
+            ]
         ),
         .target(
             name: "DittoPresenceDegradation",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoPresenceDegradation"
+            ]
         ),
         .target(
             name: "DittoHeartbeat",
             dependencies: [
-                .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoHeartbeat"
+                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
+                "DittoToolsSharedModels"
+            ]
         ),
         .target(
             name: "DittoPermissionsHealth",
             dependencies: [
-                .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoPermissionsHealth"
-        ),
+                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
+                "DittoToolsSharedModels"
+            ]
+        )
     ]
 )

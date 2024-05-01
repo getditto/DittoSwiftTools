@@ -1,26 +1,22 @@
 //
-//  File.swift
+//  NetworkManager.swift
 //  
 //
 //  Created by Walker Erekson on 2/26/24.
 //
 
-import CoreBluetooth
+import Combine
+import DittoToolsSharedModels
 import Network
 
 @available(iOS 13.0, *)
-class NetworkManager: NSObject, ObservableObject, CBCentralManagerDelegate {
-    @Published var isBluetoothEnabled = false
+public class NetworkManager: NSObject, ObservableObject {
     @Published var isWifiEnabled = false
-    
-    private var centralManager: CBCentralManager!
+
     private var pathMonitor: NWPathMonitor!
     
-    override init() {
+    public override init() {
         super.init()
-        
-        // Initialize CBCentralManager with self as delegate
-        centralManager = CBCentralManager(delegate: self, queue: nil)
         
         // Check Wi-Fi status
         pathMonitor = NWPathMonitor()
@@ -32,9 +28,15 @@ class NetworkManager: NSObject, ObservableObject, CBCentralManagerDelegate {
         let queue = DispatchQueue(label: "NetworkMonitor")
         pathMonitor.start(queue: queue)
     }
+}
+
+@available(iOS 13.0, *)
+extension NetworkManager: HealthMetricProvider {
+    public var metricName: String {
+        "DittoSwiftTools.DittoPermissionsHealth.NetworkManager" // TODO: way too wordy and should be a constant
+    }
     
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        // Update isBluetoothEnabled when Bluetooth state changes
-        isBluetoothEnabled = central.state == .poweredOn
+    public func getCurrentState() -> DittoToolsSharedModels.HealthMetric {
+        HealthMetric(isHealthy: isWifiEnabled, details: [:]) // TODO: meaningful details? SSID?
     }
 }

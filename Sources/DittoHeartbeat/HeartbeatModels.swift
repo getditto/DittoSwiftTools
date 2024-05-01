@@ -7,6 +7,7 @@
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 
 import Foundation
+import DittoToolsSharedModels
 
 //MARK: HeartbeatConfig
 public struct DittoHeartbeatConfig {
@@ -143,27 +144,6 @@ extension DittoPeerConnection {
     }
 }
 
-//MARK: HealthMetric
-public struct HealthMetric {
-    public let isHealthy: Bool
-    public let details: [String: String]
-
-    public init(isHealthy: Bool, details: [String: String]) {
-        self.isHealthy = isHealthy
-        self.details = details
-    }
-
-    init?(_ dictionary: [String: Any]?) {
-        guard let dictionary = dictionary,
-              let isHealthy = dictionary[String.isHealthy] as? Bool,
-              let details = dictionary[String.details] as? [String: String] else {
-            return nil
-        }
-        self.isHealthy = isHealthy
-        self.details = details
-    }
-}
-
 //MARK: HeartbeatConfig Mock
 public extension DittoHeartbeatConfig {
     static var mock: DittoHeartbeatConfig {
@@ -172,5 +152,16 @@ public extension DittoHeartbeatConfig {
             secondsInterval: 10,
             metadata: ["metadata-key1": "metadata-value1", "metadata-key2": "metadata-value2"]
         )
+    }
+}
+
+private extension HealthMetric {
+    init?(_ dictionary: [String: Any]?) {
+        guard let dictionary = dictionary,
+              let isHealthy = dictionary[String.isHealthy] as? Bool,
+              let details = dictionary[String.details] as? [String: String] else {
+            return nil
+        }
+        self.init(isHealthy: isHealthy, details: details)
     }
 }
