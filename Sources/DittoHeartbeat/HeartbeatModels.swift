@@ -56,10 +56,6 @@ public struct DittoHeartbeatInfo: Identifiable {
         self.presenceSnapshotDirectlyConnectedPeers = presenceSnapshotDirectlyConnectedPeers
         self.metadata = metadata
     }
-
-    public func update(healthMetric: HealthMetric) {
-        
-    }
 }
 
 public extension DittoHeartbeatInfo {
