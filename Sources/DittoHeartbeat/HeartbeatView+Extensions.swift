@@ -30,7 +30,6 @@ public struct HeartbeatInfoView: View {
             }
             if !info.healthMetrics.isEmpty {
                 Text("Health Metrics:\n")
-                // TODO: Better Health Metrics details
                 Text(info.healthMetrics.description)
             }
         }
