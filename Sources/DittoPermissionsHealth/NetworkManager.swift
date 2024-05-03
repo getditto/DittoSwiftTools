@@ -33,10 +33,10 @@ public class NetworkManager: NSObject, ObservableObject {
 @available(iOS 13.0, *)
 extension NetworkManager: HealthMetricProvider {
     public var metricName: String {
-        "DittoSwiftTools.DittoPermissionsHealth.NetworkManager" // TODO: way too wordy and should be a constant
+        DittoPermissionsHealthConstants.networkManagerHealthMetricName
     }
     
     public func getCurrentState() -> DittoToolsSharedModels.HealthMetric {
-        HealthMetric(isHealthy: isWifiEnabled, details: [:]) // TODO: meaningful details? SSID?
+        HealthMetric(isHealthy: isWifiEnabled, details: [:]) // A future release may add more details here
     }
 }

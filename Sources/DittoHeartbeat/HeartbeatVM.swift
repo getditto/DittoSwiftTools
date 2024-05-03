@@ -15,7 +15,7 @@ import SwiftUI
 
 public typealias HeartbeatCallback = (DittoHeartbeatInfo) -> Void
 
-@available(iOS 15, *)
+@available(iOS 13, *)
 public class HeartbeatVM: ObservableObject {
     @Published public var isEnabled = false
     private var hbConfig: DittoHeartbeatConfig?
@@ -87,7 +87,7 @@ public class HeartbeatVM: ObservableObject {
             .sink {[weak self] date in
                 guard let self = self else { return }
                 updateHealthMetrics()
-                hbInfo?.lastUpdated = DateFormatter.isoDate.string(from: Date.now)
+                hbInfo?.lastUpdated = DateFormatter.isoDate.string(from: Date())
                 updateCollection()
                 emit()
             }

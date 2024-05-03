@@ -150,8 +150,19 @@ public extension DittoHeartbeatConfig {
         DittoHeartbeatConfig(
             id: UUID().uuidString,
             secondsInterval: 10,
-            metadata: ["metadata-key1": "metadata-value1", "metadata-key2": "metadata-value2"]
+            metadata: ["metadata-key1": "metadata-value1", "metadata-key2": "metadata-value2"],
+            healthMetricProviders: [MockHealthMetricProviderProvider()]
         )
+    }
+}
+
+public struct MockHealthMetricProviderProvider: HealthMetricProvider {
+    public var metricName: String {
+        "MOCK"
+    }
+
+    public func getCurrentState() -> DittoToolsSharedModels.HealthMetric {
+        HealthMetric(isHealthy: true, details: ["foo": "bar", "time": "\(Date().timeIntervalSince1970)"])
     }
 }
 

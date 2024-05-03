@@ -93,7 +93,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
 @available(iOS 13.0, *)
 extension BluetoothManager: HealthMetricProvider {
     public var metricName: String {
-        "DittoSwiftTools.DittoPermissionsHealth.BluetoothManager" // TODO: way too wordy and should be a constant
+        DittoPermissionsHealthConstants.bluetoothManagerHealthMetricName
     }
     
     public func getCurrentState() -> DittoToolsSharedModels.HealthMetric {
