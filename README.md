@@ -438,14 +438,15 @@ present(vc, animated: true)
 
 ### 9. Heartbeat
 
-The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh.
+The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh. It allows you to regularly report data and health of the device.
 
 **Configure Heartbeat**
 
 These are the values you need to provide to the Heartbeat:
 1. Id - Unique value that identifies the device
 2. Interval - The frequency at which the Heartbeat will scrape the data
-3. Meta Data -  This field is optional
+3. Meta Data (optional) - Any metadata you want to attach to this heartbeat.
+4. HealthMetricsProviders (optional) - Any `HealthMetricProvider`s you want to use with this heartbeat. These can be from DittoSwiftTools e.g. `BluetoothManager` from `DittoPermissionsHealth` or custom tools.
 
 There is a `DittoHeartbeatConfig` struct you can use to construct your configuration.
 
