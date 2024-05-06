@@ -10,7 +10,7 @@ import DittoSwift
 import CryptoKit
 import Combine
 
-@available(iOS 15.0, *)
+@available(iOS 13.0, *)
 class PresenceDegradationVM: ObservableObject {
         
     @Published var expectedPeers: Int = 0

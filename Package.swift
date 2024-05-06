@@ -10,6 +10,10 @@ let package = Package(
     ],
     products: [
         .library(
+            name: "DittoHealthMetrics",
+            targets: ["DittoHealthMetrics"]
+        ),
+        .library(
             name: "DittoPresenceViewer",
             targets: ["DittoPresenceViewer"]
         ),
@@ -46,17 +50,16 @@ let package = Package(
             targets: ["DittoPermissionsHealth"]),
     ],
     dependencies: [
-        // Ditto.diskUsage was added in 3.0.1
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.0.0"),
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.5.0"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
+        .target(name: "DittoHealthMetrics"),
         .target(
             name: "DittoPresenceViewer",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
             ],
-            path: "Sources/DittoPresenceViewer",
             resources: [
                 .copy("Resources/index.html"),
                 .copy("Resources/main.css"),
@@ -71,57 +74,51 @@ let package = Package(
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
                 .product(name: "OrderedCollections", package: "swift-collections")
-            ],
-            path: "Sources/DittoDataBrowser"
+            ]
         ),
         .target(
             name: "DittoExportLogs",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoExportLogs"
+            ]
         ),
         .target(
             name: "DittoDiskUsage",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoDiskUsage"
+            ]
         ),
         .target(
             name: "DittoPeersList",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoPeersList"
+            ]
         ),
         .target(
             name: "DittoExportData",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoExportData"
+            ]
         ),
         .target(
             name: "DittoPresenceDegradation",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoPresenceDegradation"
+            ]
         ),
         .target(
             name: "DittoHeartbeat",
             dependencies: [
-                .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoHeartbeat"
+                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
+                "DittoHealthMetrics"
+            ]
         ),
         .target(
             name: "DittoPermissionsHealth",
             dependencies: [
-                .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            path: "Sources/DittoPermissionsHealth"
-        ),
+                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
+                "DittoHealthMetrics"
+            ]
+        )
     ]
 )

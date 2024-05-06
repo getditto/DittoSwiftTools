@@ -1,6 +1,6 @@
 ///
 //  HeartbeatVM.swift
-//  DittoChat
+//  DittoSwiftTools
 //
 //  Created by Eric Turner on 02/01/24.
 //
@@ -9,12 +9,13 @@
 import Combine
 import CryptoKit
 import DittoSwift
+import DittoHealthMetrics
 import SwiftUI
 
 
 public typealias HeartbeatCallback = (DittoHeartbeatInfo) -> Void
 
-@available(iOS 15, *)
+@available(iOS 13, *)
 public class HeartbeatVM: ObservableObject {
     @Published public var isEnabled = false
     private var hbConfig: DittoHeartbeatConfig?
@@ -46,7 +47,7 @@ public class HeartbeatVM: ObservableObject {
             peerKey: localPeerKeyString,
             secondsInterval: config.secondsInterval,
             sdk: ditto.presence.graph.localPeer.platformSDK,
-            metaData: config.metaData ?? [:]
+            metadata: config.metadata ?? [:]
         )
         observePeers()
         startTimer()
@@ -60,7 +61,17 @@ public class HeartbeatVM: ObservableObject {
         peersObserver?.stop()
         hbSubscription?.cancel()
     }
-    
+
+    private func updateHealthMetrics() {
+        guard var hbInfo = hbInfo,
+            let hbConfig = hbConfig else { return }
+        var newHealthMetrics: [String: HealthMetric] = [:]
+        hbConfig.healthMetricProviders.forEach { provider in
+            newHealthMetrics[provider.metricName] = provider.getCurrentState()
+        }
+        hbInfo.healthMetrics = newHealthMetrics
+    }
+
     private func startTimer() {
         guard let config = hbConfig else {
             print("HeartbeatVM.\(#function): config is NIL --> Return")
@@ -68,14 +79,15 @@ public class HeartbeatVM: ObservableObject {
         }
         
         timer?.connect().cancel()
-        timer = Timer.publish(every: Double(config.secondsInterval), on: .main, in: .common)
-        
+        timer = Timer.publish(every: TimeInterval(config.secondsInterval), on: .main, in: .common)
+
         cancellable = timer!
             .autoconnect()
             .receive(on: DispatchQueue.main)
             .sink {[weak self] date in
                 guard let self = self else { return }
-                hbInfo?.lastUpdated = DateFormatter.isoDate.string(from: Date.now)
+                updateHealthMetrics()
+                hbInfo?.lastUpdated = DateFormatter.isoDate.string(from: Date())
                 updateCollection()
                 emit()
             }
@@ -181,5 +193,3 @@ public extension DateFormatter {
         return f
     }
 }
-
-
