@@ -10,8 +10,8 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "DittoToolsSharedModels",
-            targets: ["DittoToolsSharedModels"]
+            name: "DittoHealthMetrics",
+            targets: ["DittoHealthMetrics"]
         ),
         .library(
             name: "DittoPresenceViewer",
@@ -54,7 +54,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
-        .target(name: "DittoToolsSharedModels"),
+        .target(name: "DittoHealthMetrics"),
         .target(
             name: "DittoPresenceViewer",
             dependencies: [
@@ -110,14 +110,14 @@ let package = Package(
             name: "DittoHeartbeat",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
-                "DittoToolsSharedModels"
+                "DittoHealthMetrics"
             ]
         ),
         .target(
             name: "DittoPermissionsHealth",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
-                "DittoToolsSharedModels"
+                "DittoHealthMetrics"
             ]
         )
     ]

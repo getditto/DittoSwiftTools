@@ -9,7 +9,7 @@
 import Combine
 import CryptoKit
 import DittoSwift
-import DittoToolsSharedModels
+import DittoHealthMetrics
 import SwiftUI
 
 

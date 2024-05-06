@@ -7,7 +7,7 @@
 
 import Combine
 import CoreBluetooth
-import DittoToolsSharedModels
+import DittoHealthMetrics
 import Foundation
 
 @available(iOS 13.0, *)
@@ -96,7 +96,7 @@ extension BluetoothManager: HealthMetricProvider {
         DittoPermissionsHealthConstants.bluetoothManagerHealthMetricName
     }
     
-    public func getCurrentState() -> DittoToolsSharedModels.HealthMetric {
+    public func getCurrentState() -> DittoHealthMetrics.HealthMetric {
         HealthMetric(isHealthy: isHealthy, details: healthDetails)
     }
 }

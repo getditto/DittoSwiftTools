@@ -491,7 +491,7 @@ public struct DittoPeerConnection {
     public var peerKey: String
 }
 
-// See DittoToolsSharedModels
+// See DittoHealthMetrics
 public struct HealthMetric {
     public var isHealthy: Bool
     public var details: [String: String]

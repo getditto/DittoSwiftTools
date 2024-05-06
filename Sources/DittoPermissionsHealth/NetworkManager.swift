@@ -6,7 +6,7 @@
 //
 
 import Combine
-import DittoToolsSharedModels
+import DittoHealthMetrics
 import Network
 
 @available(iOS 13.0, *)
@@ -36,7 +36,7 @@ extension NetworkManager: HealthMetricProvider {
         DittoPermissionsHealthConstants.networkManagerHealthMetricName
     }
     
-    public func getCurrentState() -> DittoToolsSharedModels.HealthMetric {
+    public func getCurrentState() -> DittoHealthMetrics.HealthMetric {
         HealthMetric(isHealthy: isWifiEnabled, details: [:]) // A future release may add more details here
     }
 }

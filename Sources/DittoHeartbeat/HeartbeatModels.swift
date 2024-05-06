@@ -7,7 +7,7 @@
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 
 import Foundation
-import DittoToolsSharedModels
+import DittoHealthMetrics
 
 //MARK: HeartbeatConfig
 public struct DittoHeartbeatConfig {
@@ -161,7 +161,7 @@ public struct MockHealthMetricProviderProvider: HealthMetricProvider {
         "MOCK"
     }
 
-    public func getCurrentState() -> DittoToolsSharedModels.HealthMetric {
+    public func getCurrentState() -> DittoHealthMetrics.HealthMetric {
         HealthMetric(isHealthy: true, details: ["foo": "bar", "time": "\(Date().timeIntervalSince1970)"])
     }
 }
