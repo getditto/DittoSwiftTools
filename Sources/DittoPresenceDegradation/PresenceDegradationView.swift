@@ -8,7 +8,7 @@
 import SwiftUI
 import DittoSwift
 
-@available(iOS 15.0, *)
+@available(iOS 14.0, *)
 public struct PresenceDegradationView: View {
     
     @StateObject var vm: PresenceDegradationVM
