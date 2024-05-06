@@ -38,7 +38,7 @@ import Foundation
     }
     
     func isLocalPeer(_ peer: DittoPeer) -> Bool {
-        peer.peerKey == localPeer.peerKey
+        peer.peerKeyString == localPeer.peerKeyString
     }
     
     func connectionsWithLocalPeer(_ peer: DittoPeer) -> [DittoConnection] {

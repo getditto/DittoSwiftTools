@@ -41,34 +41,33 @@ class PresenceDegradationVM: ObservableObject {
                     transportInfo: localPeerTransportInfo,
                     connected: true,
                     lastSeen: Int(seenAt.timeIntervalSince1970),
-                    key: self.hashPeerKeyUseCase(graph.localPeer.peerKey)
+                    key: graph.localPeer.peerKeyString
                 )
                 
                 for peer in graph.remotePeers {
-                    let hashedPeerKey = self.hashPeerKeyUseCase(peer.peerKey)
                     if var remotePeers = self.remotePeers {
-                        remotePeers[hashedPeerKey] = Peer(
+                        remotePeers[peer.peerKeyString] = Peer(
                             name: peer.deviceName,
                             transportInfo: self.resolveTransportInfo(peer: peer),
                             connected: true,
                             lastSeen: Int(seenAt.timeIntervalSince1970),
-                            key: hashedPeerKey
+                            key: peer.peerKeyString
                         )
                         self.remotePeers = remotePeers
                     } else {
-                        self.remotePeers = [hashedPeerKey: Peer(
+                        self.remotePeers = [peer.peerKeyString: Peer(
                             name: peer.deviceName,
                             transportInfo: self.resolveTransportInfo(peer: peer),
                             connected: true,
                             lastSeen: Int(seenAt.timeIntervalSince1970),
-                            key: hashedPeerKey
+                            key: peer.peerKeyString
                         )]
                     }
                 }
                 
                 if let peers = self.remotePeers?.values {
                     for peer in peers {                    
-                        if !graph.remotePeers.contains(where: { self.hashPeerKeyUseCase($0.peerKey) == peer.key}) {
+                        if !graph.remotePeers.contains(where: { $0.peerKeyString == peer.key}) {
                             self.remotePeers?[peer.key]?.connected = false
                         }
                     }
@@ -94,11 +93,6 @@ class PresenceDegradationVM: ObservableObject {
             p2pConnections: p2pConnections,
             cloudConnections: cloudConnections
         )
-    }
-    
-    func hashPeerKeyUseCase(_ data: Data) -> String {
-        let base64String = data.base64EncodedString()
-        return "pk:" + base64String
     }
     
     func updateSettings() {

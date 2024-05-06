@@ -43,7 +43,7 @@ public class HeartbeatVM: ObservableObject {
         hbInfo = DittoHeartbeatInfo(
             id: config.id,
             schema: String._schemaValue,
-            peerKey: localPeerKeyString,
+            peerKey: ditto.presence.graph.localPeer.peerKeyString,
             secondsInterval: config.secondsInterval,
             sdk: ditto.presence.graph.localPeer.platformSDK,
             metaData: config.metaData ?? [:]
@@ -134,7 +134,7 @@ public class HeartbeatVM: ObservableObject {
                 bluetooth: types[String.bt] as Int? ?? 0,
                 p2pWifi: types[String.p2pWifi] as Int? ?? 0,
                 lan: types[String.lan] as Int? ?? 0,
-                peerKey: peerKeyHash(peer.peerKey)
+                peerKey: peer.peerKeyString
             )
             connections.append(cx)
         }
@@ -154,14 +154,6 @@ public class HeartbeatVM: ObservableObject {
             }
         }
         return [String.bt: bt, String.p2pWifi: wifi, String.lan: lan]
-    }
-    
-    private var localPeerKeyString: String {
-        peerKeyHash(ditto.presence.graph.localPeer.peerKey)
-    }
-    
-    private func peerKeyHash(_ data: Data) -> String {
-        "\(String.pk)\(data.base64EncodedString())"
     }
 }
 
