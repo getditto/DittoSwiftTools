@@ -18,15 +18,6 @@ extension DittoPeer {
         }
         return sdk + "N/A"
     }
-    
-    var peerKeyString: String {
-        Self.toPeerKeyString(self.peerKey)
-    }
-    
-    static func toPeerKeyString(_ data: Data) -> String {
-        let hash = Insecure.MD5.hash(data: data)
-        return hash.map { String(format: "%02hhx", $0) }.joined()
-    }
 }
 
 
