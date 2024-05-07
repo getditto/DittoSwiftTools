@@ -96,7 +96,8 @@ public extension DittoHeartbeatInfo {
             String.sdk: sdk,
             String.presenceSnapshotDirectlyConnectedPeersCount: presenceSnapshotDirectlyConnectedPeers.count,
             String.presenceSnapshotDirectlyConnectedPeers: connectionsValue(),
-            String.metadata: metadata
+            String.metadata: metadata,
+            String.healthMetrics: healthMetrics
         ]
     }
     
