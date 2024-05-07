@@ -97,7 +97,7 @@ public extension DittoHeartbeatInfo {
             String.presenceSnapshotDirectlyConnectedPeersCount: presenceSnapshotDirectlyConnectedPeers.count,
             String.presenceSnapshotDirectlyConnectedPeers: connectionsValue(),
             String.metadata: metadata,
-            String.healthMetrics: healthMetrics
+            String.healthMetrics: healthMetricsValue()
         ]
     }
     
@@ -107,6 +107,14 @@ public extension DittoHeartbeatInfo {
             cxVal[cx.peerKey] = cx.value
         }
         return cxVal
+    }
+
+    private func healthMetricsValue() -> [String: Any] {
+        var healthMetricsVal = [String: Any]()
+        for healthMetric in healthMetrics {
+            healthMetricsVal[healthMetric.key] = healthMetric.value
+        }
+        return healthMetricsVal
     }
 }
 
@@ -175,5 +183,12 @@ private extension HealthMetric {
             return nil
         }
         self.init(isHealthy: isHealthy, details: details)
+    }
+
+    var value: [String: Any] {
+        [
+            String.isHealthy: isHealthy,
+            String.details: details
+        ]
     }
 }
