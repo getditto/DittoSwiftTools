@@ -63,13 +63,12 @@ public class HeartbeatVM: ObservableObject {
     }
 
     private func updateHealthMetrics() {
-        guard var hbInfo = hbInfo,
-            let hbConfig = hbConfig else { return }
+        guard let hbConfig = hbConfig else { return }
         var newHealthMetrics: [String: HealthMetric] = [:]
         hbConfig.healthMetricProviders.forEach { provider in
             newHealthMetrics[provider.metricName] = provider.getCurrentState()
         }
-        hbInfo.healthMetrics = newHealthMetrics
+        hbInfo?.healthMetrics = newHealthMetrics
     }
 
     private func startTimer() {
