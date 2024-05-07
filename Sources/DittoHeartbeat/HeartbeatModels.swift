@@ -111,8 +111,8 @@ public extension DittoHeartbeatInfo {
 
     private func healthMetricsValue() -> [String: Any] {
         var healthMetricsVal = [String: Any]()
-        for healthMetric in healthMetrics {
-            healthMetricsVal[healthMetric.key] = healthMetric.value
+        for (metricName, metric) in healthMetrics {
+            healthMetricsVal[metricName] = metric.value
         }
         return healthMetricsVal
     }
