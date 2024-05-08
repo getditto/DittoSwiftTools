@@ -10,7 +10,6 @@ import CoreBluetooth
 import DittoHealthMetrics
 import Foundation
 
-@available(iOS 13.0, *)
 public class BluetoothManager: NSObject, ObservableObject {
     private var centralManager: CBCentralManager!
     private var cancellables = Set<AnyCancellable>()
@@ -82,7 +81,6 @@ public class BluetoothManager: NSObject, ObservableObject {
     }
 }
 
-@available(iOS 13.0, *)
 extension BluetoothManager: CBCentralManagerDelegate {
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         // This delegate method is called when there's a change in the manager's state.
@@ -90,7 +88,6 @@ extension BluetoothManager: CBCentralManagerDelegate {
     }
 }
 
-@available(iOS 13.0, *)
 extension BluetoothManager: HealthMetricProvider {
     public var metricName: String {
         DittoPermissionsHealthConstants.bluetoothManagerHealthMetricName

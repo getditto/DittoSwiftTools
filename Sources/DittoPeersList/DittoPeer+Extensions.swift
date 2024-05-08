@@ -9,7 +9,6 @@ import Foundation
 import DittoSwift
 import CryptoKit
 
-@available(iOS 13.0, *)
 extension DittoPeer {
     var peerSDKVersion: String {
         let sdk = "SDK "

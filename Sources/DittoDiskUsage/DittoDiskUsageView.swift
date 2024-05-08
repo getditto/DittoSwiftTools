@@ -24,7 +24,6 @@ fileprivate struct DiskUsageState {
     let error: String?
 }
 
-@available(iOS 14, *)
 class DiskUsageViewModel: ObservableObject {
 
     @Published fileprivate var diskUsage: DiskUsageState?
@@ -85,7 +84,6 @@ class DiskUsageViewModel: ObservableObject {
     }
 }
 
-@available(iOS 14, *)
 public struct DittoDiskUsageView: View {
 
     @Environment(\.presentationMode) var presentationMode
@@ -157,7 +155,6 @@ public struct DittoDiskUsageView: View {
     }
 }
 
-@available(iOS 14, *)
 struct DittoDiskUsageView_Previews: PreviewProvider {
     static var previews: some View {
         DittoDiskUsageView(ditto: Ditto())
