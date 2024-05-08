@@ -6,6 +6,6 @@
 //
 
 struct DittoPermissionsHealthConstants {
-    static let networkManagerHealthMetricName = "DittoPermissionsHealth.WiFi"
-    static let bluetoothManagerHealthMetricName = "DittoPermissionsHealth.Bluetooth"
+    static let networkManagerHealthMetricName = "DittoPermissionsHealth_WiFi"
+    static let bluetoothManagerHealthMetricName = "DittoPermissionsHealth_Bluetooth"
 }
