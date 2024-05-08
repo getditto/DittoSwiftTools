@@ -6,7 +6,6 @@ let package = Package(
     name: "DittoSwiftTools",
     platforms: [
         .iOS(.v11),
-        .macOS(.v11),
     ],
     products: [
         .library(
