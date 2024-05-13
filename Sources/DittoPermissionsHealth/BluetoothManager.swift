@@ -60,7 +60,11 @@ public class BluetoothManager: NSObject, ObservableObject {
         case .resetting:
             return "Resetting"
         case .unsupported:
+#if targetEnvironment(simulator)
+            return "Unsupported (Simulator)"
+#else
             return "Unsupported"
+#endif
         case .unauthorized:
             return "Unauthorized"
         case .poweredOff:
