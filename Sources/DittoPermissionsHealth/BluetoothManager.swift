@@ -60,7 +60,11 @@ public class BluetoothManager: NSObject, ObservableObject {
         case .resetting:
             return "Resetting"
         case .unsupported:
+#if targetEnvironment(simulator)
+            return "Unsupported (Simulator)"
+#else
             return "Unsupported"
+#endif
         case .unauthorized:
             return "Unauthorized"
         case .poweredOff:
@@ -73,7 +77,11 @@ public class BluetoothManager: NSObject, ObservableObject {
     }
 
     var isHealthy: Bool {
+#if targetEnvironment(simulator)
+        authorizationStatus == .allowedAlways // The simulator always reports Unsupported but should still be considered healthy
+#else
         managerState == .poweredOn && authorizationStatus == .allowedAlways
+#endif
     }
 
     var healthDetails: [String: String] {
