@@ -73,7 +73,11 @@ public class BluetoothManager: NSObject, ObservableObject {
     }
 
     var isHealthy: Bool {
+#if targetEnvironment(simulator)
+        authorizationStatus == .allowedAlways // The simulator always reports Unsupported but should still be considered healthy
+#else
         managerState == .poweredOn && authorizationStatus == .allowedAlways
+#endif
     }
 
     var healthDetails: [String: String] {
