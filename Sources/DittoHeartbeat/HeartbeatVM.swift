@@ -15,7 +15,6 @@ import SwiftUI
 
 public typealias HeartbeatCallback = (DittoHeartbeatInfo) -> Void
 
-@available(iOS 13, *)
 public class HeartbeatVM: ObservableObject {
     @Published public var isEnabled = false
     private var hbConfig: DittoHeartbeatConfig?

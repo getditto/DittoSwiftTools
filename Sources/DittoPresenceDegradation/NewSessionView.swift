@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@available(iOS 14.0, *)
 public struct NewSessionView: View {
     
     @Binding private var expectedPeers: Int

@@ -8,7 +8,6 @@
 import SwiftUI
 import DittoSwift
 
-@available(iOS 14.0, *)
 public struct DataBrowser: View {
     
     @StateObject var viewModel: DataBrowserViewModel
