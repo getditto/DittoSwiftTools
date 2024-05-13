@@ -117,6 +117,7 @@ public class HeartbeatVM: ObservableObject {
     }
     
     private func updateCollection() {
+        guard hbConfig?.publishToDittoCollection == true else { return }
         guard let doc = hbInfo?.value else {
             print("DittoHeartbeatVM.\(#function): ERROR updatingCollection: bhInfo is NIL --> Return")
             return
