@@ -8,8 +8,6 @@ import SwiftUI
 import UIKit
 #endif
 
-
-@available(iOS 13.0, *)
 public struct ExportData: UIViewControllerRepresentable {
 
     private let ditto: Ditto

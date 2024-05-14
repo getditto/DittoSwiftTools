@@ -9,7 +9,6 @@ import Combine
 import DittoHealthMetrics
 import Network
 
-@available(iOS 13.0, *)
 public class NetworkManager: NSObject, ObservableObject {
     @Published var isWifiEnabled = false
 
@@ -30,7 +29,6 @@ public class NetworkManager: NSObject, ObservableObject {
     }
 }
 
-@available(iOS 13.0, *)
 extension NetworkManager: HealthMetricProvider {
     public var metricName: String {
         DittoPermissionsHealthConstants.networkManagerHealthMetricName

@@ -10,7 +10,6 @@ import CoreBluetooth
 import DittoHealthMetrics
 import Foundation
 
-@available(iOS 13.0, *)
 public class BluetoothManager: NSObject, ObservableObject {
     private var centralManager: CBCentralManager!
     private var cancellables = Set<AnyCancellable>()
@@ -60,7 +59,11 @@ public class BluetoothManager: NSObject, ObservableObject {
         case .resetting:
             return "Resetting"
         case .unsupported:
+#if targetEnvironment(simulator)
+            return "Unsupported (Simulator)"
+#else
             return "Unsupported"
+#endif
         case .unauthorized:
             return "Unauthorized"
         case .poweredOff:
@@ -73,7 +76,11 @@ public class BluetoothManager: NSObject, ObservableObject {
     }
 
     var isHealthy: Bool {
+#if targetEnvironment(simulator)
+        authorizationStatus == .allowedAlways // The simulator always reports Unsupported but should still be considered healthy
+#else
         managerState == .poweredOn && authorizationStatus == .allowedAlways
+#endif
     }
 
     var healthDetails: [String: String] {
@@ -82,7 +89,6 @@ public class BluetoothManager: NSObject, ObservableObject {
     }
 }
 
-@available(iOS 13.0, *)
 extension BluetoothManager: CBCentralManagerDelegate {
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         // This delegate method is called when there's a change in the manager's state.
@@ -90,7 +96,6 @@ extension BluetoothManager: CBCentralManagerDelegate {
     }
 }
 
-@available(iOS 13.0, *)
 extension BluetoothManager: HealthMetricProvider {
     public var metricName: String {
         DittoPermissionsHealthConstants.bluetoothManagerHealthMetricName

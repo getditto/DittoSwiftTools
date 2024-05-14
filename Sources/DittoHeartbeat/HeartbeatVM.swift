@@ -15,7 +15,6 @@ import SwiftUI
 
 public typealias HeartbeatCallback = (DittoHeartbeatInfo) -> Void
 
-@available(iOS 13, *)
 public class HeartbeatVM: ObservableObject {
     @Published public var isEnabled = false
     private var hbConfig: DittoHeartbeatConfig?
@@ -63,13 +62,12 @@ public class HeartbeatVM: ObservableObject {
     }
 
     private func updateHealthMetrics() {
-        guard var hbInfo = hbInfo,
-            let hbConfig = hbConfig else { return }
+        guard let hbConfig = hbConfig else { return }
         var newHealthMetrics: [String: HealthMetric] = [:]
         hbConfig.healthMetricProviders.forEach { provider in
             newHealthMetrics[provider.metricName] = provider.getCurrentState()
         }
-        hbInfo.healthMetrics = newHealthMetrics
+        hbInfo?.healthMetrics = newHealthMetrics
     }
 
     private func startTimer() {

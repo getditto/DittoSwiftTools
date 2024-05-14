@@ -8,7 +8,6 @@
 import SwiftUI
 import Combine
 
-@available(iOS 14.0, *)
 public struct PermissionsHealth: View {
     @ObservedObject var bluetoothManager = BluetoothManager()
     @ObservedObject var networkManager = NetworkManager()
