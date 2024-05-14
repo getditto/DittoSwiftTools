@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import DittoSwift
+import DittoHealthMetrics
 
 struct DiskUsage: Hashable {
     let relativePath: String
@@ -22,6 +23,27 @@ struct DiskUsageState {
     let children: [DiskUsage]
     let lastUpdated: String
     let error: String?
+
+    var isHealthy: Bool {
+        totalSizeInBytes <= DittoDiskUsageConstants.twoGigabytesInBytes
+    }
+
+    var details: [String: String] {
+        // TODO: strings to constants
+        var detailsMap: [String: String] = [
+            "Root Path": rootPath, // TODO: is this valuable?
+            "Total Size": totalSize,
+            "Last Updated": lastUpdated
+        ]
+        for child in children {
+            detailsMap[child.relativePath] = child.size
+        }
+        return detailsMap
+    }
+
+    var healthMetric: HealthMetric {
+        HealthMetric(isHealthy: isHealthy, details: details)
+    }
 }
 
 class DiskUsageViewModel: ObservableObject {
@@ -81,5 +103,15 @@ class DiskUsageViewModel: ObservableObject {
             }
             .receive(on: DispatchQueue.main)
             .assign(to: \.diskUsage, on: self)
+    }
+}
+
+extension DiskUsageViewModel: HealthMetricProvider {
+    var metricName: String {
+        DittoDiskUsageConstants.diskUsageHealthMetricName
+    }
+    
+    func getCurrentState() -> DittoHealthMetrics.HealthMetric {
+        <#code#>
     }
 }
