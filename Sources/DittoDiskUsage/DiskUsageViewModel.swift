@@ -24,8 +24,20 @@ struct DiskUsageState {
     let lastUpdated: String
     let unhealthySizeInBytes: Int
 
+    /// For health metric reporting, we only consider the size of `ditto_replication` and `ditto_store`
+    var healthCheckSize: Int {
+        var total: Int = 0
+        if let dittoStore = children.first(where: { self.shortRelativePath(child: $0) == DittoDiskUsageConstants.dittoStorePath }) {
+            total += dittoStore.sizeInBytes
+        }
+        if let dittoReplication = children.first(where: { self.shortRelativePath(child: $0) == DittoDiskUsageConstants.dittoReplicationPath }) {
+            total += dittoReplication.sizeInBytes
+        }
+        return total
+    }
+
     var isHealthy: Bool {
-        totalSizeInBytes <= unhealthySizeInBytes
+        healthCheckSize <= unhealthySizeInBytes
     }
 
     var details: [String: String] {
@@ -55,6 +67,7 @@ public class DiskUsageViewModel: ObservableObject {
     @Published var diskUsage: DiskUsageState?
     var cancellable: Cancellable?
 
+    /// The size over which disk usage is considered unhealthy when used as a `HealthMetric` with the heartbeat tool (this only considers `ditto_store` and `ditto_replication`). Defaults to 2GB
     var unhealthySizeInBytes: Int = DittoDiskUsageConstants.twoGigabytesInBytes
 
     /// Convenience property for Ditto instance.

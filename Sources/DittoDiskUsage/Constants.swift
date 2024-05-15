@@ -15,4 +15,6 @@ struct DittoDiskUsageConstants {
     static let lastUpdated = "lastUpdated"
     static let noData = "Calculating disk usage"
     static let error = "error"
+    static let dittoStorePath = "ditto_store"
+    static let dittoReplicationPath = "ditto_replication"
 }
