@@ -30,18 +30,23 @@ struct DiskUsageState {
 
     var details: [String: String] {
         var detailsMap: [String: String] = [
-            DittoDiskUsageConstants.rootPath: rootPath, // TODO: is this valuable?
+            DittoDiskUsageConstants.rootPath: rootPath,
             DittoDiskUsageConstants.totalSize: totalSize,
             DittoDiskUsageConstants.lastUpdated: lastUpdated
         ]
         for child in children {
-            detailsMap[child.relativePath] = child.size
+            detailsMap[shortRelativePath(child: child)] = child.size
         }
         return detailsMap
     }
 
     var healthMetric: HealthMetric {
         HealthMetric(isHealthy: isHealthy, details: details)
+    }
+
+    private func shortRelativePath(child: DiskUsage) -> String {
+        let prefixCount = rootPath.count + 1 // drop the root path and the "/"
+        return String(child.relativePath.dropFirst(prefixCount))
     }
 }
 
