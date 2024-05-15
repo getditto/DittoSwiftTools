@@ -108,11 +108,11 @@ public class DiskUsageViewModel: ObservableObject {
 }
 
 extension DiskUsageViewModel: HealthMetricProvider {
-    var metricName: String {
+    public var metricName: String {
         DittoDiskUsageConstants.healthMetricName
     }
     
-    func getCurrentState() -> DittoHealthMetrics.HealthMetric {
+    public func getCurrentState() -> DittoHealthMetrics.HealthMetric {
         diskUsage?.healthMetric ?? HealthMetric(isHealthy: true, details: [DittoDiskUsageConstants.healthMetricName: DittoDiskUsageConstants.noData])
     }
 }
