@@ -78,7 +78,7 @@ public class DiskUsageViewModel: ObservableObject {
         return formattedSize
     }
 
-    init(ditto: Ditto) {
+    public init(ditto: Ditto) {
         self.ditto = ditto
         cancellable = ditto.diskUsage
             .diskUsagePublisher()
