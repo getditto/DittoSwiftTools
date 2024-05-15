@@ -32,30 +32,25 @@ public struct DittoDiskUsageView: View {
 
             Section {
                 if let diskUsage = viewModel.diskUsage {
-                    if let error = diskUsage.error {
-                        Text("Error: \(error)")
-                            .foregroundColor(.red)
-                    } else {
-                        ForEach(diskUsage.children, id: \.self) { (child: DiskUsage) in
-                            HStack {
-                                Text(child.relativePath)
-                                    .frame(width: 200, alignment: .leading)
-                                Text(child.size)
-                                    .frame(width: 100, alignment: .trailing)
-                            }
-                        }
+                    ForEach(diskUsage.children, id: \.self) { (child: DiskUsage) in
                         HStack {
-                            Group {
-                                Text("Total")
-                                    .frame(width: 200, alignment: .leading)
-                                Text(diskUsage.totalSize)
-                                    .frame(width: 100, alignment: .trailing)
-                            }
+                            Text(child.relativePath)
+                                .frame(width: 200, alignment: .leading)
+                            Text(child.size)
+                                .frame(width: 100, alignment: .trailing)
+                        }
+                    }
+                    HStack {
+                        Group {
+                            Text("Total")
+                                .frame(width: 200, alignment: .leading)
+                            Text(diskUsage.totalSize)
+                                .frame(width: 100, alignment: .trailing)
                         }
                     }
                 } else {
                     // Displayed before first async callback
-                    Text("Calculating disk usage 💾⏳")
+                    Text(DittoDiskUsageConstants.noData)
                 }
             }
 
@@ -72,7 +67,6 @@ public struct DittoDiskUsageView: View {
                 Button {
                     presentationMode.wrappedValue.dismiss()
                 } label: {
-                    // Label was added in iOS 14
                     Label("Close", systemImage: "xmark")
                 }
             }

@@ -86,11 +86,7 @@ final class DittoPresenceViewController: PlatformViewController {
         title = LocalizedStrings.title
 
 #if canImport(UIKit)
-        if #available(iOS 13.0, *) {
-            view.backgroundColor = .systemBackground
-        } else {
-            view.backgroundColor = .white
-        }
+        view.backgroundColor = .systemBackground
 #endif
     }
 

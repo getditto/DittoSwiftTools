@@ -22,18 +22,17 @@ struct DiskUsageState {
     let totalSize: String
     let children: [DiskUsage]
     let lastUpdated: String
-    let error: String?
+    let unhealthySizeInBytes: Int
 
     var isHealthy: Bool {
-        totalSizeInBytes <= DittoDiskUsageConstants.twoGigabytesInBytes
+        totalSizeInBytes <= unhealthySizeInBytes
     }
 
     var details: [String: String] {
-        // TODO: strings to constants
         var detailsMap: [String: String] = [
-            "Root Path": rootPath, // TODO: is this valuable?
-            "Total Size": totalSize,
-            "Last Updated": lastUpdated
+            DittoDiskUsageConstants.rootPath: rootPath, // TODO: is this valuable?
+            DittoDiskUsageConstants.totalSize: totalSize,
+            DittoDiskUsageConstants.lastUpdated: lastUpdated
         ]
         for child in children {
             detailsMap[child.relativePath] = child.size
@@ -46,10 +45,12 @@ struct DiskUsageState {
     }
 }
 
-class DiskUsageViewModel: ObservableObject {
+public class DiskUsageViewModel: ObservableObject {
 
     @Published var diskUsage: DiskUsageState?
     var cancellable: Cancellable?
+
+    var unhealthySizeInBytes: Int = DittoDiskUsageConstants.twoGigabytesInBytes
 
     /// Convenience property for Ditto instance.
     private var ditto: Ditto
@@ -73,7 +74,7 @@ class DiskUsageViewModel: ObservableObject {
 
     /// Uses `byteCountFormatter` to create a human-readable string.
     private func formatBytes(bytes: Int) -> String {
-        guard let formattedSize = DiskUsageViewModel.byteCountFormatter.string(for: bytes) else { return "error" }
+        guard let formattedSize = DiskUsageViewModel.byteCountFormatter.string(for: bytes) else { return DittoDiskUsageConstants.error }
         return formattedSize
     }
 
@@ -87,7 +88,7 @@ class DiskUsageViewModel: ObservableObject {
                         DiskUsage(
                             relativePath: child.path,
                             sizeInBytes: child.sizeInBytes,
-                            size: DiskUsageViewModel.byteCountFormatter.string(for: child.sizeInBytes) ?? "error"
+                            size: DiskUsageViewModel.byteCountFormatter.string(for: child.sizeInBytes) ?? DittoDiskUsageConstants.error
                         )
                     }
                     .sorted { $0.relativePath < $1.relativePath }
@@ -95,10 +96,10 @@ class DiskUsageViewModel: ObservableObject {
                 return DiskUsageState(
                     rootPath: diskUsage.path,
                     totalSizeInBytes: diskUsage.sizeInBytes,
-                    totalSize: DiskUsageViewModel.byteCountFormatter.string(for: diskUsage.sizeInBytes) ?? "error",
+                    totalSize: DiskUsageViewModel.byteCountFormatter.string(for: diskUsage.sizeInBytes) ?? DittoDiskUsageConstants.error,
                     children: children,
                     lastUpdated: DiskUsageViewModel.dateFormatter.string(from: Date()),
-                    error: nil
+                    unhealthySizeInBytes: self.unhealthySizeInBytes
                 )
             }
             .receive(on: DispatchQueue.main)
@@ -108,10 +109,10 @@ class DiskUsageViewModel: ObservableObject {
 
 extension DiskUsageViewModel: HealthMetricProvider {
     var metricName: String {
-        DittoDiskUsageConstants.diskUsageHealthMetricName
+        DittoDiskUsageConstants.healthMetricName
     }
     
     func getCurrentState() -> DittoHealthMetrics.HealthMetric {
-        <#code#>
+        diskUsage?.healthMetric ?? HealthMetric(isHealthy: true, details: [DittoDiskUsageConstants.healthMetricName: DittoDiskUsageConstants.noData])
     }
 }
