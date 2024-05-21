@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  DittoPeer+Extensions.swift
 //  
 //
 //  Created by Walker Erekson on 2/12/24.
