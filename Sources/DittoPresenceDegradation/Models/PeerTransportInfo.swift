@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PeerTransportInfo.swift
 //  
 //
 //  Created by Walker Erekson on 2/15/24.
