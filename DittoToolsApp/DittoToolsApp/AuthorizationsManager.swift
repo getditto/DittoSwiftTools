@@ -43,34 +43,18 @@ class AuthorizationsManager {
     // MARK: - Properties
 
     var bleAuthorizationStatus: AuthorizationStatus {
-        if #available(iOS 13.1, *) {
-            switch CBCentralManager.authorization {
-            case .allowedAlways:
-                return .authorized
-            case .notDetermined:
-                return .notDetermined
-            case .restricted:
-                return .denied
-            case .denied:
-                return .denied
-            @unknown default:
-                print("WARNING: Unknown CBCentralManager status")
-                return .notDetermined
-            }
-        } else {
-            switch CBPeripheralManager.authorizationStatus() {
-            case .authorized:
-                return .authorized
-            case .denied:
-                return .denied
-            case .notDetermined:
-                return .notDetermined
-            case .restricted:
-                return .denied
-            @unknown default:
-                print("WARNING: Unknown CBPeripheralManager status")
-                return .notDetermined
-            }
+        switch CBCentralManager.authorization {
+        case .allowedAlways:
+            return .authorized
+        case .notDetermined:
+            return .notDetermined
+        case .restricted:
+            return .denied
+        case .denied:
+            return .denied
+        @unknown default:
+            print("WARNING: Unknown CBCentralManager status")
+            return .notDetermined
         }
     }
 

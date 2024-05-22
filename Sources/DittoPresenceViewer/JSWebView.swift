@@ -68,15 +68,9 @@ class JSWebView: PlatformView {
     private func setup() {
 #if canImport(WebKit)
 #if canImport(UIKit)
-        if #available(iOS 13.0, *) {
-            backgroundColor = .systemBackground
-            webView.backgroundColor = .systemBackground
-            webView.scrollView.backgroundColor = .systemBackground
-        } else {
-            backgroundColor = .white
-            webView.backgroundColor = .white
-            webView.scrollView.backgroundColor = .white
-        }
+        backgroundColor = .systemBackground
+        webView.backgroundColor = .systemBackground
+        webView.scrollView.backgroundColor = .systemBackground
         webView.isOpaque = false
 
         webView.scrollView.isScrollEnabled = false

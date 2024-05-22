@@ -8,7 +8,6 @@
 import SwiftUI
 import DittoSwift
 
-@available(iOS 13.0, *)
 class DataBrowserViewModel: ObservableObject {
     
     @Published var collections: [DittoCollection]?

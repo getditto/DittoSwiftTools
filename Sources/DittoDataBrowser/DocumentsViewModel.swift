@@ -9,7 +9,6 @@ import Foundation
 import DittoSwift
 import OrderedCollections
 
-@available(iOS 13.0, *)
 class DocumentsViewModel : ObservableObject {
     
     let collectionName: String

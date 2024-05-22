@@ -9,6 +9,7 @@
 import Combine
 import DittoSwift
 import SwiftUI
+import Foundation
 
 @available(iOS 15, *)
 @MainActor public class PeersObserverVM: ObservableObject {
@@ -55,27 +56,6 @@ import SwiftUI
 //    deinit {
 //        print("PeersObserverVM -- deinit -- ")
 //    }
-}
-
-extension DittoPeer {
-    var peerSDKVersion: String {
-        let sdk = "SDK "
-        if let version = dittoSDKVersion {
-            return sdk + "v\(version)"
-        }
-        return sdk + "N/A"
-    }
-        
-    var addressSiteId: String {
-        Self.addressSiteId(self)
-    }
-    
-    static func addressSiteId(_ peer: DittoPeer) -> String {
-        // parse siteID out of DittoAddress description
-        let prefix = "\(peer.address)".components(separatedBy: "DittoAddress(siteID: ")
-        let addr = String(prefix.last ?? "").components(separatedBy: ",")
-        return String(addr.first ?? "[siteID N/A]")
-    }
 }
 
 // For sorting addresses of remote peers in func remotePeerAddresses() above

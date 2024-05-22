@@ -4,8 +4,10 @@
 
 import Combine
 import DittoExportData
+import DittoHeartbeat
 import DittoSwift
 import SwiftUI
+
 
 class MainListViewModel: ObservableObject {
     @Published var isShowingLoginSheet = DittoManager.shared.ditto == nil
@@ -41,6 +43,15 @@ struct ContentView: View {
                     }
                     NavigationLink(destination: DataBrowserView()) {
                         MenuListItem(title: "Data Browser", systemImage: "photo", color: .orange)
+                    }
+                    NavigationLink(destination: PresenceDegradationViewer()) {
+                        MenuListItem(title: "Presence Degradation", systemImage: "network", color: .red)
+                    }
+                    NavigationLink(destination: HeartBeatViewer()) {
+                        MenuListItem(title: "Heartbeat", systemImage: "heart.fill", color: .red)
+                    }
+                    NavigationLink(destination: PermissionsHealthViewer()) {
+                        MenuListItem(title: "Permissions Health", systemImage: "stethoscope", color: .purple)
                     }
                 }
                 Section(header: Text("Configuration")) {

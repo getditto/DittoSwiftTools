@@ -42,7 +42,7 @@ public struct PeersListView: View {
             #endif
 
             Section {
-                ForEach(vm.peers, id: \.address) { peer in
+                ForEach(vm.peers, id: \.peerKey) { peer in
                     peerView(peer)
                         .padding(.bottom, 4)
                         #if !os(tvOS)
@@ -86,7 +86,7 @@ public struct PeersListView: View {
             
             // Device name + siteID
             Text("\(peer.deviceName): ").font(Font.body.weight(.bold))
-            + Text("\(peer.addressSiteId)").font(Font.subheadline.weight(.bold))
+            + Text("\(peer.peerKeyString)")
             
             if vm.isLocalPeer(peer) {
                 ForEach(vm.peers, id: \.self) { conPeer in
@@ -95,11 +95,13 @@ public struct PeersListView: View {
                             .frame(height: 1)
                             .overlay(.gray).opacity(0.4)
                         
-                        Text("peer: \(DittoPeer.addressSiteId(conPeer))")
+                        Text("peer: \(conPeer.peerKeyString)")
+                            .lineLimit(1)
+                            .fixedSize(horizontal: false, vertical: true)
                         
-                        peerConnectionsView(conPeer, showBLEDistance: showBLEDistance)
+                        presenceSnapshotDirectlyConnectedPeersView(conPeer, showBLEDistance: showBLEDistance)
                     }
-                    .padding(.leading, 16)
+                    .padding(.leading, 12)
                 }
             }
             Text(peer.peerSDKVersion).font(.subheadline)
@@ -107,7 +109,7 @@ public struct PeersListView: View {
     }
     
     @ViewBuilder
-    func peerConnectionsView(_ peer: DittoPeer, showBLEDistance: Bool = false) -> some View {
+    func presenceSnapshotDirectlyConnectedPeersView(_ peer: DittoPeer, showBLEDistance: Bool = false) -> some View {
         VStack(alignment: .leading) {
             ForEach(vm.connectionsWithLocalPeer(peer)) { conx in
                 HStack {

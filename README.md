@@ -358,6 +358,192 @@ let vc = UIHostingController(rootView: ExportData(ditto: ditto))
 present(vc, animated: true)
 ```
 
+### 7. Presence Degradation Reporter
+
+Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected. Provides a callback function that will allow you to monitor the status of the mesh.
+
+<img width="248" alt="Screenshot 2024-02-20 at 5 14 18 PM" src="https://github.com/getditto/DittoSwiftTools/assets/60948031/9cf81503-4557-4480-a843-1236314c926b">
+
+You can use the Presence Degradation Reporter in SiwftUI or UIKit
+
+data provided in callback
+```
+settings: Settings
+struct Settings {
+    let expectedPeers: Int
+    let reportApiEnabled: Bool
+    let hasSeenExpectedPeers: Bool
+    let sessionStartedAt: String
+}
+```
+
+**SwiftUI**  
+
+Use `PresenceDegradationView(ditto: DittoManager.shared.ditto!) { expectedPeers, remotePeers, settings in //handle data}`, passing in your Ditto instance to display the peers list.  
+
+```
+import DittoPresenceDegradation
+
+struct PresenceDegradationViewer: View {
+    
+    var body: some View {
+        PresenceDegradationView(ditto: <diito>) { expectedPeers, remotePeers, settings in
+            //handle data
+        }
+    }
+}
+```
+
+**UIKit**  
+
+Pass `PresenceDegradationView(ditto: <ditto>)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
+which will return a view controller you can use to present.  
+
+```
+let vc = UIHostingController(rootView: PresenceDegradationView(ditto: <diito>))
+
+present(vc, animated: true)
+```
+
+### 8. Permissions Health
+
+Permissions Health allows you to see the status of ditto's required services and permissions.
+
+Example: Wi-Fi, Bluetooth, Missing Permissions.
+
+<img width="371" alt="Screenshot 2024-02-28 at 12 47 28 PM" src="https://github.com/getditto/DittoSwiftTools/assets/60948031/1059ff07-d2f6-463c-8185-ce9fa206edea">
+
+**SwiftUI**
+
+```
+import DittoPermissionsHealth
+
+struct PermissionsHealthViewer: View {
+    var body: some View {
+        PermissionsHealth()
+    }
+}
+```
+
+**UIKit**
+
+Pass `UIActivityViewController` (return value of `PermissionsHealth()`) to [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
+which will return a view controller you can use to present.
+
+```swift
+let vc = UIHostingController(rootView: PermissionsHealth())
+
+present(vc, animated: true)
+```
+
+### 9. Heartbeat
+
+The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh. It allows you to regularly report data and health of the device.
+
+**Configure Heartbeat**
+
+These are the values you need to provide to the Heartbeat:
+1. Id - Unique value that identifies the device
+2. Interval - The frequency at which the Heartbeat will scrape the data
+3. Meta Data (optional) - Any metadata you want to attach to this heartbeat.
+4. HealthMetricsProviders (optional) - Any `HealthMetricProvider`s you want to use with this heartbeat. These can be from DittoSwiftTools e.g. `BluetoothManager` from `DittoPermissionsHealth` or custom tools.
+
+There is a `DittoHeartbeatConfig` struct you can use to construct your configuration.
+
+```swift
+// Provided with the Heartbeat tool
+public struct DittoHeartbeatConfig {
+    public var id: String
+    public var secondsInterval: Int
+    public var metadata: [String: Any]?
+    public var healthMetricProviders: [HealthMetricProvider]
+
+    public init(id: String, secondsInterval: Int, metadata: [String : Any]? = nil, healthMetricProviders: [HealthMetricProvider] = []) {
+        self.id = id
+        self.secondsInterval = secondsInterval
+        self.metadata = metadata
+        self.healthMetricProviders = healthMetricProviders
+    }
+}
+```
+
+This tool generates a `DittoHeartbeatInfo` object with the given data:
+```swift
+public struct DittoHeartbeatInfo: Identifiable {
+    public var id: String
+    public var schema: String
+    public var secondsInterval: Int
+    public var lastUpdated: String
+    public var sdk: String
+    public var presenceSnapshotDirectlyConnectedPeersCount: Int { presenceSnapshotDirectlyConnectedPeers.count }
+    public var presenceSnapshotDirectlyConnectedPeers: [DittoPeerConnection]
+    public var metadata: [String: Any]
+    public var healthMetrics: [String: HealthMetric]
+}
+
+public struct DittoPeerConnection {
+    public var deviceName: String
+    public var sdk: String
+    public var isConnectedToDittoCloud: Bool
+    public var bluetooth: Int
+    public var p2pWifi: Int
+    public var lan: Int
+    public var peerKey: String
+}
+
+// See DittoHealthMetrics
+public struct HealthMetric {
+    public var isHealthy: Bool
+    public var details: [String: String]
+}
+```
+
+You can either use the provided UI from this tool or you can read the `DittoHeartbeatInfo` data and create your own UI/use the data as you please.
+
+**Use provided UI:**
+
+**SwiftUI**  
+
+Use `HeartbeatView(ditto: dittoModel.ditto!, config: heartbeatConfig)`, passing in your Ditto instance and your DittoHeartbeatConfig object.  
+
+```swift
+import DittoHeartbeat
+
+struct HeartbeatViewer: View {
+    var body: some View {
+        HeartbeatView(ditto: <ditto>, config: <heartbeatConfig>)
+    }
+}
+```
+
+**UIKit**  
+
+Pass `HeartbeatView(ditto: <ditto>, config: <heartbeatConfig>)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
+which will return a view controller you can use to present.  
+
+```
+let vc = UIHostingController(rootView: HeartbeatView(ditto: <ditto>, config: <heartbeatConfig>))
+
+**Read data only:**
+
+Create a `HeartbeatVM(ditto: <ditto>` object and then call `startHeartbeat(config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback)`. You can access the data in the callback of `startHeartbeat`
+```swift
+var heartBeatVm = HeartbeatVM(ditto: DittoManager.shared.ditto!)
+heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(secondsInterval: Int, metadata: metadata: [String:Any]? )) { heartbeatInfo in
+        //use data
+} 
+```
+
+**Read data only:**
+
+Create a `HeartbeatVM(ditto: <ditto>` object and then call `startHeartbeat(config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback)`. You can access the data in the callback of `startHeartbeat`
+```swift
+var heartBeatVm = HeartbeatVM(ditto: DittoManager.shared.ditto!)
+heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(secondsInterval: Int, metadata: metadata: [String:Any]? )) { heartbeatInfo in
+        //use data
+} 
+```
+
 ## Ditto Tools Example App
 The [Ditto Tools Example App](https://github.com/getditto/DittoSwiftTools/tree/main/DittoToolsApp) 
 included in this repo allows you to try the DittoSwiftTools package in a standalone app. Open 
