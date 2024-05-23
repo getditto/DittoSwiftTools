@@ -12,7 +12,6 @@ import DittoSwift
 import UIKit
 #endif
 
-@available(iOS 15.0, *)
 struct Documents: View {
     
     @StateObject var viewModel: DocumentsViewModel
@@ -24,84 +23,90 @@ struct Documents: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Text("Collection: " + viewModel.collectionName)
                 .font(.title2)
-                .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, alignment: .topLeading)
+                .frame(alignment: .topLeading)
                 .padding(.leading)
             SearchBar(searchText: $querySearch, viewModel: viewModel)
-            if(!viewModel.docsList.isEmpty) {
-                Text("Docs Count: " + String(viewModel.docsList.count))
-                .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, alignment: .topLeading)
-                .padding(.leading)
+
+            HStack {
+                if(!viewModel.docsList.isEmpty) {
+                    Text("Docs: " + String(viewModel.docsList.count))
+                    .frame(alignment: .topLeading)
+                    .padding(.leading)
+                }
+                else {
+                    Text("Docs: 0")
+                    .frame(alignment: .topLeading)
+                    .padding(.leading)
+                }
+                Spacer()
+
+                if(!viewModel.docsList.isEmpty) {
+                    if #available(tvOS 17.0, *) {
+                        Menu {
+                            Picker(selection: $viewModel.selectedDoc, label: Text("Select a Document")) {
+                                ForEach(0 ..< viewModel.docsList.count, id: \.self) {
+                                    Text(viewModel.docsList[$0].id)
+                                        .bold()
+                                        .font(.headline)
+                                        .foregroundColor(.red)
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Image(systemName: "doc")
+                                Text("Select Document")
+                            }
+                            .padding(.vertical, 5)
+                        }
+                        .padding(.horizontal)
+                    } else {
+                        // Fallback on earlier versions
+                    }
+                } else {
+                    HStack {
+                        Image(systemName: "doc")
+                        Text("No Documents Found")
+                    }
+                    .padding(.vertical, 5)
+                    .padding(.horizontal)
+                }
+            }
+            .frame(alignment: .topLeading)
+
+            Rectangle()
+                .fill(.gray)
+                .frame(height: 4)
+                .padding(.bottom)
+
+            if(viewModel.docsList.isEmpty) {
+                HStack {
+                    Spacer()
+                    Text("No Data")
+                    Spacer()
+                }
             }
             else {
-                Text("Docs Count: 0")
-                .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, alignment: .topLeading)
-                .padding(.leading)
-            }
-            HStack {
-         
-                Text("Doc ID:")
-                    .padding(.leading)
-           
-                if(!viewModel.docsList.isEmpty) {
-                    Picker(selection: $viewModel.selectedDoc, label: Text("Select a Document")) {
-                        ForEach(0 ..< viewModel.docsList.count, id: \.self) {
-                            Text(viewModel.docsList[$0].id)
-                                .bold()
-                                .font(.headline)
-                                .foregroundColor(.red)
-                        }
-                    }
-#if os(tvOS)
-                    .pickerStyle(.segmented)
-#else
-                    .pickerStyle(.menu)
-#endif
+                ScrollView {
+                    ForEach(viewModel.docProperties ?? [], id: \.self) {property in
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text(property + ":")
+                                    .padding(.leading)
 
-                }
-            }
-            .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, alignment: .topLeading)
-
-                Divider()
-                    .frame(height: 4)
-                    .overlay(.gray)
-                    .padding(.bottom)
-
-            
-            HStack {
-                VStack {
-                    
-                    if(viewModel.docsList.isEmpty) {
-                        Text("No Data")
-                    }
-                    else {
-                        ScrollView {
-                            ForEach(viewModel.docProperties ?? [], id: \.self) {property in
-                                HStack {
-                                    Text(property + ":")
-                                        .padding(.leading)
-                                    
-                                    if let temp = viewModel.docsList[viewModel.selectedDoc].value[property], let val = temp {
-                                        Text(String.init(describing: val))
-                                    }
-                                    
+                                if let temp = viewModel.docsList[viewModel.selectedDoc].value[property], let val = temp {
+                                    Text(String.init(describing: val))
                                 }
-                                .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, minHeight: 0, maxHeight: UIScreen.main.bounds.height, alignment: .topLeading)
-                                
-                                Divider()
-                                    .frame(width: UIScreen.main.bounds.width)
-                                
                             }
+
+                            Divider()
                         }
                     }
                 }
-
             }
-            
         }
-        .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, minHeight: 0, maxHeight: UIScreen.main.bounds.height, alignment: .topLeading)
     }
 }
 
@@ -111,7 +116,6 @@ struct Documents: View {
 //    }
 //}
 
-@available(iOS 15.0, *)
 struct SearchBar: View {
     
     @Binding var searchText: String
@@ -119,38 +123,29 @@ struct SearchBar: View {
         
     var body: some View {
         HStack {
-            ZStack {
-                Rectangle()
+            HStack {
+                Image(systemName: "magnifyingglass")
+                TextField("Query", text: $searchText)
 #if !os(tvOS)
-                    .foregroundColor(Color(UIColor.systemGray5))
+                    .textFieldStyle(.roundedBorder)
 #else
-                    .foregroundColor(Color(UIColor.systemGray))
+                    .textFieldStyle(.automatic)
 #endif
-
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                    TextField("Query", text: $searchText)
-                }
-                .foregroundColor(Color(UIColor.darkGray))
-                .padding(.leading, 13)
-                
             }
-            .frame(height: 30)
-            .cornerRadius(13)
-            .padding([.top,.leading,.bottom])
-        
+            .padding(5)
+
             Button {
                 viewModel.filterDocs(queryString: searchText)
             } label: {
                 Text("Find")
-                    .frame(height: 30)
-                    .padding([.leading, .trailing])
                     .foregroundColor(.white)
-                    .background(RoundedRectangle(cornerRadius: 13).fill(.blue))
             }
-            .padding(.trailing)
+            .padding(.vertical, 5)
+            .padding(.horizontal)
+            .background(RoundedRectangle(cornerRadius: 13).fill(.blue))
 
         }
+        .padding(.horizontal)
         .onDisappear(perform: {
             viewModel.closeLiveQuery()
         })
