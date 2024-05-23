@@ -30,7 +30,7 @@ struct ContentView: View {
         NavigationView {
             List{
                 Section(header: Text("Debug")) {
-                    #if canImport(PresenceViewer)
+                    #if canImport(WebKit)
                     NavigationLink(destination: PresenceViewer()) {
                         MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
                     }
@@ -76,13 +76,13 @@ struct ContentView: View {
                     .foregroundColor(textColor)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .sheet(isPresented: $presentExportDataShare) {
-#if canImport(ExportData)
+#if !os(tvOS)
                         ExportData(ditto: dittoModel.ditto!)
 #endif
                     }
                 }
             }
-#if canImport(InsetGroupedListStyle)
+#if !os(tvOS)
             .listStyle(InsetGroupedListStyle())
 #else
             .listStyle(.grouped)
