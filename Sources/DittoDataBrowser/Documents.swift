@@ -121,8 +121,7 @@ struct SearchBar: View {
         HStack {
             ZStack {
                 Rectangle()
-// Other option is to add these as a color set and add the resources to the package.
-#if canImport(UIColor.systemGray5)
+#if !os(tvOS)
                     .foregroundColor(Color(UIColor.systemGray5))
 #else
                     .foregroundColor(Color(UIColor.systemGray))
