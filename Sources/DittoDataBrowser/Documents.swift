@@ -54,8 +54,12 @@ struct Documents: View {
                                 .foregroundColor(.red)
                         }
                     }
+#if os(tvOS)
+                    .pickerStyle(.segmented)
+#else
                     .pickerStyle(.menu)
-                    
+#endif
+
                 }
             }
             .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, alignment: .topLeading)
@@ -117,11 +121,12 @@ struct SearchBar: View {
         HStack {
             ZStack {
                 Rectangle()
-                #if !os(tvOS)
+// Other option is to add these as a color set and add the resources to the package.
+#if canImport(UIColor.systemGray5)
                     .foregroundColor(Color(UIColor.systemGray5))
-                #else
+#else
                     .foregroundColor(Color(UIColor.systemGray))
-                #endif
+#endif
 
                 HStack {
                     Image(systemName: "magnifyingglass")

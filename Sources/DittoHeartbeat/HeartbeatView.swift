@@ -104,7 +104,9 @@ public struct HeartbeatView: View {
                 List {
                     ForEach(vm.infoDocs) { info in
                         HeartbeatInfoRowItem(info: info)
+#if !os(tvOS)
                             .listRowSeparatorTint(dividerColor)
+#endif
                     }
                 }
             }
@@ -121,7 +123,7 @@ public struct HeartbeatView: View {
                 }
                 .font(.system(size: 24))
                 .foregroundColor(.accentColor)
-                .buttonStyle(.borderless)
+                .buttonStyle(.automatic)
             }
         }
     }
