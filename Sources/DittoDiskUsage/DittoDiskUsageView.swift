@@ -25,34 +25,23 @@ public struct DittoDiskUsageView: View {
     public var body: some View {
         List {
             Section {
-                Text("Disk Usage")
-                    .frame(alignment: .center)
-                    .font(.title)
-            }
-
-            Section {
                 if let diskUsage = viewModel.diskUsage {
-                    if let error = diskUsage.error {
-                        Text("Error: \(error)")
-                            .foregroundColor(.red)
-                    } else {
-                        ForEach(diskUsage.children, id: \.self) { (child: DiskUsage) in
-                            HStack {
-                                Text(child.relativePath)
-                                    .font(.body)
-                                Spacer()
-                                Text(child.size)
-                                    .font(.body)
-                            }
-                        }
+                    ForEach(diskUsage.children, id: \.self) { (child: DiskUsage) in
                         HStack {
-                            Group {
-                                Text("Total")
-                                    .font(.body)
-                                Spacer()
-                                Text(diskUsage.totalSize)
-                                    .font(.body)
-                            }
+                            Text(child.relativePath)
+                                .frame(minWidth: 200, alignment: .leading)
+                            Spacer()
+                            Text(child.size)
+                                .frame(minWidth: 100, alignment: .trailing)
+                        }
+                    }
+                    HStack {
+                        Group {
+                            Text("Total")
+                                .frame(minWidth: 200, alignment: .leading)
+                            Spacer()
+                            Text(diskUsage.totalSize)
+                                .frame(minWidth: 100, alignment: .trailing)
                         }
                     }
                 } else {
@@ -64,22 +53,12 @@ public struct DittoDiskUsageView: View {
             Section {
                 HStack {
                     Text("Updated at:")
-                        .font(.body)
                     Spacer()
                     Text(viewModel.diskUsage?.lastUpdated ?? DiskUsageViewModel.dateFormatter.string(from: Date()))
-                        .font(.body)
-                }
-            }
-
-            Section {
-                Button {
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    Label("Close", systemImage: "xmark")
-                        .font(.body)
                 }
             }
         }
+        .navigationTitle("Disk Usage")
     }
 }
 
