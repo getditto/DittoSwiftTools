@@ -7,7 +7,7 @@ let package = Package(
     platforms: [
         .iOS(.v14),
         .macOS(.v11),
-        .tvOS(.v17),
+        .tvOS(.v16),
     ],
     products: [
         .library(
@@ -70,7 +70,7 @@ let package = Package(
             cxxSettings: [
                 .define("ENABLE_BITCODE", to: "NO")
             ]
-        ),        
+        ),
         .target(
             name: "DittoDataBrowser",
             dependencies: [

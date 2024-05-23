@@ -8,8 +8,7 @@ import SwiftUI
 import UIKit
 #endif
 
-#if !os(tvOS)
-@available(iOS 13.0, *)
+@available(tvOS, unavailable)
 public struct ExportLogs: UIViewControllerRepresentable {
     
     public init() {}
@@ -39,5 +38,4 @@ public struct ExportLogs: UIViewControllerRepresentable {
     }
     
 }
-#endif
 

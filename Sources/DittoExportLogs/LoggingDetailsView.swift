@@ -53,18 +53,18 @@ public struct LoggingDetailsView: View {
                     }
                     .foregroundColor(textColor)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                #if !os(tvOS)
+#if canImport(ExportLogs)
                 .sheet(isPresented: $presentExportLogsShare) {
                     ExportLogs()
                 }
-                #endif
+#endif
             }
         }
-        #if !os(tvOS)
+#if canImport(InsetGroupedListStyle)
         .listStyle(InsetGroupedListStyle())
-        #else
+#else
         .listStyle(.grouped)
-        #endif
+#endif
         .alert("Export Logs", isPresented: $presentExportLogsAlert) {
             Button("Export") {
                 presentExportLogsShare = true

@@ -33,25 +33,25 @@ public struct PeersListView: View {
             } footer: {
                 Text(Self.footerText)
             }
-            #if !os(tvOS)
+#if !os(tvOS)
             .listRowSeparator(.visible, edges: .top)
             .listRowSeparatorTint(dividerColor)
-            #endif
-            #if os(tvOS)
+#endif
+#if os(tvOS)
             Divider()
-            #endif
+#endif
 
             Section {
                 ForEach(vm.peers, id: \.peerKey) { peer in
                     peerView(peer)
                         .padding(.bottom, 4)
-                        #if !os(tvOS)
+#if !os(tvOS)
                         .listRowSeparator(.visible, edges: .top)
                         .listRowSeparatorTint(dividerColor)
-                        #endif
-                    #if os(tvOS)
+#endif
+#if os(tvOS)
                     Divider()
-                    #endif
+#endif
                 }
             } header: {
                 Text("Remote Peers")
@@ -62,9 +62,9 @@ public struct PeersListView: View {
         }
         .onDisappear { vm.cleanup() }
         .navigationTitle("Peers List")
-        #if !os(tvOS)
+#if !os(tvOS)
         .navigationBarTitleDisplayMode(.inline)
-        #endif
+#endif
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
@@ -75,7 +75,7 @@ public struct PeersListView: View {
                 }
                 .font(.system(size: 24))
                 .foregroundColor(.accentColor)
-                .buttonStyle(.borderless)
+                .buttonStyle(.automatic)
             }
         }
     }

@@ -1,15 +1,6 @@
 {
   "pins" : [
     {
-      "identity" : "dittoswiftpackage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/getditto/DittoSwiftPackage",
-      "state" : {
-        "revision" : "7b683558041b2437f5857e5338c590fe02528517",
-        "version" : "4.5.3"
-      }
-    },
-    {
       "identity" : "swift-collections",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections",
