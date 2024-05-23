@@ -25,27 +25,23 @@ public struct DittoDiskUsageView: View {
     public var body: some View {
         List {
             Section {
-                Text("Disk Usage")
-                    .frame(alignment: .center)
-                    .font(.title)
-            }
-
-            Section {
                 if let diskUsage = viewModel.diskUsage {
                     ForEach(diskUsage.children, id: \.self) { (child: DiskUsage) in
                         HStack {
                             Text(child.relativePath)
-                                .frame(width: 200, alignment: .leading)
+                                .frame(minWidth: 200, alignment: .leading)
+                            Spacer()
                             Text(child.size)
-                                .frame(width: 100, alignment: .trailing)
+                                .frame(minWidth: 100, alignment: .trailing)
                         }
                     }
                     HStack {
                         Group {
                             Text("Total")
-                                .frame(width: 200, alignment: .leading)
+                                .frame(minWidth: 200, alignment: .leading)
+                            Spacer()
                             Text(diskUsage.totalSize)
-                                .frame(width: 100, alignment: .trailing)
+                                .frame(minWidth: 100, alignment: .trailing)
                         }
                     }
                 } else {
@@ -57,22 +53,12 @@ public struct DittoDiskUsageView: View {
             Section {
                 HStack {
                     Text("Updated at:")
-                        .font(.body)
                     Spacer()
                     Text(viewModel.diskUsage?.lastUpdated ?? DiskUsageViewModel.dateFormatter.string(from: Date()))
-                        .font(.body)
-                }
-            }
-
-            Section {
-                Button {
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    Label("Close", systemImage: "xmark")
-                        .font(.body)
                 }
             }
         }
+        .navigationTitle("Disk Usage")
     }
 }
 
