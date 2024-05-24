@@ -89,13 +89,19 @@ struct ContentView: View {
 #endif
             .navigationTitle("Ditto Tools")
             .alert("Export Ditto Directory", isPresented: $presentExportDataAlert) {
+#if !os(tvOS)
                 Button("Export") {
                     presentExportDataShare = true
                 }
+#endif
                 Button("Cancel", role: .cancel) {}
 
                 } message: {
+#if os(tvOS)
+                    Text("Exporting Logs on tvOS does not work at this time.")
+#else
                     Text("Compressing the data may take a while.")
+#endif
                 }
             }
             
