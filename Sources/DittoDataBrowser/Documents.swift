@@ -94,12 +94,15 @@ struct Documents: View {
                         VStack(alignment: .leading) {
                             HStack {
                                 Text(property + ":")
-                                    .padding(.leading)
+                                    .padding(.horizontal)
 
                                 if let temp = viewModel.docsList[viewModel.selectedDoc].value[property], let val = temp {
                                     Text(String.init(describing: val))
                                 }
                             }
+#if os(tvOS)
+                            .focusable(true)
+#endif
 
                             Divider()
                         }
