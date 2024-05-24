@@ -32,39 +32,30 @@ public struct PeersListView: View {
                     .font(Font.subheadline.weight(.bold))
             } footer: {
                 Text(Self.footerText)
+                    .font(.footnote)
             }
-#if !os(tvOS)
-            .listRowSeparator(.visible, edges: .top)
-            .listRowSeparatorTint(dividerColor)
-#endif
-#if os(tvOS)
-            Divider()
-#endif
 
             Section {
                 ForEach(vm.peers, id: \.peerKey) { peer in
                     peerView(peer)
                         .padding(.bottom, 4)
-#if !os(tvOS)
-                        .listRowSeparator(.visible, edges: .top)
-                        .listRowSeparatorTint(dividerColor)
-#endif
-#if os(tvOS)
-                    Divider()
-#endif
                 }
             } header: {
                 Text("Remote Peers")
                     .font(Font.subheadline.weight(.bold))
             } footer: {
                 Text(Self.footerText)
+                    .font(.footnote)
             }
         }
-        .onDisappear { vm.cleanup() }
-        .navigationTitle("Peers List")
-#if !os(tvOS)
+#if os(tvOS)
+        .listStyle(.grouped)
+#else
+        .listStyle(.insetGrouped)
         .navigationBarTitleDisplayMode(.inline)
 #endif
+        .onDisappear { vm.cleanup() }
+        .navigationTitle("Peers List")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
@@ -97,15 +88,17 @@ public struct PeersListView: View {
                         
                         Text("peer: \(conPeer.peerKeyString)")
                             .lineLimit(1)
-                            .fixedSize(horizontal: false, vertical: true)
-                        
+
                         presenceSnapshotDirectlyConnectedPeersView(conPeer, showBLEDistance: showBLEDistance)
                     }
-                    .padding(.leading, 12)
+                    .padding(12)
                 }
             }
             Text(peer.peerSDKVersion).font(.subheadline)
         }
+#if os(tvOS)
+        .focusable(true)
+#endif
     }
     
     @ViewBuilder
