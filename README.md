@@ -443,10 +443,11 @@ The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers i
 **Configure Heartbeat**
 
 These are the values you need to provide to the Heartbeat:
-1. Id - Unique value that identifies the device
-2. Interval - The frequency at which the Heartbeat will scrape the data
-3. Meta Data (optional) - Any metadata you want to attach to this heartbeat.
-4. HealthMetricsProviders (optional) - Any `HealthMetricProvider`s you want to use with this heartbeat. These can be from DittoSwiftTools e.g. `BluetoothManager` from `DittoPermissionsHealth` or custom tools.
+1. `id` - Unique value that identifies the device.
+2. `secondsInterval` - The frequency at which the Heartbeat will scrape the data.
+3. `metadata` (optional) - Any metadata you want to attach to this heartbeat.
+4. `healthMetricsProviders` (optional) - Any `HealthMetricProvider`s you want to use with this heartbeat. These can be from DittoSwiftTools e.g. `BluetoothManager` from `DittoPermissionsHealth` or custom tools.
+5. `publishToDittoCollection` a flag to determine whether to publish the heartbeat data as a Ditto collection. Defaults to `true`.
 
 There is a `DittoHeartbeatConfig` struct you can use to construct your configuration.
 
@@ -457,12 +458,18 @@ public struct DittoHeartbeatConfig {
     public var secondsInterval: Int
     public var metadata: [String: Any]?
     public var healthMetricProviders: [HealthMetricProvider]
+    public var publishToDittoCollection: Bool
 
-    public init(id: String, secondsInterval: Int, metadata: [String : Any]? = nil, healthMetricProviders: [HealthMetricProvider] = []) {
+    public init(id: String,
+                secondsInterval: Int,
+                metadata: [String : Any]? = nil,
+                healthMetricProviders: [HealthMetricProvider] = [],
+                publishToDittoCollection: Bool = true) {
         self.id = id
         self.secondsInterval = secondsInterval
         self.metadata = metadata
         self.healthMetricProviders = healthMetricProviders
+        self.publishToDittoCollection = publishToDittoCollection
     }
 }
 ```
