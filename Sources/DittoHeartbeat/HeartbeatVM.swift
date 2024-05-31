@@ -50,8 +50,10 @@ public class HeartbeatVM: ObservableObject {
         )
         observePeers()
         startTimer()
-        
-        hbSubscription = try? ditto.sync.registerSubscription(query: "SELECT * FROM \(String.collectionName)")
+
+        if config.publishToDittoCollection {
+            hbSubscription = try? ditto.sync.registerSubscription(query: "SELECT * FROM \(String.collectionName)")
+        }
     }
     
     public func stopHeartbeat() {
