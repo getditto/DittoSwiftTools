@@ -68,7 +68,7 @@ public class DiskUsageViewModel: ObservableObject {
     var cancellable: Cancellable?
 
     /// The size over which disk usage is considered unhealthy when used as a `HealthMetric` with the heartbeat tool (this only considers `ditto_store` and `ditto_replication`). Defaults to 500MB
-    var unhealthySizeInBytes: Int = DittoDiskUsageConstants.fiveHundredMegabytesInBytes
+    public var unhealthySizeInBytes: Int = DittoDiskUsageConstants.fiveHundredMegabytesInBytes
 
     /// Convenience property for Ditto instance.
     private var ditto: Ditto
