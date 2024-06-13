@@ -20,7 +20,6 @@ public class HeartbeatVM: ObservableObject {
     private var hbConfig: DittoHeartbeatConfig?
     private var hbInfo: DittoHeartbeatInfo?
     private var hbCallback: HeartbeatCallback?
-    private var hbSubscription: DittoSyncSubscription?
     private var ditto: Ditto
     private var peers = [DittoPeer]()
     private var peersObserver: DittoSwift.DittoObserver?
@@ -50,17 +49,12 @@ public class HeartbeatVM: ObservableObject {
         )
         observePeers()
         startTimer()
-
-        if config.publishToDittoCollection {
-            hbSubscription = try? ditto.sync.registerSubscription(query: "SELECT * FROM \(String.collectionName)")
-        }
     }
     
     public func stopHeartbeat() {
         stopTimer()
         isEnabled = false
         peersObserver?.stop()
-        hbSubscription?.cancel()
     }
 
     private func updateHealthMetrics() {
