@@ -48,7 +48,7 @@ let package = Package(
     ],
     dependencies: [
         // Ditto.diskUsage was added in 3.0.1
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.8.0-experimental-visionos-support"),
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.8.0-visionos-beta.1"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0")
     ],
     targets: [
