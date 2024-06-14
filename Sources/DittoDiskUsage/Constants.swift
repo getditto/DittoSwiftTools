@@ -9,7 +9,7 @@ import Foundation
 
 struct DittoDiskUsageConstants {
     static let healthMetricName = "DittoDiskUsage"
-    static let twoGigabytesInBytes: Int = 2147483648
+    static let fiveHundredMegabytesInBytes: Int = 500000000
     static let rootPath = "rootPath"
     static let totalSize = "totalSize"
     static let lastUpdated = "lastUpdated"
