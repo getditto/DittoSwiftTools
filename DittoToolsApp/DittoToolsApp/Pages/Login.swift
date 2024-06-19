@@ -34,62 +34,60 @@ struct Login: View {
     @StateObject var viewModel = ViewModel()
     
     var body: some View {
-        NavigationView {
-            Form {
-                Section {
-                    HStack {
-                        Picker("Identity", selection: $viewModel.config.identityType) {
-                            Text("Online Playground").tag(IdentityType.onlinePlayground)
-                            Text("Offline Playground").tag(IdentityType.offlinePlayground)
-                            Text("Online With Authentication").tag(IdentityType.onlineWithAuthentication)
-                        }
-                    }
-                    HStack {
-                        Text("App ID")
-                        TextField("", text: $viewModel.config.appID)
-                    }
-                    switch (viewModel.config.identityType) {
-                    case IdentityType.onlinePlayground:
-                        HStack {
-                            Text("Playground Token")
-                            TextField("", text: $viewModel.config.playgroundToken)
-                        }
-                    case IdentityType.offlinePlayground:
-                        HStack {
-                            Text("Offline License Token")
-                            TextField("", text: $viewModel.config.offlineLicenseToken).textInputAutocapitalization(.never)
-                        }
-                    case IdentityType.onlineWithAuthentication:
-                        HStack {
-                            Text("Provider")
-                            TextField("", text: $viewModel.config.authenticationProvider).textInputAutocapitalization(.never)
-                        }
-                        HStack {
-                            Text("Token")
-                            TextField("", text: $viewModel.config.authenticationToken).textInputAutocapitalization(.never)
-                        }
+        Form {
+            Section {
+                HStack {
+                    Picker("Identity", selection: $viewModel.config.identityType) {
+                        Text("Online Playground").tag(IdentityType.onlinePlayground)
+                        Text("Offline Playground").tag(IdentityType.offlinePlayground)
+                        Text("Online With Authentication").tag(IdentityType.onlineWithAuthentication)
                     }
                 }
-                Section {
-                    PrimaryFormButton(action: {
-                        viewModel.changeIdentity()
-                        dismiss()
-                    }, text: "Restart Ditto", textColor: viewModel.isDisabled ? .secondary : .accentColor, isLoading: false, isDisabled: false)
+                HStack {
+                    Text("App ID")
+                    TextField("", text: $viewModel.config.appID)
+                }
+                switch (viewModel.config.identityType) {
+                case IdentityType.onlinePlayground:
+                    HStack {
+                        Text("Playground Token")
+                        TextField("", text: $viewModel.config.playgroundToken)
+                    }
+                case IdentityType.offlinePlayground:
+                    HStack {
+                        Text("Offline License Token")
+                        TextField("", text: $viewModel.config.offlineLicenseToken).textInputAutocapitalization(.never)
+                    }
+                case IdentityType.onlineWithAuthentication:
+                    HStack {
+                        Text("Provider")
+                        TextField("", text: $viewModel.config.authenticationProvider).textInputAutocapitalization(.never)
+                    }
+                    HStack {
+                        Text("Token")
+                        TextField("", text: $viewModel.config.authenticationToken).textInputAutocapitalization(.never)
+                    }
                 }
             }
-            .navigationTitle("")
-            /*
-            .sheet(isPresented: $viewModel.isPresentingImagePicker, content: {
-                ImagePicker(sourceType: viewModel.sourceType, isSquareMode: true) { image in
-                    let file = try! File.insert(image: image)
-                    viewModel.fileId = file._id
-                    viewModel.image = image
-                }
-            }) */
-            .alert("Ditto failed to start.", isPresented: $viewModel.isPresentingAlert, actions: {
-                    Button("Dismiss", role: .cancel) { dismiss() }
-                })
+            Section {
+                PrimaryFormButton(action: {
+                    viewModel.changeIdentity()
+                    dismiss()
+                }, text: "Restart Ditto", textColor: viewModel.isDisabled ? .secondary : .accentColor, isLoading: false, isDisabled: false)
             }
+        }
+        .navigationTitle("")
+        /*
+         .sheet(isPresented: $viewModel.isPresentingImagePicker, content: {
+         ImagePicker(sourceType: viewModel.sourceType, isSquareMode: true) { image in
+         let file = try! File.insert(image: image)
+         viewModel.fileId = file._id
+         viewModel.image = image
+         }
+         }) */
+        .alert("Ditto failed to start.", isPresented: $viewModel.isPresentingAlert, actions: {
+            Button("Dismiss", role: .cancel) { dismiss() }
+        })
     }
 }
 

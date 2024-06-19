@@ -160,6 +160,7 @@
 		01F34C9328A2EAE3003BDF17 /* DittoToolsApp */ = {
 			isa = PBXGroup;
 			children = (
+				073AAD332B6D8F670034254C /* Utilities */,
 				01F34CE428A30798003BDF17 /* Model */,
 				01F34D0328A3113A003BDF17 /* Views */,
 				01F34D0028A310A5003BDF17 /* Pages */,
@@ -246,6 +247,14 @@
 				01F34D0628A3119E003BDF17 /* MenuListItem.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		073AAD332B6D8F670034254C /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				073AAD342B6D8F670034254C /* LogFileConfig.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		0E8FA0692947FC5E00B2E38F /* Frameworks */ = {
@@ -614,9 +623,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dittolive.DittoToolsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 			};
 			name = Debug;
 		};
@@ -648,9 +659,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dittolive.DittoToolsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 			};
 			name = Release;
 		};

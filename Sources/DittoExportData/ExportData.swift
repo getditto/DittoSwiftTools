@@ -8,6 +8,8 @@ import SwiftUI
 import UIKit
 #endif
 
+
+@available(tvOS, unavailable)
 public struct ExportData: UIViewControllerRepresentable {
 
     private let ditto: Ditto

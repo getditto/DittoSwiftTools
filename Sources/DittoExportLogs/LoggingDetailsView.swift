@@ -30,7 +30,7 @@ public struct LoggingDetailsView: View {
         List {
             Section {
                 Text("Ditto Logging")
-                    .frame(width: 400, alignment: .center)
+                    .frame(alignment: .center)
                     .font(.title)
             }
             Section {
@@ -53,20 +53,33 @@ public struct LoggingDetailsView: View {
                     }
                     .foregroundColor(textColor)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+#if !os(tvOS)
                 .sheet(isPresented: $presentExportLogsShare) {
                     ExportLogs()
                 }
+#endif
             }
         }
+#if !os(tvOS)
         .listStyle(InsetGroupedListStyle())
+#else
+        .listStyle(.grouped)
+#endif
         .alert("Export Logs", isPresented: $presentExportLogsAlert) {
+#if !os(tvOS)
             Button("Export") {
                 presentExportLogsShare = true
             }
+#endif
+
             Button("Cancel", role: .cancel) {}
 
         } message: {
+#if os(tvOS)
+            Text("Exporting Logs on tvOS does not work at this time.")
+#else
             Text("Compressing the logs may take a few seconds.")
+#endif
         }
     }
 }

@@ -30,9 +30,11 @@ struct ContentView: View {
         NavigationView {
             List{
                 Section(header: Text("Debug")) {
+                    #if canImport(WebKit)
                     NavigationLink(destination: PresenceViewer()) {
                         MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
                     }
+                    #endif
                     NavigationLink(destination: PeersListViewer()) {
                         MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
                     }
@@ -74,20 +76,32 @@ struct ContentView: View {
                     .foregroundColor(textColor)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .sheet(isPresented: $presentExportDataShare) {
+#if !os(tvOS)
                         ExportData(ditto: dittoModel.ditto!)
+#endif
                     }
                 }
             }
+#if !os(tvOS)
             .listStyle(InsetGroupedListStyle())
+#else
+            .listStyle(.grouped)
+#endif
             .navigationTitle("Ditto Tools")
             .alert("Export Ditto Directory", isPresented: $presentExportDataAlert) {
+#if !os(tvOS)
                 Button("Export") {
                     presentExportDataShare = true
                 }
+#endif
                 Button("Cancel", role: .cancel) {}
 
                 } message: {
+#if os(tvOS)
+                    Text("Exporting Logs on tvOS does not work at this time.")
+#else
                     Text("Compressing the data may take a while.")
+#endif
                 }
             }
             

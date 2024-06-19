@@ -1,4 +1,4 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 5.9
 
 import PackageDescription
 
@@ -7,6 +7,7 @@ let package = Package(
     platforms: [
         .iOS(.v14),
         .macOS(.v11),
+        .tvOS(.v16),
     ],
     products: [
         .library(
@@ -50,7 +51,8 @@ let package = Package(
             targets: ["DittoPermissionsHealth"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.5.0"),
+        .package(path: "../DittoSwiftPackage"),
+        //.package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.5.0"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
@@ -68,7 +70,7 @@ let package = Package(
             cxxSettings: [
                 .define("ENABLE_BITCODE", to: "NO")
             ]
-        ),        
+        ),
         .target(
             name: "DittoDataBrowser",
             dependencies: [

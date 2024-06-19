@@ -86,7 +86,11 @@ final class DittoPresenceViewController: PlatformViewController {
         title = LocalizedStrings.title
 
 #if canImport(UIKit)
+#if os(tvOS)
+        view.backgroundColor = .white
+#else
         view.backgroundColor = .systemBackground
+#endif
 #endif
     }
 
@@ -123,7 +127,9 @@ final class DittoPresenceViewController: PlatformViewController {
         guard navigationController == nil else { return }
 
         navigationItem.title = LocalizedStrings.title
+#if !os(tvOS)
         navigationItem.largeTitleDisplayMode = .never
+#endif
 
         view.addSubview(navigationBar)
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
@@ -145,11 +151,20 @@ final class DittoPresenceViewController: PlatformViewController {
      */
     private func addCloseButtonIfNeeded() {
 #if canImport(UIKit)
+#if !os(tvOS)
         if let navigationController = navigationController,
             navigationController.viewControllers.count > 1,
             !navigationController.navigationItem.hidesBackButton {
             return
         }
+#endif
+
+#if os(tvOS)
+        if let navigationController = navigationController,
+            navigationController.viewControllers.count > 1 {
+            return
+        }
+#endif
 
         guard navigationItem.leftBarButtonItem == nil else {
             return
