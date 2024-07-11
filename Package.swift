@@ -50,7 +50,7 @@ let package = Package(
             targets: ["DittoPermissionsHealth"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.5.0"),
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", exact: "4.8.0-rc.1"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
