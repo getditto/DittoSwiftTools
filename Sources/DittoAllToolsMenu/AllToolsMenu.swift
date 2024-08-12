@@ -9,19 +9,9 @@ import DittoSwift
 import SwiftUI
 import DittoExportLogs
 
-//@MainActor public class SingleEntryPointVM: ObservableObject {
-//    private let ditto: Ditto
-//
-//    public init(ditto: Ditto) {
-//        self.ditto = ditto
-//    }
-//}
-
-
 @available(iOS 15.0, *)
 public struct AllToolsMenu: View {
     @Environment(\.colorScheme) private var colorScheme
-//    @StateObject var vm: SingleEntryPointVM
 
     // Export Ditto Directory
     @State private var presentExportDataShare: Bool = false
@@ -35,7 +25,6 @@ public struct AllToolsMenu: View {
     }
     
     public init(ditto: Ditto) {
-//        self._vm = StateObject(wrappedValue: SingleEntryPointVM(ditto: ditto))
         DittoManager.shared.ditto = ditto
     }
     
