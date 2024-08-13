@@ -34,6 +34,7 @@
 		0E60040F2B7BFCD500C27FAF /* DittoPresenceDegradation in Frameworks */ = {isa = PBXBuildFile; productRef = 0E60040E2B7BFCD500C27FAF /* DittoPresenceDegradation */; };
 		0E6F0FA62B7C17270088C0CF /* PresenceDegradationViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F0FA52B7C17270088C0CF /* PresenceDegradationViewer.swift */; };
 		0EAA7B242B8D41100078B7F0 /* PermissionsHealthViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EAA7B232B8D41100078B7F0 /* PermissionsHealthViewer.swift */; };
+		0ED091502C640FFF00F6403B /* DittoAllToolsMenu in Frameworks */ = {isa = PBXBuildFile; productRef = 0ED0914F2C640FFF00F6403B /* DittoAllToolsMenu */; };
 		0EFAEBC52B99322D00F26744 /* HeartBeatViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */; };
 		146ED3F629C4F13100A56229 /* DittoPeersList in Frameworks */ = {isa = PBXBuildFile; productRef = 146ED3F529C4F13100A56229 /* DittoPeersList */; };
 		146ED3FA29C4F2A000A56229 /* PeersListViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146ED3F929C4F2A000A56229 /* PeersListViewer.swift */; };
@@ -110,6 +111,7 @@
 				F87DC4802988584200899FEC /* DittoPresenceViewer in Frameworks */,
 				F87DC4832988599C00899FEC /* DittoDiskUsage in Frameworks */,
 				0E60040F2B7BFCD500C27FAF /* DittoPresenceDegradation in Frameworks */,
+				0ED091502C640FFF00F6403B /* DittoAllToolsMenu in Frameworks */,
 				0E03301C2B8D3C0100C20156 /* DittoPermissionsHealth in Frameworks */,
 				F87DC47C2988584200899FEC /* DittoDataBrowser in Frameworks */,
 				14B7342C2A296A4E0081CEF2 /* DittoExportLogs in Frameworks */,
@@ -289,6 +291,7 @@
 				0E60040E2B7BFCD500C27FAF /* DittoPresenceDegradation */,
 				14E35DB02B7F345C0018EC3B /* DittoHeartbeat */,
 				0E03301B2B8D3C0100C20156 /* DittoPermissionsHealth */,
+				0ED0914F2C640FFF00F6403B /* DittoAllToolsMenu */,
 			);
 			productName = debug;
 			productReference = 01F34C9128A2EAE3003BDF17 /* DittoToolsApp.app */;
@@ -797,6 +800,10 @@
 		0E60040E2B7BFCD500C27FAF /* DittoPresenceDegradation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DittoPresenceDegradation;
+		};
+		0ED0914F2C640FFF00F6403B /* DittoAllToolsMenu */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DittoAllToolsMenu;
 		};
 		146ED3F529C4F13100A56229 /* DittoPeersList */ = {
 			isa = XCSwiftPackageProductDependency;

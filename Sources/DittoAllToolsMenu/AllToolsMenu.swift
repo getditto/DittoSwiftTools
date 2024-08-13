@@ -7,26 +7,28 @@ import DittoExportData
 import DittoHeartbeat
 import DittoSwift
 import SwiftUI
-import DittoAllToolsMenu
+import DittoExportLogs
 
-class MainListViewModel: ObservableObject {
-    @Published var isShowingLoginSheet = DittoManager.shared.ditto == nil
-}
-
-struct ContentView: View {
+@available(iOS 15.0, *)
+public struct AllToolsMenu: View {
     @Environment(\.colorScheme) private var colorScheme
-    @StateObject private var viewModel = MainListViewModel()
-    @ObservedObject private var dittoModel = DittoManager.shared
 
     // Export Ditto Directory
     @State private var presentExportDataShare: Bool = false
     @State private var presentExportDataAlert: Bool = false
+    
+    @State private var presentExportLogsShare: Bool = false
+    @State private var presentExportLogsAlert: Bool = false
 
     private var textColor: Color {
         colorScheme == .dark ? .white : .black
     }
     
-    var body: some View {
+    public init(ditto: Ditto) {
+        DittoManager.shared.ditto = ditto
+    }
+    
+    public var body: some View {
         NavigationView {
             List{
                 Section(header: Text("Debug")) {
@@ -52,12 +54,7 @@ struct ContentView: View {
                         MenuListItem(title: "Permissions Health", systemImage: "stethoscope", color: .purple)
                     }
                 }
-                Section(header: Text("Configuration")) {
-                    NavigationLink(destination: Login()) {
-                        MenuListItem(title: "Change Identity", systemImage: "envelope", color: .purple)
-                    }
-                }
-                Section(header: Text("Exports")) { 
+                Section(header: Text("Exports")) {
                     NavigationLink(destination:  LoggingDetailsViewer()) {
                         MenuListItem(title: "Logging", systemImage: "square.split.1x2", color: .green)
                     }
@@ -74,7 +71,7 @@ struct ContentView: View {
                     .foregroundColor(textColor)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .sheet(isPresented: $presentExportDataShare) {
-                        ExportData(ditto: dittoModel.ditto!)
+                        ExportData(ditto:  DittoManager.shared.ditto!)
                     }
                 }
             }
@@ -92,20 +89,9 @@ struct ContentView: View {
             }
             
         .navigationViewStyle(StackNavigationViewStyle())
-        .sheet(isPresented: $viewModel.isShowingLoginSheet, content: {
-            Login()
-                .onSubmit {
-                    viewModel.isShowingLoginSheet = false
-                }
-        })
         VStack {
-            Text("SDK Version: \(dittoModel.ditto?.sdkVersion ?? "N/A")")
+            Text("SDK Version: \(DittoManager.shared.ditto?.sdkVersion ?? "N/A")")
         }.padding()
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}

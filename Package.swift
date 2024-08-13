@@ -48,6 +48,9 @@ let package = Package(
         .library(
             name: "DittoPermissionsHealth",
             targets: ["DittoPermissionsHealth"]),
+        .library(
+            name: "DittoAllToolsMenu",
+            targets: ["DittoAllToolsMenu"]),
     ],
     dependencies: [
         .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.5.0"),
@@ -119,6 +122,22 @@ let package = Package(
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
                 "DittoHealthMetrics"
             ]
+        ),
+        .target(
+            name: "DittoAllToolsMenu",
+            dependencies: [
+                "DittoHealthMetrics",
+                "DittoPresenceViewer",
+                "DittoDataBrowser",
+                "DittoExportLogs",
+                "DittoDiskUsage",
+                "DittoPeersList",
+                "DittoExportData",
+                "DittoPresenceDegradation",
+                "DittoHeartbeat",
+                "DittoPermissionsHealth"
+            ]
         )
+
     ]
 )
