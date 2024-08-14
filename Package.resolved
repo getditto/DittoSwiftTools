@@ -5,17 +5,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getditto/DittoSwiftPackage",
       "state" : {
-        "revision" : "e9ac25ae9d38d215cc5958c995450dbc9b9dbea7",
-        "version" : "4.7.1"
+        "revision" : "87b0dd1c4a9bcbe2ae45ce3ad5975c152878b3ea",
+        "version" : "4.7.4"
       }
     },
     {
       "identity" : "swift-collections",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-collections.git",
+      "location" : "https://github.com/apple/swift-collections",
       "state" : {
-        "revision" : "07e47b1e93e5a1e0ef0c50fcb2d6739fb6be4003",
-        "version" : "1.0.0"
+        "revision" : "3d2dc41a01f9e49d84f0a3925fb858bed64f702d",
+        "version" : "1.1.2"
       }
     }
   ],
