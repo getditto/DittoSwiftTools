@@ -17,7 +17,6 @@ struct Documents: View {
     
     @StateObject var viewModel: DocumentsViewModel
     @State var querySearch = ""
-//    @State var selectedDoc = ""
         
     init(collectionName: String, ditto: Ditto, isStandAlone: Bool) {
         self._viewModel = StateObject(wrappedValue: DocumentsViewModel(collectionName: collectionName, ditto: ditto, isStandAlone: isStandAlone))
