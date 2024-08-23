@@ -10,8 +10,6 @@ import Combine
 import DittoSwift
 import SwiftUI
 
-
-@available(iOS 15, *)
 private class PrivateHeartbeatVM: ObservableObject {
     @Published private(set) var infoDocs = [DittoHeartbeatInfo]()
     @Published fileprivate var isPaused = true
@@ -71,7 +69,6 @@ private class PrivateHeartbeatVM: ObservableObject {
     }
 }
 
-@available(iOS 15, *)
 public struct HeartbeatView: View {
     @StateObject fileprivate var vm: PrivateHeartbeatVM
     private let dividerColor: Color = .accentColor
@@ -94,7 +91,6 @@ public struct HeartbeatView: View {
                         vm.isPaused.toggle()
                     }, label: {
                         Image(systemName: String.imgPlay)
-                            .symbolRenderingMode(.multicolor)
                             .font(.system(size: 60))
                     })
                     
@@ -104,7 +100,6 @@ public struct HeartbeatView: View {
                 List {
                     ForEach(vm.infoDocs) { info in
                         HeartbeatInfoRowItem(info: info)
-                            .listRowSeparatorTint(dividerColor)
                     }
                 }
             }
@@ -117,7 +112,6 @@ public struct HeartbeatView: View {
                     vm.isPaused.toggle()
                 } label: {
                     Image(systemName: vm.isPaused ? String.imgPlay : String.imgPause)
-                        .symbolRenderingMode(.multicolor)
                 }
                 .font(.system(size: 24))
                 .foregroundColor(.accentColor)
