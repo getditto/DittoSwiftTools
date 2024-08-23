@@ -10,8 +10,6 @@ import Combine
 import DittoSwift
 import SwiftUI
 
-
-@available(iOS 15, *)
 public struct LoggingDetailsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var presentExportLogsShare: Bool = false
@@ -59,19 +57,21 @@ public struct LoggingDetailsView: View {
             }
         }
         .listStyle(InsetGroupedListStyle())
-        .alert("Export Logs", isPresented: $presentExportLogsAlert) {
-            Button("Export") {
-                presentExportLogsShare = true
-            }
-            Button("Cancel", role: .cancel) {}
-
-        } message: {
-            Text("Compressing the logs may take a few seconds.")
+        .alert(isPresented: $presentExportLogsAlert) {
+            Alert(title:
+                    Text("Export Logs"),
+                  message:
+                    Text("Compressing the logs may take a few seconds."),
+                  primaryButton:
+                    .default(Text("Export"),action: {
+                        presentExportLogsShare = true
+                    }),
+                  secondaryButton: .cancel()
+            )
         }
     }
 }
 
-@available(iOS 15, *)
 struct LoggingDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         LoggingDetailsView(loggingOption: .constant(.debug))
