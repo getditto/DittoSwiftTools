@@ -12,29 +12,13 @@ import Foundation
 
 public class BluetoothManager: NSObject, ObservableObject {
     private var centralManager: CBCentralManager!
-    private var cancellables = Set<AnyCancellable>()
 
-    @Published var authorizationStatus: CBManagerAuthorization = .notDetermined
+    @Published var authorizationStatus: CBManagerAuthorization = CBCentralManager.authorization
     @Published var managerState: CBManagerState = .unknown
 
     public override init() {
         super.init()
-
         centralManager = CBCentralManager(delegate: self, queue: nil)
-
-        // Watch for changes in authorization status
-        centralManager.publisher(for: \.authorization)
-            .sink { [weak self] authorization in
-                self?.authorizationStatus = authorization
-            }
-            .store(in: &cancellables)
-
-        // Watch for changes in manager state
-        centralManager.publisher(for: \.state)
-            .sink { [weak self] state in
-                self?.managerState = state
-            }
-            .store(in: &cancellables)
     }
 
     var authorizationStatusDescription: String {
@@ -91,8 +75,8 @@ public class BluetoothManager: NSObject, ObservableObject {
 
 extension BluetoothManager: CBCentralManagerDelegate {
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        // This delegate method is called when there's a change in the manager's state.
-        // We don't need to do anything here since we're observing the state using Combine.
+        self.managerState = central.state
+        self.authorizationStatus = CBCentralManager.authorization
     }
 }
 
