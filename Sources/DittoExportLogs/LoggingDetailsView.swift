@@ -58,12 +58,11 @@ public struct LoggingDetailsView: View {
         }
         .listStyle(InsetGroupedListStyle())
         .alert(isPresented: $presentExportLogsAlert) {
-            Alert(title:
-                    Text("Export Logs"),
-                  message:
-                    Text("Compressing the logs may take a few seconds."),
-                  primaryButton:
-                    .default(Text("Export"),action: {
+            Alert(title: Text("Export Logs"),
+                  message: Text("Compressing the logs may take a few seconds."),
+                  primaryButton: .default(
+                    Text("Export"),
+                    action: {
                         presentExportLogsShare = true
                     }),
                   secondaryButton: .cancel()

@@ -10,7 +10,6 @@ import DittoPeersList
 import DittoDiskUsage
 import SwiftUI
 
-@available(iOS 15, *)
 struct PeersListViewer: View {
 
     var body: some View {

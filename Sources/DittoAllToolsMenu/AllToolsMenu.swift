@@ -9,7 +9,6 @@ import DittoSwift
 import SwiftUI
 import DittoExportLogs
 
-@available(iOS 15.0, *)
 public struct AllToolsMenu: View {
     @Environment(\.colorScheme) private var colorScheme
 
@@ -77,17 +76,19 @@ public struct AllToolsMenu: View {
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Ditto Tools")
-            .alert("Export Ditto Directory", isPresented: $presentExportDataAlert) {
-                Button("Export") {
-                    presentExportDataShare = true
-                }
-                Button("Cancel", role: .cancel) {}
-
-                } message: {
-                    Text("Compressing the data may take a while.")
-                }
+            .alert(isPresented: $presentExportDataAlert) {
+                Alert(title: Text("Export Ditto Directory"),
+                      message: Text("Compressing the data may take a while."),
+                      primaryButton: .default(
+                        Text("Export"),
+                        action: {
+                            presentExportDataShare = true
+                        }),
+                      secondaryButton: .cancel()
+                )
             }
-            
+        }
+
         .navigationViewStyle(StackNavigationViewStyle())
         VStack {
             Text("SDK Version: \(DittoManager.shared.ditto?.sdkVersion ?? "N/A")")
