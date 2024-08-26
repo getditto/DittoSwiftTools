@@ -98,15 +98,26 @@ struct Documents: View {
                     .padding(.leading)
            
                 if(!viewModel.docsList.isEmpty) {
-                    Picker(selection: $viewModel.selectedDoc, label: Text("Select a Document")) {
-                        ForEach(0 ..< viewModel.docsList.count, id: \.self) {
-                            Text(viewModel.docsList[$0].id)
-                                .bold()
-                                .font(.headline)
-                                .foregroundColor(.red)
+                    if #available(tvOS 17.0, *) {
+                        Picker(selection: $viewModel.selectedDoc, label: Text("Select a Document")) {
+                            ForEach(0 ..< viewModel.docsList.count, id: \.self) {
+                                Text(viewModel.docsList[$0].id)
+                                    .bold()
+                                    .font(.headline)
+                                    .foregroundColor(.red)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                    } else {
+                        Picker(selection: $viewModel.selectedDoc, label: Text("Select a Document")) {
+                            ForEach(0 ..< viewModel.docsList.count, id: \.self) {
+                                Text(viewModel.docsList[$0].id)
+                                    .bold()
+                                    .font(.headline)
+                                    .foregroundColor(.red)
+                            }
                         }
                     }
-                    .pickerStyle(.menu)
                     
                 }
             }

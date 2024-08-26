@@ -66,8 +66,8 @@ public struct LoggingDetailsView: View {
         .alert(isPresented: $presentExportLogsAlert) {
 #if os(tvOS)
             Alert(title: Text("Export Logs"),
-                  message: Text("Exporting logs in not supported on tvOS at this time."),
-                  primaryButton: .cancel(),
+                  message: Text("Exporting logs is not supported on tvOS at this time."),
+                  dismissButton: .cancel()
             )
 #else
             Alert(title: Text("Export Logs"),
@@ -80,6 +80,7 @@ public struct LoggingDetailsView: View {
                   secondaryButton: .cancel()
             )
 #endif
+        }
     }
 }
 
