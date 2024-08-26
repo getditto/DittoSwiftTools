@@ -10,7 +10,6 @@ import DittoSwift
 import SwiftUI
 
 //MARK: View Extensions
-@available(iOS 15, *)
 
 public struct HeartbeatInfoView: View {
     let info: DittoHeartbeatInfo
@@ -36,7 +35,6 @@ public struct HeartbeatInfoView: View {
     }
 }
 
-@available(iOS 15, *)
 public struct HeartbeatInfoRowItem: View {
     let info: DittoHeartbeatInfo
     public var body: some View {
@@ -50,7 +48,6 @@ public struct HeartbeatInfoRowItem: View {
 
 
 //MARK: Heartbeat Model View Extension
-@available(iOS 15, *)
 
 public extension DittoHeartbeatInfo {
     
@@ -77,7 +74,6 @@ public extension DittoHeartbeatInfo {
 
 
 //MARK: Heartbeat Model PeerConnection Extension
-@available(iOS 15, *)
 
 extension DittoPeerConnection: CustomStringConvertible {
 

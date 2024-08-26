@@ -10,8 +10,6 @@ import Combine
 import DittoSwift
 import SwiftUI
 
-
-@available(iOS 15, *)
 public struct LoggingDetailsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var presentExportLogsShare: Bool = false
@@ -60,31 +58,31 @@ public struct LoggingDetailsView: View {
 #endif
             }
         }
-#if !os(tvOS)
-        .listStyle(InsetGroupedListStyle())
-#else
-        .listStyle(.grouped)
-#endif
-        .alert("Export Logs", isPresented: $presentExportLogsAlert) {
-#if !os(tvOS)
-            Button("Export") {
-                presentExportLogsShare = true
-            }
-#endif
-
-            Button("Cancel", role: .cancel) {}
-
-        } message: {
 #if os(tvOS)
-            Text("Exporting Logs on tvOS does not work at this time.")
+        .listStyle(GroupedListStyle())
 #else
-            Text("Compressing the logs may take a few seconds.")
+        .listStyle(InsetGroupedListStyle())
 #endif
-        }
+        .alert(isPresented: $presentExportLogsAlert) {
+#if os(tvOS)
+            Alert(title: Text("Export Logs"),
+                  message: Text("Exporting logs in not supported on tvOS at this time."),
+                  primaryButton: .cancel(),
+            )
+#else
+            Alert(title: Text("Export Logs"),
+                  message: Text("Compressing the logs may take a few seconds."),
+                  primaryButton: .default(
+                    Text("Export"),
+                    action: {
+                        presentExportLogsShare = true
+                    }),
+                  secondaryButton: .cancel()
+            )
+#endif
     }
 }
 
-@available(iOS 15, *)
 struct LoggingDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         LoggingDetailsView(loggingOption: .constant(.debug))

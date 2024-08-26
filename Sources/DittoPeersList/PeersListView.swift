@@ -9,7 +9,6 @@
 import DittoSwift
 import SwiftUI
 
-@available(iOS 15, *)
 public struct PeersListView: View {
     @StateObject var vm: PeersObserverVM
     private let dividerColor: Color
@@ -62,7 +61,6 @@ public struct PeersListView: View {
                     vm.isPaused.toggle()
                 } label: {
                     Image(systemName: vm.isPaused ? "play.circle" : "pause.circle")
-                        .symbolRenderingMode(.multicolor)
                 }
                 .font(.system(size: 24))
                 .foregroundColor(.accentColor)
@@ -84,8 +82,6 @@ public struct PeersListView: View {
                     VStack(alignment: .leading) {
                         Divider()
                             .frame(height: 1)
-                            .overlay(.gray).opacity(0.4)
-                        
                         Text("peer: \(conPeer.peerKeyString)")
                             .lineLimit(1)
 
