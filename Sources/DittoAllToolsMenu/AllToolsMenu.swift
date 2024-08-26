@@ -32,9 +32,11 @@ public struct AllToolsMenu: View {
         NavigationView {
             List{
                 Section(header: Text("Debug")) {
+#if !os(tvOS)
                     NavigationLink(destination: PresenceViewer()) {
                         MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
                     }
+#endif
                     NavigationLink(destination: PeersListViewer()) {
                         MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
                     }
@@ -70,12 +72,18 @@ public struct AllToolsMenu: View {
                     }
                     .foregroundColor(textColor)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+#if !os(tvOS)
                     .sheet(isPresented: $presentExportDataShare) {
                         ExportData(ditto:  DittoManager.shared.ditto!)
                     }
+#endif
                 }
             }
+#if os(tvOS)
+            .listStyle(.grouped)
+#else
             .listStyle(InsetGroupedListStyle())
+#endif
             .navigationTitle("Ditto Tools")
             .alert("Export Ditto Directory", isPresented: $presentExportDataAlert) {
                 Button("Export") {
