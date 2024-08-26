@@ -11,7 +11,6 @@ import DittoSwift
 import SwiftUI
 import Foundation
 
-@available(iOS 15, *)
 @MainActor public class PeersObserverVM: ObservableObject {
     @Published var peers: [DittoPeer]
     @Published var localPeer: DittoPeer

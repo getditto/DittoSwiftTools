@@ -12,12 +12,10 @@ import DittoSwift
 import UIKit
 #endif
 
-@available(iOS 15.0, *)
 struct Documents: View {
     
     @StateObject var viewModel: DocumentsViewModel
     @State var querySearch = ""
-//    @State var selectedDoc = ""
         
     init(collectionName: String, ditto: Ditto, isStandAlone: Bool) {
         self._viewModel = StateObject(wrappedValue: DocumentsViewModel(collectionName: collectionName, ditto: ditto, isStandAlone: isStandAlone))
@@ -62,7 +60,6 @@ struct Documents: View {
 
                 Divider()
                     .frame(height: 4)
-                    .overlay(.gray)
                     .padding(.bottom)
 
             
@@ -101,15 +98,7 @@ struct Documents: View {
     }
 }
 
-//struct Documents_Previews: PreviewProvider {
-//    static var previews: some View {
-//        Documents(collectionName: "Default")
-//    }
-//}
-
-@available(iOS 15.0, *)
 struct SearchBar: View {
-    
     @Binding var searchText: String
     @ObservedObject var viewModel: DocumentsViewModel
         

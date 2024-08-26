@@ -10,7 +10,6 @@ import DittoExportLogs
 import DittoSwift
 import SwiftUI
 
-@available(iOS 15, *)
 struct LoggingDetailsViewer: View {
     @ObservedObject var dittoManager = DittoManager.shared
     
@@ -19,7 +18,6 @@ struct LoggingDetailsViewer: View {
     }
 }
 
-@available(iOS 15, *)
 struct LoggingDetailsViewer_Previews: PreviewProvider {
     static var previews: some View {
         LoggingDetailsViewer(dittoManager: DittoManager.shared)
