@@ -71,11 +71,11 @@ public struct AllToolsMenu: View {
                     }
                     .foregroundColor(textColor)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-#if !os(tvOS)
                     .sheet(isPresented: $presentExportDataShare) {
+#if !os(tvOS)
                         ExportData(ditto:  DittoManager.shared.ditto!)
-                    }
 #endif
+                    }
                 }
             }
 #if os(tvOS)
@@ -85,8 +85,13 @@ public struct AllToolsMenu: View {
 #endif
             .navigationTitle("Ditto Tools")
             .alert(isPresented: $presentExportDataAlert) {
+#if os(tvOS)
                 Alert(title: Text("Export Ditto Directory"),
-                      message: Text("Compressing the data may take a while."),
+                      message: Text("Exporting the Ditto Directory on tvOS does not work at this time."))
+#else
+                Alert(title: Text("Export Ditto Directory"),
+                      message:
+                        Text("Compressing the data may take a while."),
                       primaryButton: .default(
                         Text("Export"),
                         action: {
@@ -94,6 +99,7 @@ public struct AllToolsMenu: View {
                         }),
                       secondaryButton: .cancel()
                 )
+#endif
             }
         }
 

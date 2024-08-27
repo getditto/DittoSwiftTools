@@ -88,22 +88,24 @@ struct ContentView: View {
             .listStyle(.grouped)
 #endif
             .navigationTitle("Ditto Tools")
-            .alert("Export Ditto Directory", isPresented: $presentExportDataAlert) {
-#if !os(tvOS)
-                Button("Export") {
-                    presentExportDataShare = true
-                }
-#endif
-                Button("Cancel", role: .cancel) {}
-
-                } message: {
+            .alert(isPresented: $presentExportDataAlert) {
 #if os(tvOS)
-                    Text("Exporting Logs on tvOS does not work at this time.")
+                Alert(title: Text("Export Ditto Directory"),
+                      message: Text("Exporting the Ditto Directory on tvOS does not work at this time."))
 #else
-                    Text("Compressing the data may take a while.")
+                Alert(title: Text("Export Ditto Directory"),
+                      message:
+                        Text("Compressing the data may take a while."),
+                      primaryButton: .default(
+                        Text("Export"),
+                        action: {
+                            presentExportDataShare = true
+                        }),
+                      secondaryButton: .cancel()
+                )
 #endif
-                }
             }
+        }
             
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $viewModel.isShowingLoginSheet, content: {
