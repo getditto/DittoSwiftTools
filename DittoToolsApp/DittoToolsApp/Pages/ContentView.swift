@@ -30,26 +30,8 @@ struct ContentView: View {
         NavigationView {
             List{
                 Section(header: Text("Debug")) {
-                    NavigationLink(destination: PresenceViewer()) {
-                        MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
-                    }
-                    NavigationLink(destination: PeersListViewer()) {
-                        MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
-                    }
-                    NavigationLink(destination: DiskUsageViewer()) {
-                        MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .secondary)
-                    }
-                    NavigationLink(destination: DataBrowserView()) {
-                        MenuListItem(title: "Data Browser", systemImage: "photo", color: .orange)
-                    }
-                    NavigationLink(destination: PresenceDegradationViewer()) {
-                        MenuListItem(title: "Presence Degradation", systemImage: "network", color: .red)
-                    }
-                    NavigationLink(destination: HeartBeatViewer()) {
-                        MenuListItem(title: "Heartbeat", systemImage: "heart.fill", color: .red)
-                    }
-                    NavigationLink(destination: PermissionsHealthViewer()) {
-                        MenuListItem(title: "Permissions Health", systemImage: "stethoscope", color: .purple)
+                    NavigationLink(destination: AllToolsViewer()) {
+                        MenuListItem(title: "All Tools Menu", systemImage: "menucard", color: .blue)
                     }
                 }
                 Section(header: Text("Configuration")) {
@@ -57,40 +39,10 @@ struct ContentView: View {
                         MenuListItem(title: "Change Identity", systemImage: "envelope", color: .purple)
                     }
                 }
-                Section(header: Text("Exports")) { 
-                    NavigationLink(destination:  LoggingDetailsViewer()) {
-                        MenuListItem(title: "Logging", systemImage: "square.split.1x2", color: .green)
-                    }
-
-                    // Export Ditto Directory
-                    Button(action: {
-                        self.presentExportDataAlert.toggle()
-                    }) {
-                        HStack {
-                            MenuListItem(title: "Export Data Directory", systemImage: "square.and.arrow.up", color: .green)
-                            Spacer()
-                        }
-                    }
-                    .foregroundColor(textColor)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .sheet(isPresented: $presentExportDataShare) {
-                        ExportData(ditto: dittoModel.ditto!)
-                    }
-                }
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Ditto Tools")
-            .alert("Export Ditto Directory", isPresented: $presentExportDataAlert) {
-                Button("Export") {
-                    presentExportDataShare = true
-                }
-                Button("Cancel", role: .cancel) {}
-
-                } message: {
-                    Text("Compressing the data may take a while.")
-                }
-            }
-            
+        }
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $viewModel.isShowingLoginSheet, content: {
             Login()
@@ -98,9 +50,6 @@ struct ContentView: View {
                     viewModel.isShowingLoginSheet = false
                 }
         })
-        VStack {
-            Text("SDK Version: \(dittoModel.ditto?.sdkVersion ?? "N/A")")
-        }.padding()
     }
 }
 
