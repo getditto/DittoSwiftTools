@@ -160,12 +160,6 @@ struct Documents: View {
     }
 }
 
-//struct Documents_Previews: PreviewProvider {
-//    static var previews: some View {
-//        Documents(collectionName: "Default")
-//    }
-//}
-
 struct SearchBar: View {
     @Binding var searchText: String
     @ObservedObject var viewModel: DocumentsViewModel

@@ -35,6 +35,9 @@ public struct DittoDiskUsageView: View {
                                 .frame(minWidth: 100, alignment: .trailing)
                         }
                     }
+#if os(tvOS)
+                    .focusable(true)
+#endif
                     HStack {
                         Group {
                             Text("Total")
@@ -44,6 +47,9 @@ public struct DittoDiskUsageView: View {
                                 .frame(minWidth: 100, alignment: .trailing)
                         }
                     }
+#if os(tvOS)
+                    .focusable(true)
+#endif
                 } else {
                     // Displayed before first async callback
                     Text(DittoDiskUsageConstants.noData)
@@ -55,6 +61,17 @@ public struct DittoDiskUsageView: View {
                     Text("Updated at:")
                     Spacer()
                     Text(viewModel.diskUsage?.lastUpdated ?? DiskUsageViewModel.dateFormatter.string(from: Date()))
+                }
+#if os(tvOS)
+                .focusable(true)
+#endif
+            }
+
+            Section {
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    Label("Close", systemImage: "xmark")
                 }
             }
         }

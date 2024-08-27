@@ -10,7 +10,7 @@ struct Login: View {
         var error: String = ""
         @Published var useIsolatedDirectories = true
         @Published var config = DittoConfig()
-        
+
         init () {
             self.config = dittoModel.config
         }
@@ -18,7 +18,7 @@ struct Login: View {
         var isDisabled: Bool {
             return DittoManager.shared.config.appID.count < 3
         }
-        
+
         func changeIdentity() {
             dittoModel.config = config
             do {
@@ -30,9 +30,9 @@ struct Login: View {
             }
         }
     }
-    
+
     @StateObject var viewModel = ViewModel()
-    
+
     var body: some View {
         Form {
             Section {
@@ -75,19 +75,19 @@ struct Login: View {
                     dismiss()
                 }, text: "Restart Ditto", textColor: viewModel.isDisabled ? .secondary : .accentColor, isLoading: false, isDisabled: false)
             }
+            .navigationTitle("")
+            /*
+             .sheet(isPresented: $viewModel.isPresentingImagePicker, content: {
+             ImagePicker(sourceType: viewModel.sourceType, isSquareMode: true) { image in
+             let file = try! File.insert(image: image)
+             viewModel.fileId = file._id
+             viewModel.image = image
+             }
+             }) */
+            .alert("Ditto failed to start.", isPresented: $viewModel.isPresentingAlert, actions: {
+                Button("Dismiss", role: .cancel) { dismiss() }
+            })
         }
-        .navigationTitle("")
-        /*
-         .sheet(isPresented: $viewModel.isPresentingImagePicker, content: {
-         ImagePicker(sourceType: viewModel.sourceType, isSquareMode: true) { image in
-         let file = try! File.insert(image: image)
-         viewModel.fileId = file._id
-         viewModel.image = image
-         }
-         }) */
-        .alert("Ditto failed to start.", isPresented: $viewModel.isPresentingAlert, actions: {
-            Button("Dismiss", role: .cancel) { dismiss() }
-        })
     }
 }
 

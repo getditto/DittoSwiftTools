@@ -6,7 +6,7 @@ import SwiftUI
 import UIKit
 import DittoPresenceViewer
 
-#if !os(tvOS)
+#if canImport(WebKit)
 struct PresenceViewer: View {
 
     var body: some View {

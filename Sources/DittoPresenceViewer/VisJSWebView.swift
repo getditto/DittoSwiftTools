@@ -32,9 +32,9 @@ class VisJSWebView: JSWebView {
         let webDistDirURL = bundle.bundleURL.appendingPathComponent("dist")
         let htmlURL = bundle.url(forResource: "index", withExtension: "html")!
         let htmlString = try! String(contentsOf: htmlURL, encoding: .utf8)
-        #if canImport(WebKit)
+#if canImport(WebKit)
         webView.loadHTMLString(htmlString, baseURL: webDistDirURL)
-        #endif
+#endif
     }
 
     // MARK: - Functions

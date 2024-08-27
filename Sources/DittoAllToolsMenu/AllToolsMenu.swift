@@ -31,7 +31,7 @@ public struct AllToolsMenu: View {
         NavigationView {
             List{
                 Section(header: Text("Debug")) {
-#if !os(tvOS)
+#if canImport(WebKit)
                     NavigationLink(destination: PresenceViewer()) {
                         MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
                     }

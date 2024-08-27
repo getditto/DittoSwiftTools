@@ -100,12 +100,7 @@ public struct HeartbeatView: View {
                 List {
                     ForEach(vm.infoDocs) { info in
 #if !os(tvOS)
-                        if #available(iOS 15.0, *) {
-                            HeartbeatInfoRowItem(info: info)
-                                .listRowSeparatorTint(dividerColor)
-                        } else {
-                            HeartbeatInfoRowItem(info: info)
-                        }
+                        HeartbeatInfoRowItem(info: info)
 #endif
                     }
                 }

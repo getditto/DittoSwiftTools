@@ -36,7 +36,6 @@ public struct PresenceView: View {
 
 // MARK: - UIViewRepresentable
 #if os(iOS)
-@available(iOS 13, *)
 extension PresenceView: UIViewRepresentable {
     public typealias Body = Never
     public typealias UIViewType = UIView
