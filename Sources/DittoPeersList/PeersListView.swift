@@ -35,7 +35,7 @@ public struct PeersListView: View {
             }
 
             Section {
-                ForEach(vm.peers, id: \.peerKey) { peer in
+                ForEach(vm.peers, id: \.peerKeyString) { peer in
                     peerView(peer)
                         .padding(.bottom, 4)
                 }
