@@ -28,79 +28,77 @@ public struct AllToolsMenu: View {
     }
     
     public var body: some View {
-        NavigationView {
-            List{
-                Section(header: Text("Debug")) {
+        List{
+            Section(header: Text("Debug")) {
 #if canImport(WebKit)
-                    NavigationLink(destination: PresenceViewer()) {
-                        MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
-                    }
-#endif
-                    NavigationLink(destination: PeersListViewer()) {
-                        MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
-                    }
-                    NavigationLink(destination: DiskUsageViewer()) {
-                        MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .secondary)
-                    }
-                    NavigationLink(destination: DataBrowserView()) {
-                        MenuListItem(title: "Data Browser", systemImage: "photo", color: .orange)
-                    }
-                    NavigationLink(destination: PresenceDegradationViewer()) {
-                        MenuListItem(title: "Presence Degradation", systemImage: "network", color: .red)
-                    }
-                    NavigationLink(destination: HeartBeatViewer()) {
-                        MenuListItem(title: "Heartbeat", systemImage: "heart.fill", color: .red)
-                    }
-                    NavigationLink(destination: PermissionsHealthViewer()) {
-                        MenuListItem(title: "Permissions Health", systemImage: "stethoscope", color: .purple)
-                    }
+                NavigationLink(destination: PresenceViewer()) {
+                    MenuListItem(title: "Presence Viewer", systemImage: "network", color: .pink)
                 }
-                Section(header: Text("Exports")) {
-                    NavigationLink(destination:  LoggingDetailsViewer()) {
-                        MenuListItem(title: "Logging", systemImage: "square.split.1x2", color: .green)
-                    }
+#endif
+                NavigationLink(destination: PeersListViewer()) {
+                    MenuListItem(title: "Peers List", systemImage: "network", color: .blue)
+                }
+                NavigationLink(destination: DiskUsageViewer()) {
+                    MenuListItem(title: "Disk Usage", systemImage: "opticaldiscdrive", color: .secondary)
+                }
+                NavigationLink(destination: DataBrowserView()) {
+                    MenuListItem(title: "Data Browser", systemImage: "photo", color: .orange)
+                }
+                NavigationLink(destination: PresenceDegradationViewer()) {
+                    MenuListItem(title: "Presence Degradation", systemImage: "network", color: .red)
+                }
+                NavigationLink(destination: HeartBeatViewer()) {
+                    MenuListItem(title: "Heartbeat", systemImage: "heart.fill", color: .red)
+                }
+                NavigationLink(destination: PermissionsHealthViewer()) {
+                    MenuListItem(title: "Permissions Health", systemImage: "stethoscope", color: .purple)
+                }
+            }
+            Section(header: Text("Exports")) {
+                NavigationLink(destination:  LoggingDetailsViewer()) {
+                    MenuListItem(title: "Logging", systemImage: "square.split.1x2", color: .green)
+                }
 
-                    // Export Ditto Directory
-                    Button(action: {
-                        self.presentExportDataAlert.toggle()
-                    }) {
-                        HStack {
-                            MenuListItem(title: "Export Data Directory", systemImage: "square.and.arrow.up", color: .green)
-                            Spacer()
-                        }
-                    }
-                    .foregroundColor(textColor)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .sheet(isPresented: $presentExportDataShare) {
-#if !os(tvOS)
-                        ExportData(ditto:  DittoManager.shared.ditto!)
-#endif
+                // Export Ditto Directory
+                Button(action: {
+                    self.presentExportDataAlert.toggle()
+                }) {
+                    HStack {
+                        MenuListItem(title: "Export Data Directory", systemImage: "square.and.arrow.up", color: .green)
+                        Spacer()
                     }
                 }
-            }
-#if os(tvOS)
-            .listStyle(.grouped)
-#else
-            .listStyle(InsetGroupedListStyle())
+                .foregroundColor(textColor)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .sheet(isPresented: $presentExportDataShare) {
+#if !os(tvOS)
+                    ExportData(ditto:  DittoManager.shared.ditto!)
 #endif
-            .navigationTitle("Ditto Tools")
-            .alert(isPresented: $presentExportDataAlert) {
-#if os(tvOS)
-                Alert(title: Text("Export Ditto Directory"),
-                      message: Text("Exporting the Ditto Directory on tvOS does not work at this time."))
-#else
-                Alert(title: Text("Export Ditto Directory"),
-                      message:
-                        Text("Compressing the data may take a while."),
-                      primaryButton: .default(
-                        Text("Export"),
-                        action: {
-                            presentExportDataShare = true
-                        }),
-                      secondaryButton: .cancel()
-                )
-#endif
+                }
             }
+        }
+#if os(tvOS)
+        .listStyle(.grouped)
+#else
+        .listStyle(InsetGroupedListStyle())
+#endif
+        .navigationTitle("Ditto Tools")
+        .alert(isPresented: $presentExportDataAlert) {
+#if os(tvOS)
+            Alert(title: Text("Export Ditto Directory"),
+                  message: Text("Exporting the Ditto Directory on tvOS does not work at this time."))
+#else
+            Alert(title: Text("Export Ditto Directory"),
+                  message:
+                    Text("Compressing the data may take a while."),
+                  primaryButton: .default(
+                    Text("Export"),
+                    action: {
+                        presentExportDataShare = true
+                    }),
+                  secondaryButton: .cancel()
+            )
+#endif
         }
 
         .navigationViewStyle(StackNavigationViewStyle())
