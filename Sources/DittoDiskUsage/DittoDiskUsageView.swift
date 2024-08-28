@@ -8,13 +8,17 @@
 import DittoSwift
 import SwiftUI
 import Combine
+import DittoExportData
 
 public struct DittoDiskUsageView: View {
 
     @Environment(\.presentationMode) var presentationMode
 
-    var ditto: Ditto
+    // Export Ditto Directory
+    @State private var presentExportDataShare: Bool = false
+    @State private var presentExportDataAlert: Bool = false
 
+    var ditto: Ditto
     @ObservedObject var viewModel: DiskUsageViewModel
 
     public init(ditto: Ditto) {
@@ -35,9 +39,9 @@ public struct DittoDiskUsageView: View {
                                 .frame(minWidth: 100, alignment: .trailing)
                         }
                     }
-#if os(tvOS)
+                    #if os(tvOS)
                     .focusable(true)
-#endif
+                    #endif
                     HStack {
                         Group {
                             Text("Total")
@@ -47,9 +51,9 @@ public struct DittoDiskUsageView: View {
                                 .frame(minWidth: 100, alignment: .trailing)
                         }
                     }
-#if os(tvOS)
+                    #if os(tvOS)
                     .focusable(true)
-#endif
+                    #endif
                 } else {
                     // Displayed before first async callback
                     Text(DittoDiskUsageConstants.noData)
@@ -62,11 +66,41 @@ public struct DittoDiskUsageView: View {
                     Spacer()
                     Text(viewModel.diskUsage?.lastUpdated ?? DiskUsageViewModel.dateFormatter.string(from: Date()))
                 }
-#if os(tvOS)
+                #if os(tvOS)
                 .focusable(true)
-#endif
+                #endif
             }
 
+            Section {
+                // Export Ditto Directory
+                Button {
+                    self.presentExportDataAlert.toggle()
+                } label: {
+                    Label("Export Data Directory", systemImage: "square.and.arrow.up")
+                }
+                .sheet(isPresented: $presentExportDataShare) {
+                    #if !os(tvOS)
+                    ExportData(ditto: self.ditto)
+                    #endif
+                }
+            }
+            .alert(isPresented: $presentExportDataAlert) {
+                #if os(tvOS)
+                Alert(title: Text("Export Ditto Directory"),
+                      message: Text("Exporting the Ditto Directory on tvOS does not work at this time."))
+                #else
+                Alert(title: Text("Export Ditto Directory"),
+                      message:
+                        Text("Compressing the data may take a while."),
+                      primaryButton: .default(
+                        Text("Export"),
+                        action: {
+                            presentExportDataShare = true
+                        }),
+                      secondaryButton: .cancel()
+                )
+                #endif
+            }
             Section {
                 Button {
                     presentationMode.wrappedValue.dismiss()
