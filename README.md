@@ -120,7 +120,7 @@ present(vc, animated: true)
 ```
 
 ### 3. Disk Usage  
-Disk Usage allows you to see Ditto's file space usage.  
+Disk Usage allows you to see Ditto's file space usage. In addition to viewing it you can also export the shown data.
 
  <img src="/Img/diskUsage.png" alt="Disk Usage Image" width="300">  
 
