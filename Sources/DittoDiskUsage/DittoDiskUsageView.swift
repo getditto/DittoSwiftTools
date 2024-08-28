@@ -13,7 +13,6 @@ import DittoExportData
 public struct DittoDiskUsageView: View {
 
     @Environment(\.presentationMode) var presentationMode
-    @Environment(\.colorScheme) private var colorScheme
 
     // Export Ditto Directory
     @State private var presentExportDataShare: Bool = false
