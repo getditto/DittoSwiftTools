@@ -18,9 +18,7 @@ public struct DittoDiskUsageView: View {
     // Export Ditto Directory
     @State private var presentExportDataShare: Bool = false
     @State private var presentExportDataAlert: Bool = false
-    private var textColor: Color {
-        colorScheme == .dark ? Color(UIColor.systemBlue) : .blue
-    }
+
     var ditto: Ditto
     @ObservedObject var viewModel: DiskUsageViewModel
 
@@ -80,9 +78,7 @@ public struct DittoDiskUsageView: View {
                     self.presentExportDataAlert.toggle()
                 } label: {
                     Label("Export Data Directory", systemImage: "square.and.arrow.up")
-                        .foregroundColor(textColor)
                 }
-                .foregroundColor(textColor)
                 .sheet(isPresented: $presentExportDataShare) {
                     #if !os(tvOS)
                     ExportData(ditto: self.ditto)
