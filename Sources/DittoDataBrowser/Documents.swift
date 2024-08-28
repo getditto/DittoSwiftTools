@@ -22,16 +22,70 @@ struct Documents: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Text("Collection: " + viewModel.collectionName)
                 .font(.title2)
-                .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, alignment: .topLeading)
+                .frame(alignment: .topLeading)
                 .padding(.leading)
             SearchBar(searchText: $querySearch, viewModel: viewModel)
-            if(!viewModel.docsList.isEmpty) {
-                Text("Docs Count: " + String(viewModel.docsList.count))
-                .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, alignment: .topLeading)
-                .padding(.leading)
+
+            HStack {
+                if(!viewModel.docsList.isEmpty) {
+                    Text("Docs: " + String(viewModel.docsList.count))
+                    .frame(alignment: .topLeading)
+                    .padding(.leading)
+                }
+                else {
+                    Text("Docs: 0")
+                    .frame(alignment: .topLeading)
+                    .padding(.leading)
+                }
+                Spacer()
+
+                if(!viewModel.docsList.isEmpty) {
+                    if #available(tvOS 17.0, *) {
+                        Menu {
+                            Picker(selection: $viewModel.selectedDoc, label: Text("Select a Document")) {
+                                ForEach(0 ..< viewModel.docsList.count, id: \.self) {
+                                    Text(viewModel.docsList[$0].id)
+                                        .bold()
+                                        .font(.headline)
+                                        .foregroundColor(.red)
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Image(systemName: "doc")
+                                Text("Select Document")
+                            }
+                            .padding(.vertical, 5)
+                        }
+                        .padding(.horizontal)
+                    } else {
+                        // Fallback on earlier versions
+                    }
+                } else {
+                    HStack {
+                        Image(systemName: "doc")
+                        Text("No Documents Found")
+                    }
+                    .padding(.vertical, 5)
+                    .padding(.horizontal)
+                }
+            }
+            .frame(alignment: .topLeading)
+
+            Rectangle()
+                .fill(.gray)
+                .frame(height: 4)
+                .padding(.bottom)
+
+            if(viewModel.docsList.isEmpty) {
+                HStack {
+                    Spacer()
+                    Text("No Data")
+                    Spacer()
+                }
             }
             else {
                 Text("Docs Count: 0")
@@ -44,15 +98,26 @@ struct Documents: View {
                     .padding(.leading)
            
                 if(!viewModel.docsList.isEmpty) {
-                    Picker(selection: $viewModel.selectedDoc, label: Text("Select a Document")) {
-                        ForEach(0 ..< viewModel.docsList.count, id: \.self) {
-                            Text(viewModel.docsList[$0].id)
-                                .bold()
-                                .font(.headline)
-                                .foregroundColor(.red)
+                    if #available(tvOS 17.0, *) {
+                        Picker(selection: $viewModel.selectedDoc, label: Text("Select a Document")) {
+                            ForEach(0 ..< viewModel.docsList.count, id: \.self) {
+                                Text(viewModel.docsList[$0].id)
+                                    .bold()
+                                    .font(.headline)
+                                    .foregroundColor(.red)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                    } else {
+                        Picker(selection: $viewModel.selectedDoc, label: Text("Select a Document")) {
+                            ForEach(0 ..< viewModel.docsList.count, id: \.self) {
+                                Text(viewModel.docsList[$0].id)
+                                    .bold()
+                                    .font(.headline)
+                                    .foregroundColor(.red)
+                            }
                         }
                     }
-                    .pickerStyle(.menu)
                     
                 }
             }
@@ -81,20 +146,17 @@ struct Documents: View {
                                     }
                                     
                                 }
-                                .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, minHeight: 0, maxHeight: UIScreen.main.bounds.height, alignment: .topLeading)
-                                
-                                Divider()
-                                    .frame(width: UIScreen.main.bounds.width)
-                                
                             }
+#if os(tvOS)
+                            .focusable(true)
+#endif
+
+                            Divider()
                         }
                     }
                 }
-
             }
-            
         }
-        .frame(minWidth: 0, maxWidth: UIScreen.main.bounds.width, minHeight: 0, maxHeight: UIScreen.main.bounds.height, alignment: .topLeading)
     }
 }
 
@@ -104,33 +166,29 @@ struct SearchBar: View {
         
     var body: some View {
         HStack {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Color(UIColor.systemGray5))
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                    TextField("Query", text: $searchText)
-                }
-                .foregroundColor(Color(UIColor.darkGray))
-                .padding(.leading, 13)
-                
+            HStack {
+                Image(systemName: "magnifyingglass")
+                TextField("Query", text: $searchText)
+#if !os(tvOS)
+                    .textFieldStyle(.roundedBorder)
+#else
+                    .textFieldStyle(.automatic)
+#endif
             }
-            .frame(height: 30)
-            .cornerRadius(13)
-            .padding([.top,.leading,.bottom])
-        
+            .padding(5)
+
             Button {
                 viewModel.filterDocs(queryString: searchText)
             } label: {
                 Text("Find")
-                    .frame(height: 30)
-                    .padding([.leading, .trailing])
                     .foregroundColor(.white)
-                    .background(RoundedRectangle(cornerRadius: 13).fill(.blue))
             }
-            .padding(.trailing)
+            .padding(.vertical, 5)
+            .padding(.horizontal)
+            .background(RoundedRectangle(cornerRadius: 13).fill(.blue))
 
         }
+        .padding(.horizontal)
         .onDisappear(perform: {
             viewModel.closeLiveQuery()
         })

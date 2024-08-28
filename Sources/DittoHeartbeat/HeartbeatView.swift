@@ -99,7 +99,9 @@ public struct HeartbeatView: View {
             } else {
                 List {
                     ForEach(vm.infoDocs) { info in
+#if !os(tvOS)
                         HeartbeatInfoRowItem(info: info)
+#endif
                     }
                 }
             }
@@ -115,7 +117,7 @@ public struct HeartbeatView: View {
                 }
                 .font(.system(size: 24))
                 .foregroundColor(.accentColor)
-                .buttonStyle(.borderless)
+                .buttonStyle(.automatic)
             }
         }
     }

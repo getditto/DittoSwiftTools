@@ -40,7 +40,11 @@ struct ContentView: View {
                     }
                 }
             }
+#if !os(tvOS)
             .listStyle(InsetGroupedListStyle())
+#else
+            .listStyle(.grouped)
+#endif
             .navigationTitle("Ditto Tools")
         }
         .navigationViewStyle(StackNavigationViewStyle())

@@ -19,23 +19,32 @@ public struct DataBrowser: View {
     }
     
     public var body: some View {
-        if #available(iOS 15.0, *) {
-            GeometryReader { geo in
-                VStack {
-                    Button {
-                        self.startSubscriptions = true
-                    } label: {
-                        Text("Start Subscriptions")
-                    }
-                    .frame(width: geo.size.width, alignment: .leading).padding([.leading], 25)
-                    .alert("Stand Alone App?", isPresented: $startSubscriptions) {
-                        Button("Cancel", role: .cancel) { }
-                        Button("Start", role: .none) {
+                VStack(alignment: .leading) {
+                    if #available(iOS 15.0, *) {
+                        Button {
+                            self.startSubscriptions = true
+                        } label: {
+                            Text("Start Subscriptions")
+                        }
+                        .padding(.leading, 25)
+                        .alert("Stand Alone App?", isPresented: $startSubscriptions) {
+                            Button("Cancel", role: .cancel) { }
+                            Button("Start", role: .none) {
+                                viewModel.startSubscription()
+                                self.isStandAlone = true
+                            }
+                        } message: {
+                            Text("Only start subscriptions if using the Data Browser in a stand alone application")
+                        }
+                    } else {
+                        Button {
+                            self.startSubscriptions = true
                             viewModel.startSubscription()
                             self.isStandAlone = true
+                        } label: {
+                            Text("Start Subscriptions")
                         }
-                    } message: {
-                        Text("Only start subscriptions if using the Data Browser in a stand alone application")
+                        .padding(.leading, 25)
                     }
                     List {
                         Section() {
@@ -47,13 +56,9 @@ public struct DataBrowser: View {
                         }
                     }
                 }
-            }
             .navigationTitle("Collections")
             .onDisappear(perform: {
                 viewModel.closeLiveQuery()
             })
-        } else {
-            // Fallback on earlier versions
-        }
     }
 }

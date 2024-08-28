@@ -31,8 +31,9 @@ public struct PeersListView: View {
                     .font(Font.subheadline.weight(.bold))
             } footer: {
                 Text(Self.footerText)
+                    .font(.footnote)
             }
-            
+
             Section {
                 ForEach(vm.peers, id: \.peerKey) { peer in
                     peerView(peer)
@@ -43,11 +44,17 @@ public struct PeersListView: View {
                     .font(Font.subheadline.weight(.bold))
             } footer: {
                 Text(Self.footerText)
+                    .font(.footnote)
             }
         }
+#if os(tvOS)
+        .listStyle(.grouped)
+#else
+        .listStyle(.insetGrouped)
+        .navigationBarTitleDisplayMode(.inline)
+#endif
         .onDisappear { vm.cleanup() }
         .navigationTitle("Peers List")
-        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
@@ -57,7 +64,7 @@ public struct PeersListView: View {
                 }
                 .font(.system(size: 24))
                 .foregroundColor(.accentColor)
-                .buttonStyle(.borderless)
+                .buttonStyle(.automatic)
             }
         }
     }
@@ -77,15 +84,17 @@ public struct PeersListView: View {
                             .frame(height: 1)
                         Text("peer: \(conPeer.peerKeyString)")
                             .lineLimit(1)
-                            .fixedSize(horizontal: false, vertical: true)
-                        
+
                         presenceSnapshotDirectlyConnectedPeersView(conPeer, showBLEDistance: showBLEDistance)
                     }
-                    .padding(.leading, 12)
+                    .padding(12)
                 }
             }
             Text(peer.peerSDKVersion).font(.subheadline)
         }
+#if os(tvOS)
+        .focusable(true)
+#endif
     }
     
     @ViewBuilder

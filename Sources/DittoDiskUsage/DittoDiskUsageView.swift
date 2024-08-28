@@ -25,29 +25,31 @@ public struct DittoDiskUsageView: View {
     public var body: some View {
         List {
             Section {
-                Text("Disk Usage")
-                    .frame(width: 400, alignment: .center)
-                    .font(.title)
-            }
-
-            Section {
                 if let diskUsage = viewModel.diskUsage {
                     ForEach(diskUsage.children, id: \.self) { (child: DiskUsage) in
                         HStack {
                             Text(child.relativePath)
-                                .frame(width: 200, alignment: .leading)
+                                .frame(minWidth: 200, alignment: .leading)
+                            Spacer()
                             Text(child.size)
-                                .frame(width: 100, alignment: .trailing)
+                                .frame(minWidth: 100, alignment: .trailing)
                         }
                     }
+#if os(tvOS)
+                    .focusable(true)
+#endif
                     HStack {
                         Group {
                             Text("Total")
-                                .frame(width: 200, alignment: .leading)
+                                .frame(minWidth: 200, alignment: .leading)
+                            Spacer()
                             Text(diskUsage.totalSize)
-                                .frame(width: 100, alignment: .trailing)
+                                .frame(minWidth: 100, alignment: .trailing)
                         }
                     }
+#if os(tvOS)
+                    .focusable(true)
+#endif
                 } else {
                     // Displayed before first async callback
                     Text(DittoDiskUsageConstants.noData)
@@ -57,10 +59,12 @@ public struct DittoDiskUsageView: View {
             Section {
                 HStack {
                     Text("Updated at:")
-                        .frame(width: 200, alignment: .leading)
+                    Spacer()
                     Text(viewModel.diskUsage?.lastUpdated ?? DiskUsageViewModel.dateFormatter.string(from: Date()))
-                        .frame(width: 100, alignment: .trailing)
                 }
+#if os(tvOS)
+                .focusable(true)
+#endif
             }
 
             Section {
@@ -71,6 +75,7 @@ public struct DittoDiskUsageView: View {
                 }
             }
         }
+        .navigationTitle("Disk Usage")
     }
 }
 
