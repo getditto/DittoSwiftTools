@@ -31,7 +31,7 @@ class DittoManager: ObservableObject {
         // subscribe to loggingOption changes
         // make sure log level is set _before_ starting ditto
         $loggingOption
-            .sink { [weak self] logOption in
+            .sink { logOption in
                 switch logOption {
                 case .disabled:
                     DittoLogger.enabled = false
