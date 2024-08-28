@@ -87,7 +87,8 @@ let package = Package(
         .target(
             name: "DittoDiskUsage",
             dependencies: [
-                .product(name: "DittoSwift", package: "DittoSwiftPackage")
+                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
+                "DittoHealthMetrics"
             ]
         ),
         .target(
