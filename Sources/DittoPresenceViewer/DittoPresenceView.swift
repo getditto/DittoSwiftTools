@@ -14,10 +14,12 @@ public typealias PlatformView = UIView
 public typealias PlatformViewController = UIViewController
 #endif
 
+#if !targetEnvironment(macCatalyst)
 #if canImport(AppKit)
 import AppKit
 public typealias PlatformView = NSView
 public typealias PlatformViewController = NSViewController
+#endif
 #endif
 
 /**
