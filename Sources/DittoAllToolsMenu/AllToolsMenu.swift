@@ -97,7 +97,7 @@ fileprivate struct ToolsList: View {
              
 #if !os(tvOS)
             // Do not show on tvOS as export is not currently supported.
-            Section(footer: Text("Export all data in the Ditto directory as a .zip file.")) {
+            Section(footer: Text("Export all Ditto data on this device as a .zip file.")) {
                 ExportButton()
             }
 #endif
