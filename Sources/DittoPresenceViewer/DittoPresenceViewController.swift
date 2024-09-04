@@ -103,6 +103,7 @@ final class DittoPresenceViewController: PlatformViewController {
     }
 #endif
 
+#if !targetEnvironment(macCatalyst)
 #if canImport(AppKit)
     override func viewWillAppear() {
         super.viewWillAppear()
@@ -110,6 +111,7 @@ final class DittoPresenceViewController: PlatformViewController {
         addStandaloneNavigationBarIfNeeded()
         addCloseButtonIfNeeded()
     }
+#endif
 #endif
 
     // MARK: - Private Functions
@@ -185,8 +187,11 @@ final class DittoPresenceViewController: PlatformViewController {
 #if canImport(UIKit)
         dismiss(animated: true)
 #endif
+
+#if !targetEnvironment(macCatalyst)
 #if canImport(AppKit)
         dismiss(self)
+#endif
 #endif
     }
 
