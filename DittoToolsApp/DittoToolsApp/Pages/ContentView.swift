@@ -22,7 +22,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            AllToolsViewer()
+            AllToolsMenu(ditto: dittoModel.ditto!)
                 .navigationTitle("Ditto Tools")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
