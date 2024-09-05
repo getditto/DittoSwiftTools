@@ -555,15 +555,25 @@ heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(secondsInterval: Int, me
 The [Ditto Tools Example App](https://github.com/getditto/DittoSwiftTools/tree/main/DittoToolsApp) 
 included in this repo allows you to try the DittoSwiftTools package in a standalone app. Open 
 DittoToolsApp.xcodeproj in Xcode and build to a simulator or device.   
-  
- <img src="/Img/dittoToolsApp.png" alt="Ditto Tools App Image">  
- 
+
+<div align="center">
+    <figure>
+        <img src="Img/app_menu.png" width="300px" alt="Ditto Tools app displaying the list of available tools.">
+        <figcaption>Ditto Tools app displaying the list of available tools.</figcaption>
+    </figure>
+ </div>
+
 In the `CONFIGURATION` section of the tools list, click Change Identity to configure and start, or 
 restart, the Ditto session. Select `Online Playground`, `Offline Playground`, or `Online 
 With Authentication` in the Identity picker. Then add the appropriate `App ID` and other values 
 from your Ditto portal app and click `Restart Ditto`.  
 
- <img src="/Img/changeIdentity.png" alt="Change Identity View Image">  
+<div align="center">
+    <figure>
+        <img src="Img/app_config.png" width="300px" alt="Ditto Tools app showing the configuration details.">
+        <figcaption>Ditto Tools app showing the configuration details.</figcaption>
+    </figure>
+ </div>
 
 This will initialize the Ditto instance and enable you to try the different features.   
 
