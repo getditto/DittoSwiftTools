@@ -1,53 +1,49 @@
 //
-//  Copyright © 2022 DittoLive Incorporated. All rights reserved.
+//  ContentView.swift
+//
+//  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
-import Combine
-import DittoExportData
-import DittoHeartbeat
-import DittoSwift
 import SwiftUI
 import DittoAllToolsMenu
+import DittoSwift
+
 
 class MainListViewModel: ObservableObject {
     @Published var isShowingLoginSheet = DittoManager.shared.ditto == nil
 }
 
+
 struct ContentView: View {
-    @Environment(\.colorScheme) private var colorScheme
+
     @StateObject private var viewModel = MainListViewModel()
+
     @ObservedObject private var dittoModel = DittoManager.shared
 
-    // Export Ditto Directory
-    @State private var presentExportDataShare: Bool = false
-    @State private var presentExportDataAlert: Bool = false
-
-    private var textColor: Color {
-        colorScheme == .dark ? .white : .black
-    }
-    
     var body: some View {
         NavigationView {
-            List{
-                Section(header: Text("Debug")) {
-                    NavigationLink(destination: AllToolsViewer()) {
-                        MenuListItem(title: "All Tools Menu", systemImage: "menucard", color: .blue)
+            AllToolsMenu(ditto: dittoModel.ditto!)
+                .navigationTitle("Ditto Tools")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            viewModel.isShowingLoginSheet.toggle()
+                        }) {
+                            Image(systemName: "gear")
+                        }
                     }
                 }
-                Section(header: Text("Configuration")) {
-                    NavigationLink(destination: Login()) {
-                        MenuListItem(title: "Change Identity", systemImage: "envelope", color: .purple)
-                    }
-                }
-            }
+
+            // Default view when no tool is selected.
+            Text("Please select a tool.")
+                .font(.body)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .foregroundColor(.secondary)
 #if !os(tvOS)
-            .listStyle(InsetGroupedListStyle())
-#else
-            .listStyle(.grouped)
-#endif
-            .navigationTitle("Ditto Tools")
+                .background(Color(UIColor.systemBackground))
+#endif            
         }
-        .navigationViewStyle(StackNavigationViewStyle())
+        .navigationViewStyle(DoubleColumnNavigationViewStyle())
         .sheet(isPresented: $viewModel.isShowingLoginSheet, content: {
             Login()
                 .onSubmit {
@@ -56,6 +52,7 @@ struct ContentView: View {
         })
     }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
