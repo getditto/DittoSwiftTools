@@ -35,7 +35,6 @@
 		0E03301C2B8D3C0100C20156 /* DittoPermissionsHealth in Frameworks */ = {isa = PBXBuildFile; productRef = 0E03301B2B8D3C0100C20156 /* DittoPermissionsHealth */; };
 		0E60040F2B7BFCD500C27FAF /* DittoPresenceDegradation in Frameworks */ = {isa = PBXBuildFile; productRef = 0E60040E2B7BFCD500C27FAF /* DittoPresenceDegradation */; };
 		0E6F0FA62B7C17270088C0CF /* PresenceDegradationViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F0FA52B7C17270088C0CF /* PresenceDegradationViewer.swift */; };
-		0E7DF38C2C7E8695006A82D4 /* AllToolsViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7DF38B2C7E8695006A82D4 /* AllToolsViewer.swift */; };
 		0EAA7B242B8D41100078B7F0 /* PermissionsHealthViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EAA7B232B8D41100078B7F0 /* PermissionsHealthViewer.swift */; };
 		0ED091502C640FFF00F6403B /* DittoAllToolsMenu in Frameworks */ = {isa = PBXBuildFile; productRef = 0ED0914F2C640FFF00F6403B /* DittoAllToolsMenu */; };
 		0EFAEBC52B99322D00F26744 /* HeartBeatViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */; };
@@ -97,7 +96,6 @@
 		01F34D0628A3119E003BDF17 /* MenuListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListItem.swift; sourceTree = "<group>"; };
 		01F34D0828A31644003BDF17 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0E6F0FA52B7C17270088C0CF /* PresenceDegradationViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenceDegradationViewer.swift; sourceTree = "<group>"; };
-		0E7DF38B2C7E8695006A82D4 /* AllToolsViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllToolsViewer.swift; sourceTree = "<group>"; };
 		0EAA7B232B8D41100078B7F0 /* PermissionsHealthViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsHealthViewer.swift; sourceTree = "<group>"; };
 		0EFAEBC42B99322D00F26744 /* HeartBeatViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartBeatViewer.swift; sourceTree = "<group>"; };
 		146ED3F929C4F2A000A56229 /* PeersListViewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeersListViewer.swift; sourceTree = "<group>"; };
@@ -244,7 +242,6 @@
 				01F34D0128A310A5003BDF17 /* Login.swift */,
 				146ED3F929C4F2A000A56229 /* PeersListViewer.swift */,
 				016757DC28A3313300347491 /* PresenceViewer.swift */,
-				0E7DF38B2C7E8695006A82D4 /* AllToolsViewer.swift */,
 			);
 			path = Pages;
 			sourceTree = "<group>";
@@ -447,7 +444,6 @@
 				01F34CEB28A307CD003BDF17 /* Server.swift in Sources */,
 				01F34CE228A30781003BDF17 /* MainThreadMonitor.swift in Sources */,
 				01F34D0928A31644003BDF17 /* AppDelegate.swift in Sources */,
-				0E7DF38C2C7E8695006A82D4 /* AllToolsViewer.swift in Sources */,
 				146ED3FA29C4F2A000A56229 /* PeersListViewer.swift in Sources */,
 				016757DF28A3393B00347491 /* Config.swift in Sources */,
 				F87DC481298858EC00899FEC /* DiskUsageViewer.swift in Sources */,
