@@ -1,11 +1,12 @@
 //
-//  Copyright © 2021 DittoLive Incorporated. All rights reserved.
+//  DittoManager.swift
+//
+//  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
 import Combine
 import DittoExportLogs
 import DittoSwift
-import Foundation
 
 class AuthDelegate: DittoAuthenticationDelegate {
     func authenticationRequired(authenticator: DittoAuthenticator) {
@@ -48,17 +49,15 @@ class DittoManager: ObservableObject {
 
     // MARK: - Properties
 
-    var ditto: Ditto? = Ditto()
-
-    @Published var config = DittoConfig(
-        appID: "YOUR_APP_ID_HERE",
-        playgroundToken: "YOUR_TOKEN_HERE",
-        identityType: IdentityType.onlinePlayground,
-        offlineLicenseToken: "YOUR_OFFLINE_LICENSE_HERE",
-        authenticationProvider: "",
-        authenticationToken: "",
-        useIsolatedDirectories: true
-    )
+    var ditto: Ditto!
+#if os(tvOS)
+    let persistenceDirectory: FileManager.SearchPathDirectory = .cachesDirectory
+#else
+    let persistenceDirectory: FileManager.SearchPathDirectory = .documentDirectory
+#endif
+    
+    @Published var config = MutableConfig()
+        
     @Published var colls = [DittoCollection]()
     @Published var loggingOption: DittoLogger.LoggingOptions
     private var cancellables = Set<AnyCancellable>()
@@ -74,6 +73,11 @@ class DittoManager: ObservableObject {
     // MARK: - Private Constructor
 
     private init() {
+        // initialize Ditto with the correct persistence directory, based on platform
+        if let cachesURL = FileManager.default.urls(for: persistenceDirectory, in: .userDomainMask).first {
+            self.ditto = Ditto(persistenceDirectory: cachesURL)
+        }
+        
         self.loggingOption = AppSettings.shared.loggingOption
         
         // make sure log level is set _before_ starting ditto
@@ -85,7 +89,7 @@ class DittoManager: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func getPersistenceDir (config: DittoConfig) -> URL? {
+    func getPersistenceDir (config: MutableConfig) -> URL? {
         if (!config.useIsolatedDirectories) { return nil }
         print("Giving isolated directory")
         return topLevelDittoDir()

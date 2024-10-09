@@ -9,47 +9,31 @@ import DittoAllToolsMenu
 import DittoSwift
 
 
-class MainListViewModel: ObservableObject {
-    @Published var isShowingLoginSheet = DittoManager.shared.ditto == nil
-}
-
-
 struct ContentView: View {
-
-    @StateObject private var viewModel = MainListViewModel()
-
     @ObservedObject private var dittoModel = DittoManager.shared
+    @State var isShowingConfigurationSheet = DittoManager.shared.ditto == nil
 
     var body: some View {
         NavigationView {
             AllToolsMenu(ditto: dittoModel.ditto!)
                 .navigationTitle("Ditto Tools")
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            viewModel.isShowingLoginSheet.toggle()
-                        }) {
-                            Image(systemName: "gear")
-                        }
-                    }
-                }
+                .navigationBarItems(trailing:
+                                        Button(action: {
+                                            isShowingConfigurationSheet.toggle()
+                                        }) {
+                                            Image(systemName: "gear")
+                                        })
 
             // Default view when no tool is selected.
             Text("Please select a tool.")
                 .font(.body)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .foregroundColor(.secondary)
-#if !os(tvOS)
-                .background(Color(UIColor.systemBackground))
-#endif            
         }
         .navigationViewStyle(DoubleColumnNavigationViewStyle())
-        .sheet(isPresented: $viewModel.isShowingLoginSheet, content: {
-            Login()
-                .onSubmit {
-                    viewModel.isShowingLoginSheet = false
-                }
-        })
+        .sheet(isPresented: $isShowingConfigurationSheet) {
+            ConfigurationView()
+        }
     }
 }
 

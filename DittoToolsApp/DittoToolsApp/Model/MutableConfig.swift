@@ -1,15 +1,12 @@
 //
-//  Config.swift
-//  debug
+//  MutableConfig.swift
 //
-//  Created by Rae McKelvey on 8/9/22.
+//  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
 import DittoSwift
-import Foundation
 
-
-struct DittoConfig {
+struct MutableConfig {
     var appID = ""
     var playgroundToken = ""
     var identityType = IdentityType.onlinePlayground
@@ -18,5 +15,3 @@ struct DittoConfig {
     var authenticationToken = ""
     var useIsolatedDirectories = true
 }
-
-
