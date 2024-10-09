@@ -43,6 +43,7 @@
 		14E35DB12B7F345C0018EC3B /* DittoHeartbeat in Frameworks */ = {isa = PBXBuildFile; productRef = 14E35DB02B7F345C0018EC3B /* DittoHeartbeat */; };
 		23B910FB2CB6BBDF00FD41EF /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B910FA2CB6BBDF00FD41EF /* ConfigurationView.swift */; };
 		23B910FD2CB702A000FD41EF /* MutableConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B910FC2CB702A000FD41EF /* MutableConfig.swift */; };
+		23B910FF2CB71DDF00FD41EF /* UIScrollView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B910FE2CB71DD700FD41EF /* UIScrollView+Extension.swift */; };
 		CC80DC002A1EACCE004A2A65 /* DittoExportData in Frameworks */ = {isa = PBXBuildFile; productRef = CC80DBFF2A1EACCE004A2A65 /* DittoExportData */; };
 		F87DC47C2988584200899FEC /* DittoDataBrowser in Frameworks */ = {isa = PBXBuildFile; productRef = F87DC47B2988584200899FEC /* DittoDataBrowser */; };
 		F87DC4802988584200899FEC /* DittoPresenceViewer in Frameworks */ = {isa = PBXBuildFile; productRef = F87DC47F2988584200899FEC /* DittoPresenceViewer */; };
@@ -100,6 +101,7 @@
 		1474FC922A295A3100C0AC4E /* LoggingDetailsViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingDetailsViewer.swift; sourceTree = "<group>"; };
 		23B910FA2CB6BBDF00FD41EF /* ConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
 		23B910FC2CB702A000FD41EF /* MutableConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableConfig.swift; sourceTree = "<group>"; };
+		23B910FE2CB71DD700FD41EF /* UIScrollView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extension.swift"; sourceTree = "<group>"; };
 		F87DC46F298854E600899FEC /* DiskUsageViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskUsageViewer.swift; sourceTree = "<group>"; };
 		F87DC47A2988581000899FEC /* DittoSwiftTools */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DittoSwiftTools; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -176,6 +178,7 @@
 				01F34CCA28A304F0003BDF17 /* AppSettings.swift */,
 				01F34CCB28A304F0003BDF17 /* AuthorizationsManager.swift */,
 				01F34CC428A3046C003BDF17 /* DittoManager.swift */,
+				23B910FE2CB71DD700FD41EF /* UIScrollView+Extension.swift */,
 				01F34C9828A2EAE5003BDF17 /* Assets.xcassets */,
 				01F34C9A28A2EAE5003BDF17 /* Preview Content */,
 			);
@@ -439,6 +442,7 @@
 				01F34CD028A304F0003BDF17 /* AppSettings.swift in Sources */,
 				01F34CE328A30781003BDF17 /* DiagnosticsManager.swift in Sources */,
 				01F34CEC28A307CD003BDF17 /* ServerConnectionType.swift in Sources */,
+				23B910FF2CB71DDF00FD41EF /* UIScrollView+Extension.swift in Sources */,
 				01F34D0728A3119E003BDF17 /* MenuListItem.swift in Sources */,
 				01F34CEE28A307E2003BDF17 /* IdentityType.swift in Sources */,
 				01F34CE928A307CD003BDF17 /* Transport.swift in Sources */,

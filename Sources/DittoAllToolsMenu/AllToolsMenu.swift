@@ -18,13 +18,22 @@ public struct AllToolsMenu: View {
     
     public var body: some View {
 #if os(tvOS)
-        VStack {
+        HStack {
+            VStack {
+                Image(systemName: "chevron.right.2")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.blue)
+                    .padding(200)
+                
+                Text("SDK Version: \(DittoManager.shared.ditto?.sdkVersion ?? "N/A")")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            
             ToolsList()
                 .listStyle(.grouped)
-            
-            Text("SDK Version: \(DittoManager.shared.ditto?.sdkVersion ?? "N/A")")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
         }
 #else
         ToolsList()
@@ -120,7 +129,11 @@ fileprivate struct ToolListItem: View {
     var body: some View {
         HStack(spacing: 16) {
             SettingsIcon(color: color, imageName: systemImage)
+#if os(tvOS)
+                .frame(width: 48, height: 48)
+#else
                 .frame(width: 29, height: 29)
+#endif
             Text(title)
         }
     }
@@ -138,7 +151,7 @@ fileprivate struct SettingsIcon: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                RoundedRectangle(cornerRadius: 6)
+                RoundedRectangle(cornerRadius: geometry.size.height * 0.26)
                     .foregroundColor(color)
                 
                 Image(systemName: imageName)
