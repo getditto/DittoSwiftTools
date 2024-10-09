@@ -20,12 +20,12 @@ public struct AllToolsMenu: View {
 #if os(tvOS)
         HStack {
             VStack {
-                Image(systemName: "chevron.right.2")
+                Image("Ditto.LogoMark.Blue")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.blue)
-                    .padding(200)
+                    .padding(180)
                 
                 Text("SDK Version: \(DittoManager.shared.ditto?.sdkVersion ?? "N/A")")
                     .font(.subheadline)
