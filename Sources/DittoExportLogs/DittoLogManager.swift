@@ -23,11 +23,6 @@ private struct Config {
         return directory.appendingPathComponent(logsDirectoryName, isDirectory: true)
     }()
 
-    /// URL within `logsDirectory` for our latest debug logs to stream.
-    static var logFileURL: URL! = {
-        return Self.logsDirectory.appendingPathComponent(Config.logFileName)
-    }()
-
     /// A temporary location into which we can store zipped logs before sharing
     /// them via a share sheet.
     static var zippedLogsURL: URL! = {
@@ -48,22 +43,6 @@ struct LogManager {
 
     private init() {
         // Private singleton constructor
-    }
-
-    // MARK: - Properties
-
-    /// The log file URL which should be passed to the DittoLogger.
-    public var logFileURL: URL? {
-        // Lazily ensure our directory exists
-        do {
-            try FileManager().createDirectory(at: Config.logsDirectory,
-                                              withIntermediateDirectories: true)
-        } catch let error {
-            print("Failed to create logs directory: \(error)")
-            return nil
-        }
-
-        return Config.logFileURL
     }
 
     // MARK: - Functions
