@@ -53,7 +53,6 @@ struct MenuListItem_Previews: PreviewProvider {
                 }
                 Section("Exports") {
                     MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
-                    MenuListItem(title: "Export Logs", systemImage: "square.and.arrow.up", color: .green)
                 }
             }
             .listStyle(GroupedListStyle())
