@@ -12,14 +12,16 @@ import SwiftUI
 
 struct DataBrowserView: View {
    
+    var ditto: Ditto
+    
     var body: some View {
-       DataBrowser(ditto: DittoManager.shared.ditto!)
+       DataBrowser(ditto: ditto)
     }
 }
 
-struct DataBrowserView_Previews: PreviewProvider {
-    static var previews: some View {
-        DataBrowserView()
-    }
-}
+//struct DataBrowserView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        DataBrowserView()
+//    }
+//}
 

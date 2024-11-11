@@ -9,10 +9,13 @@
 import DittoPeersList
 import DittoDiskUsage
 import SwiftUI
+import DittoSwift
 
 struct PeersListViewer: View {
 
+    var ditto: Ditto
+
     var body: some View {
-        PeersListView(ditto: DittoManager.shared.ditto!)
+        PeersListView(ditto: ditto)
     }
 }

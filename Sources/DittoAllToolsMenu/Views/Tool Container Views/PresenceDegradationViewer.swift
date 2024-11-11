@@ -11,8 +11,10 @@ import DittoPresenceDegradation
 
 struct PresenceDegradationViewer: View {
     
+    var ditto: Ditto
+    
     var body: some View {
-        PresenceDegradationView(ditto: DittoManager.shared.ditto!) { expectedPeers, remotePeers, settings in
+        PresenceDegradationView(ditto: ditto) { expectedPeers, remotePeers, settings in
             print("expected Peers: \(expectedPeers)")
             
             if let remotePeers = remotePeers {

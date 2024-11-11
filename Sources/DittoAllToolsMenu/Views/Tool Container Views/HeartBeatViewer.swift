@@ -7,10 +7,14 @@
 
 import SwiftUI
 import DittoHeartbeat
+import DittoSwift
 
 struct HeartBeatViewer: View {
+    
+    var ditto: Ditto
+
     var body: some View {
-        HeartbeatView(ditto: DittoManager.shared.ditto!)
+        HeartbeatView(ditto: ditto)
     }
 }
 

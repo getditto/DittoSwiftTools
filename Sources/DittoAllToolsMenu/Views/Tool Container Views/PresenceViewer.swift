@@ -5,12 +5,15 @@
 import SwiftUI
 import UIKit
 import DittoPresenceViewer
+import DittoSwift
 
 #if canImport(WebKit)
 struct PresenceViewer: View {
 
+    var ditto: Ditto
+    
     var body: some View {
-        PresenceView(ditto: DittoManager.shared.ditto!)
+        PresenceView(ditto: ditto)
     }
 }
 #endif
