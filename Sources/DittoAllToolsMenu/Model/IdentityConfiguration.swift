@@ -6,10 +6,9 @@
 
 import DittoSwift
 
+#warning("TODO: comments")
+
 struct IdentityConfiguration {
     let identity: DittoIdentity
     let supplementaryCredentials: SupplementaryCredentials
 }
-
-
-#warning("TODO: comments")
