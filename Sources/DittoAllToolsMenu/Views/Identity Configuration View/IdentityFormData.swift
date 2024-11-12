@@ -64,6 +64,7 @@ struct IdentityFormData {
             self.appID = appID
             self.sharedKey = sharedKey
             self.siteID = siteID ?? 0
+            self.offlineLicenseToken = configuration.supplementaryCredentials.offlineLicenseToken
 
         case .manual(let certificateConfig):
             self.certificateConfig = certificateConfig

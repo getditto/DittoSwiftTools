@@ -73,6 +73,7 @@ struct IdentityForm: View {
                 case .sharedKey:
                     IdentityFormTextField(label: "App ID", placeholder: "App ID", text: $formData.appID, isRequired: true)
                     IdentityFormTextField(label: "Shared Key", placeholder: "Shared Key UUID", text: $formData.sharedKey, isRequired: true)
+                    IdentityFormTextField(label: "Offline License Token", placeholder: "Token", text: $formData.offlineLicenseToken, isRequired: true)
                     
                 case .manual:
                     IdentityFormTextField(label: "Certificate Config", placeholder: "Base64-encoded Certificate", text: $formData.certificateConfig, isRequired: true)

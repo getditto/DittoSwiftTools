@@ -133,7 +133,8 @@ public class DittoService: ObservableObject {
         }
         
         // Set up offline license token
-        if identityConfiguration.identity.identityType == .offlinePlayground && !identityConfiguration.supplementaryCredentials.offlineLicenseToken.isEmpty {
+        if (identityConfiguration.identity.identityType == .offlinePlayground || identityConfiguration.identity.identityType == .sharedKey)
+            && !identityConfiguration.supplementaryCredentials.offlineLicenseToken.isEmpty {
             try ditto.setOfflineOnlyLicenseToken(identityConfiguration.supplementaryCredentials.offlineLicenseToken)
         }
         
