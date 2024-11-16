@@ -8,6 +8,8 @@
 
 import DittoSwift
 
+public typealias DittoSyncSubscriptionStatusHandler = (_ result: DittoSyncSubscriptionStatus) -> Void
+
 public enum DittoSyncSubscriptionStatus {
     case idle
     case syncing
@@ -15,14 +17,23 @@ public enum DittoSyncSubscriptionStatus {
 
 public class DittoSyncSubscriptionHelper {
     public let idleTimeoutInterval: TimeInterval = 5 // 5 seconds by default
+    public var status: DittoSyncSubscriptionStatus {
+        didSet {
+            guard oldValue != status else { return }
+            handler(status)
+        }
+    }
 
     private let subscriptions: [DittoSyncSubscription]
+    private let handler: DittoSyncSubscriptionStatusHandler
     private var observers: [DittoStoreObserver] = []
 
     private var lastUpdated: Date = .distantPast
 
-    init(ditto: Ditto, subscriptions: [DittoSyncSubscription]) throws {
+    init(ditto: Ditto, subscriptions: [DittoSyncSubscription], handler: @escaping DittoSyncSubscriptionStatusHandler) throws {
         self.subscriptions = subscriptions
+        self.handler = handler
+        self.status = .idle
         self.observers = try subscriptions.map { subscription in
             try ditto.store.registerObserver(query: subscription.queryString, handler: handleObserver)
         }
@@ -34,15 +45,12 @@ public class DittoSyncSubscriptionHelper {
         }
     }
 
-    public var status: DittoSyncSubscriptionStatus {
-        if Date().timeIntervalSince(lastUpdated) > idleTimeoutInterval {
-            return .idle
-        } else {
-            return .syncing
-        }
-    }
-
     private func handleObserver(_ result: DittoSwift.DittoQueryResult) {
         lastUpdated = Date()
+        if Date().timeIntervalSince(lastUpdated) > idleTimeoutInterval {
+            status = .idle
+        } else {
+            status = .syncing
+        }
     }
 }
