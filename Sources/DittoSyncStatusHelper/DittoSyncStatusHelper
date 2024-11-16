@@ -1,5 +1,5 @@
 //
-//  DittoSyncSubscription+Status.swift
+//  DittoSyncStatusHelper.swift
 //  DittoSwiftTools
 //
 //  Created by Brian Plattenburg on 11/16/24.
@@ -15,7 +15,7 @@ public enum DittoSyncSubscriptionStatus {
     case syncing
 }
 
-public class DittoSyncSubscriptionHelper {
+public class DittoSyncStatusHelper {
     public let idleTimeoutInterval: TimeInterval = 5 // 5 seconds by default
     public var status: DittoSyncSubscriptionStatus {
         didSet {
