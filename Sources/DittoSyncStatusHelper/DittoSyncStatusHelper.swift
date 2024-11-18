@@ -26,7 +26,7 @@ public enum DittoSyncSubscriptionStatus {
 public class DittoSyncStatusHelper {
     public var idleTimeoutInterval: TimeInterval = 5
 
-    public var status: DittoSyncSubscriptionStatus {
+    public var status: DittoSyncSubscriptionStatus = .idle {
         didSet {
             guard oldValue != status else { return }
             handler(status)
@@ -53,7 +53,7 @@ public class DittoSyncStatusHelper {
          handler: @escaping DittoSyncSubscriptionStatusHandler) throws {
         self.subscriptions = subscriptions
         self.handler = handler
-        self.status = .idle
+        handler(.idle)
         self.observers = try subscriptions.map { subscription in
             try ditto.store.registerObserver(query: subscription.queryString, handler: handleObserver)
         }
