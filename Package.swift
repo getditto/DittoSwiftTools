@@ -49,8 +49,8 @@ let package = Package(
             name: "DittoPermissionsHealth",
             targets: ["DittoPermissionsHealth"]),
         .library(
-            name: "DittoSyncStatus",
-            targets: ["DittoSyncStatus"]),
+            name: "DittoSyncStatusHelper",
+            targets: ["DittoSyncStatusHelper"]),
         .library(
             name: "DittoAllToolsMenu",
             targets: ["DittoAllToolsMenu"]),
@@ -129,7 +129,7 @@ let package = Package(
             ]
         ),
         .target(
-            name: "DittoSyncStatus",
+            name: "DittoSyncStatusHelper",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage")
             ]
@@ -147,7 +147,7 @@ let package = Package(
                 "DittoPresenceDegradation",
                 "DittoHeartbeat",
                 "DittoPermissionsHealth",
-                "DittoSyncStatus"
+                "DittoSyncStatusHelper"
             ]
         )
 
