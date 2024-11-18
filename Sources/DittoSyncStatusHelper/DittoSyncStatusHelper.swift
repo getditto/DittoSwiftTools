@@ -24,7 +24,7 @@ public enum DittoSyncSubscriptionStatus {
  It works by creating local store observers for each passed in subscription, then tracking when they fire and comparing against the `idleTimeoutInterval`
  */
 public class DittoSyncStatusHelper {
-    public var idleTimeoutInterval: TimeInterval = 5
+    public var idleTimeoutInterval: TimeInterval = 1
 
     public var status: DittoSyncSubscriptionStatus = .idle {
         didSet {
@@ -44,7 +44,7 @@ public class DittoSyncStatusHelper {
      Creates a new` DittoSyncStatusHelper` for a given set of `DittoSyncSubscription`s
      - Parameters:
         - ditto: A Ditto instance for which sync status is being checked. Used internally to create `DittoStoreObserver`s tracking each query..
-        - idleTimeoutInterval: How long after the last update is received before this subscription is considered `idle`. Defaults to 5 seconds.
+        - idleTimeoutInterval: How long after the last update is received before this subscription is considered `idle`. Defaults to 1 second.
         - subscriptions: Which subscriptions to include for this status helper. The aggregate status for all of them will be tracked here, such that  it is only considered `idle` if all subscriptions are `idle`.
         - handler: A closure called each time the `status` changes.
      */
