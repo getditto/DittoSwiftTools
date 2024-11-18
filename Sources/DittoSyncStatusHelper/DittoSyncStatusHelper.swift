@@ -35,7 +35,6 @@ public class DittoSyncStatusHelper {
 
     private let subscriptions: [DittoSyncSubscription]
     private let handler: DittoSyncSubscriptionStatusHandler
-    private let pollingInterval: TimeInterval
 
     private var timer: Timer? = nil
     private var observers: [DittoStoreObserver] = []
@@ -47,20 +46,14 @@ public class DittoSyncStatusHelper {
         - ditto: A Ditto instance for which sync status is being checked. Used internally to create `DittoStoreObserver`s tracking each query..
         - idleTimeoutInterval: How long after the last update is received before this subscription is considered `idle`. Defaults to 5 seconds.
         - subscriptions: Which subscriptions to include for this status helper. The aggregate status for all of them will be tracked here, such that  it is only considered `idle` if all subscriptions are `idle`.
-        - pollingInterval: How often to provide status updates. Defaults to 0.1 seconds.
         - handler: A closure called each time the `status` changes.
      */
     init(ditto: Ditto,
          subscriptions: [DittoSyncSubscription],
-         pollingInterval: TimeInterval = 0.1,
          handler: @escaping DittoSyncSubscriptionStatusHandler) throws {
         self.subscriptions = subscriptions
         self.handler = handler
         self.status = .idle
-        self.pollingInterval = pollingInterval
-        self.timer = Timer.scheduledTimer(withTimeInterval: pollingInterval, repeats: true, block: { [weak self] _ in
-            self?.updateStatus()
-        })
         self.observers = try subscriptions.map { subscription in
             try ditto.store.registerObserver(query: subscription.queryString, handler: handleObserver)
         }
@@ -73,15 +66,12 @@ public class DittoSyncStatusHelper {
         }
     }
 
-    private func updateStatus() {
-        if Date().timeIntervalSince(lastUpdated) > idleTimeoutInterval {
-            status = .idle
-        } else {
-            status = .syncing
-        }
-    }
-
     private func handleObserver(_ result: DittoSwift.DittoQueryResult) {
+        status = .syncing
         lastUpdated = Date()
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: idleTimeoutInterval, repeats: false, block: { [weak self] _ in
+            self?.status = .idle
+        })
     }
 }
