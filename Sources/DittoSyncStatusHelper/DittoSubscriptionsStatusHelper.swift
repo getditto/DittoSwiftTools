@@ -8,11 +8,11 @@
 
 import DittoSwift
 
-public typealias DittoSyncSubscriptionStatusHandler = (_ result: DittoSyncSubscriptionStatus) -> Void
+public typealias DittoSyncSubscriptionStatusHandler = (_ result: DittoSyncSubscriptionsStatus) -> Void
 
 /// A status that describes whether a set of `DittoSyncSubscription`s is syncing or idle.
 /// This can be combined with an online / offline check to provide an approximation of whether this subscription is up to date
-public enum DittoSyncSubscriptionStatus {
+public enum DittoSyncSubscriptionsStatus: String {
     case idle
     case syncing
 }
@@ -23,10 +23,10 @@ public enum DittoSyncSubscriptionStatus {
  It can be used to provide an approximation of whether this peer is up to date with other connected peers.
  It works by creating local store observers for each passed in subscription, then tracking when they fire and comparing against the `idleTimeoutInterval`
  */
-public class DittoSyncStatusHelper {
+public class DittoSubscriptionsStatusHelper {
     public var idleTimeoutInterval: TimeInterval = 1
 
-    public var status: DittoSyncSubscriptionStatus = .idle {
+    public var status: DittoSyncSubscriptionsStatus = .idle {
         didSet {
             guard oldValue != status else { return }
             handler(status)
