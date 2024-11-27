@@ -24,6 +24,7 @@ public enum DittoSyncSubscriptionsStatus: String {
  It works by creating local store observers for each passed in subscription, then tracking when they fire and comparing against the `idleTimeoutInterval`
  */
 public class DittoSubscriptionsStatusHelper {
+    /// The interval after which a subscription is considered to be idle. Defaults to 1 second.
     public var idleTimeoutInterval: TimeInterval = 1
 
     public var status: DittoSyncSubscriptionsStatus = .idle {
@@ -33,7 +34,7 @@ public class DittoSubscriptionsStatusHelper {
         }
     }
 
-    private let subscriptions: [DittoSyncSubscription]
+    private let subscriptions: Set<DittoSyncSubscription>
     private let handler: DittoSyncSubscriptionStatusHandler
 
     private var timer: Timer? = nil
@@ -43,15 +44,30 @@ public class DittoSubscriptionsStatusHelper {
     /**
      Creates a new` DittoSyncStatusHelper` for a given set of `DittoSyncSubscription`s
      - Parameters:
-        - ditto: A Ditto instance for which sync status is being checked. Used internally to create `DittoStoreObserver`s tracking each query..
-        - idleTimeoutInterval: How long after the last update is received before this subscription is considered `idle`. Defaults to 1 second.
+        - ditto: A Ditto instance for which sync status is being checked. Used internally to create `DittoStoreObserver`s tracking each query.
         - subscriptions: Which subscriptions to include for this status helper. The aggregate status for all of them will be tracked here, such that  it is only considered `idle` if all subscriptions are `idle`.
         - handler: A closure called each time the `status` changes.
      */
     init(ditto: Ditto,
-         subscriptions: [DittoSyncSubscription],
+         subscriptions: Set<DittoSyncSubscription>,
          handler: @escaping DittoSyncSubscriptionStatusHandler) throws {
         self.subscriptions = subscriptions
+        self.handler = handler
+        handler(.idle)
+        self.observers = try subscriptions.map { subscription in
+            try ditto.store.registerObserver(query: subscription.queryString, arguments: subscription.queryArguments, handler: handleObserver)
+        }
+    }
+
+    /**
+     Creates a new` DittoSyncStatusHelper` for all of the currently active subscriptions on this Ditto instance *at the time this is created*. It will not update if those subscriptions change
+     - Parameters:
+       - ditto: A Ditto instance for which sync status is being checked. Used internally to create `DittoStoreObserver`s tracking each query.
+       - handler: A closure called each time the `status` changes.
+     */
+    init(ditto: Ditto,
+         handler: @escaping DittoSyncSubscriptionStatusHandler) throws {
+        self.subscriptions = ditto.sync.subscriptions
         self.handler = handler
         handler(.idle)
         self.observers = try subscriptions.map { subscription in
