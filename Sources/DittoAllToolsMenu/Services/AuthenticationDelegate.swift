@@ -6,6 +6,8 @@
 
 import DittoSwift
 
+#warning("TODO: comments")
+
 
 public class AuthenticationDelegate: DittoAuthenticationDelegate {
     

@@ -5,7 +5,6 @@
 //
 
 
-
 /// Represents additional credentials required to configure certain Ditto identity types.
 ///
 /// The `SupplementaryCredentials` structure provides optional properties that

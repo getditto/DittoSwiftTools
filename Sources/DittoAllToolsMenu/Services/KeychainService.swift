@@ -7,15 +7,19 @@
 import DittoSwift
 import Security
 
-#warning("TODO: comments")
 
+/// A service to save, load, and delete identity configurations from the Keychain.
 public class KeychainService {
     
+    // Keys used to store data in the Keychain
     static let DITTO_IDENTITY_KEY = "live.ditto.tools.dittoIdentity"
     static let DITTO_SUPPLEMENTARY_CREDENTIALS_KEY = "live.ditto.tools.dittoSupplementaryCredentials"
     
     // MARK: - Save Identity to Keychain
     
+    /// Saves the identity configuration to the Keychain.
+    /// - Parameter configuration: The identity configuration to save.
+    /// - Returns: `true` if the save was successful, otherwise `false`.
     static func saveConfigurationToKeychain(_ configuration: IdentityConfiguration) -> Bool {
         let identityData = extractIdentityValues(from: configuration.identity)
         
@@ -38,6 +42,8 @@ public class KeychainService {
     
     // MARK: - Remove Identity from Keychain
     
+    /// Removes the identity configuration from the Keychain.
+    /// - Returns: `true` if the removal was successful, otherwise `false`.
     static func removeConfigurationFromKeychain() -> Bool {
         let identityDeleteSuccess = deleteFromKeychain(key: DITTO_IDENTITY_KEY)
         let supplementaryDeleteSuccess = deleteFromKeychain(key: DITTO_SUPPLEMENTARY_CREDENTIALS_KEY)
@@ -48,12 +54,17 @@ public class KeychainService {
     
     // MARK: - Load Identity from Keychain
     
+    /// Loads the identity configuration from the Keychain.
+    /// - Parameter authDelegate: The authentication delegate for the identity.
+    /// - Returns: The loaded identity configuration, or `nil` if loading fails.
     static func loadConfigurationFromKeychain(authDelegate: AuthenticationDelegate?) -> IdentityConfiguration? {
+        // Load identity data and reconstruct the identity
         guard let identityData = loadFromKeychain(key: DITTO_IDENTITY_KEY),
               let identity = reconstructIdentity(from: identityData, authDelegate: authDelegate) else {
             return nil
         }
         
+        // Load supplementary credentials
         let supplementaryData = loadFromKeychain(key: DITTO_SUPPLEMENTARY_CREDENTIALS_KEY)
         let supplementaryCredentials = SupplementaryCredentials(
             authProvider: supplementaryData?["authProvider"] as? String ?? "",
@@ -70,6 +81,11 @@ extension KeychainService {
 
     // MARK: - Save and Delete Utilities
 
+    /// Saves a dictionary to the Keychain.
+    /// - Parameters:
+    ///   - data: The data to save as a dictionary.
+    ///   - key: The key to associate with the data.
+    /// - Returns: `true` if the save was successful, otherwise `false`.
     private static func saveToKeychain(data: [String: Any], key: String) -> Bool {
         let jsonData = try? JSONSerialization.data(withJSONObject: data)
         let query: [String: Any] = [
@@ -83,6 +99,9 @@ extension KeychainService {
         return status == errSecSuccess
     }
     
+    /// Deletes data from the Keychain.
+    /// - Parameter key: The key associated with the data to delete.
+    /// - Returns: `true` if the deletion was successful, otherwise `false`.
     private static func deleteFromKeychain(key: String) -> Bool {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -94,6 +113,9 @@ extension KeychainService {
 
     // MARK: - Serializing Utilities
 
+    /// Converts a `DittoIdentity` into a dictionary for saving.
+    /// - Parameter identity: The identity to convert.
+    /// - Returns: A dictionary representation of the identity.
     private static func extractIdentityValues(from identity: DittoIdentity) -> [String: Any] {
         switch identity {
         case .offlinePlayground(let appID, let siteID):
@@ -118,6 +140,9 @@ extension KeychainService {
     
     // MARK: - Deserializing Utilities
     
+    /// Loads data from the Keychain and converts it to a dictionary.
+    /// - Parameter key: The key associated with the data to load.
+    /// - Returns: A dictionary representation of the data, or `nil` if loading fails.
     private static func loadFromKeychain(key: String) -> [String: Any]? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -136,6 +161,11 @@ extension KeychainService {
         return nil
     }
     
+    /// Reconstructs a `DittoIdentity` from a dictionary.
+    /// - Parameters:
+    ///   - data: The dictionary to reconstruct from.
+    ///   - authDelegate: The authentication delegate required for some identity types.
+    /// - Returns: A `DittoIdentity` if reconstruction succeeds, otherwise `nil`.
     private static func reconstructIdentity(from data: [String: Any], authDelegate: AuthenticationDelegate?) -> DittoIdentity? {
         guard let type = data["type"] as? String else { return nil }
         
