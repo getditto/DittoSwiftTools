@@ -38,9 +38,19 @@ public struct AllToolsMenu: View {
                         .foregroundStyle(.blue)
                         .padding(180)
                     
-                    Text("SDK Version: \(dittoService.ditto?.sdkVersion ?? Ditto.version)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                    VStack(spacing: 8) {
+                        Text("SDK Version: \(dittoService.ditto?.sdkVersion ?? Ditto.version)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        if let ditto = dittoService.ditto, ditto.activated {
+                            Text(ditto.isSyncActive ? "Ditto is active." : "Ditto is not running.")
+                        } else {
+                            Text("No license found.")
+                        }
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
                 }
                 
                 ToolsList()
