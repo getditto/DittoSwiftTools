@@ -23,7 +23,7 @@ struct IdentityConfigurationView: View {
     var body: some View {
         NavigationView {
             Group {
-#if os(tvOS)
+                #if os(tvOS)
                 HStack {
                     Image(systemName: "gear")
                         .resizable()
@@ -34,17 +34,18 @@ struct IdentityConfigurationView: View {
 
                     IdentityForm(
                         viewModel: viewModel,
+                        onApply: handleApplyResult,
                         onClearCredentials: clearCredentials
                     )
                 }
-#else
+                #else
                 IdentityForm(
                     viewModel: viewModel,
                     onClearCredentials: clearCredentials
                 )
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar { ToolbarButtons }
-#endif
+                #endif
             }
             .navigationTitle("Configuration")
         }
@@ -71,6 +72,22 @@ struct IdentityConfigurationView: View {
         print("IdentityConfigurationView: Credentials cleared.")
     }
 
+    
+    #if os(tvOS)
+    func handleApplyResult(_ result: Result<Void, Error>) {
+        switch result {
+        case .success:
+            presentationMode.wrappedValue.dismiss()
+        case .failure(let error as DittoServiceError):
+            validationError = error.localizedDescription
+            isPresentingAlert = true
+        case .failure(let error):
+            validationError = "An unknown error occurred: \(error.localizedDescription)"
+            isPresentingAlert = true
+        }
+    }
+    #else
+    
     private var ToolbarButtons: some ToolbarContent {
         Group {
             ToolbarItemGroup(placement: .confirmationAction) {
@@ -84,7 +101,6 @@ struct IdentityConfigurationView: View {
         }
     }
     
-    // Extracted function to handle the logic properly
     private func applyConfiguration() {
         do {
             try viewModel.apply()
@@ -97,4 +113,5 @@ struct IdentityConfigurationView: View {
             isPresentingAlert = true
         }
     }
+    #endif
 }

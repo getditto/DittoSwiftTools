@@ -1,24 +1,31 @@
 // 
 //  IdentityFormTextField.swift
 //
-//  This file defines a customizable form text field component that includes support for optional or required labels.
-//  The component adapts its layout and behavior depending on the platform (i.e., different behavior for tvOS and non-tvOS platforms).
-//
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
 import SwiftUI
 
-/// A form text field component that displays a label and optional or required indicators,
-/// and provides platform-specific behavior.
+/// A customizable form text field component with platform-specific behavior.
 ///
-/// `IdentityFormTextField` offers a customizable form field for user input. It includes a clearable text field on non-tvOS platforms
-/// and a "Paste" button to allow the user to paste content from the clipboard.
-/// On tvOS, the component behaves differently, removing the clearable field and clipboard interaction.
+/// `IdentityFormTextField` is a SwiftUI component designed for user input within forms.
+/// It displays a label, supports optional or required fields, and includes a placeholder for the text input.
+/// - On non-tvOS platforms, the component includes a clearable text field and a "Paste" button for clipboard interaction.
+/// - On tvOS, it simplifies the layout by removing clipboard and clearing features.
 struct IdentityFormTextField: View {
+    
+    /// The label displayed above the text field.
     let label: String
+    
+    /// The placeholder text shown inside the text field when empty.
     let placeholder: String
+    
+    /// The text binding for the field's content.
     @Binding var text: String
+    
+    /// A flag indicating whether the field is required.
+    /// - If `true`, no "(Optional)" label will be displayed.
+    /// - Defaults to `false`.
     var isRequired: Bool = false
     
     var body: some View {
@@ -26,7 +33,20 @@ struct IdentityFormTextField: View {
 #if os(tvOS)
         // On tvOS, we display a basic VStack without the clearable text field or clipboard functionality.
         VStack(alignment: .leading) {
-            Text(label + "\(isRequired ? " (required)" : "")")
+            // Display the label and optional indicator
+            HStack(spacing: 4) {
+                Text(label)
+                    .font(.system(.subheadline))
+                    .fontWeight(.medium)
+                
+                if !isRequired {
+                    Text("(Optional)")
+                        .textCase(.uppercase)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            // Display the text field
             TextField(placeholder, text: $text)
                 .font(.system(.body, design: .monospaced))
                 .textInputAutocapitalization(.never)
@@ -37,6 +57,7 @@ struct IdentityFormTextField: View {
         // On non-tvOS platforms, we display a more advanced layout with an optional clearable text field and paste functionality.
         HStack(spacing: 4) {
             VStack(alignment: .leading) {
+                // Display the label and optional indicator
                 HStack {
                     Text(label)
                         .font(.system(.subheadline))
@@ -51,6 +72,7 @@ struct IdentityFormTextField: View {
                     
                     Spacer()
                     
+                    // Paste button to populate the text field with clipboard content
                     Button(action: {
                         if let clipboardText = UIPasteboard.general.string {
                             text = clipboardText // Set the value of the TextField to the clipboard content
@@ -58,12 +80,13 @@ struct IdentityFormTextField: View {
                     }) {
                         Image(systemName: "doc.on.clipboard.fill")
                             .resizable() // Make the image resizable
-                            .frame(width: 16, height: 20) // Fix the icon size to 25pt square
+                            .frame(width: 16, height: 20) // Fix the icon size
                     }
                     .contentShape(Rectangle()) // Extend the tappable area visually
                     .buttonStyle(.borderless) // ensure only the button handles a tap
                 }
                 
+                // Clearable text field for user input
                 ClearableTextField(placeholder: placeholder, text: $text)
             }
         }

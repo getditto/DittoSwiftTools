@@ -58,11 +58,7 @@ public struct AllToolsMenu: View {
                         
                         Group {
                             if let ditto = dittoService.ditto, ditto.activated {
-                                if ditto.isSyncActive {
-                                    Text("Ditto is active.")
-                                } else {
-                                    Text("Ditto is not running.")
-                                }
+                                Text(ditto.isSyncActive ? "Ditto is active." : "Ditto is not running.")
                             } else {
                                 Text("No license found.")
                             }

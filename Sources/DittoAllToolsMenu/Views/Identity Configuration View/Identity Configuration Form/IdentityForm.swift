@@ -1,10 +1,6 @@
 // 
 //  IdentityForm.swift
 //
-//  This file defines a view for configuring different types of identities used in the Ditto sync engine.
-//  The form dynamically changes based on the selected identity type and provides options to input various details.
-//  Once submitted, the configuration is applied, which may restart the sync engine.
-//
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
@@ -13,43 +9,52 @@ import DittoSwift
 
 /// A view that allows users to configure different identity types for Ditto.
 ///
-/// `IdentityForm` presents a form with fields that adjust based on the selected identity type (e.g., offline, online with authentication, etc.).
-/// The form gathers the necessary data and calls the provided `onSubmit` callback with the completed identity configuration.
+/// `IdentityForm` displays a dynamic form where fields adjust based on the selected identity type.
+/// The form gathers input data for creating and applying a `DittoIdentityConfiguration`.
+/// - For tvOS: Includes a button to apply the configuration within the form.
+/// - For non-tvOS: Applies the configuration via the parent view's toolbar.
 struct IdentityForm: View {
     
+    /// The view model containing the identity form state and logic.
+    @ObservedObject var viewModel: IdentityFormViewModel
+
+    /// Tracks whether the confirmation alert for clearing credentials is shown.
     @State private var isShowingConfirmClearCredentialsAlert = false
 
-    @ObservedObject var viewModel: IdentityFormViewModel
+    #if os(tvOS)
+    /// Callback executed when the configuration is applied.
+    /// Used on tvOS to notify the parent of success or failure.
+    var onApply: (Result<Void, Error>) -> Void
+    #endif
     
-    /// Callback to be executed when the credentials are cleared
+    /// Callback executed when credentials are cleared.
+    /// Invoked by both tvOS and non-tvOS implementations.
     var onClearCredentials: () -> Void
 
     var body: some View {
         Form {
-            // Section for selecting the identity type
+            // Section for selecting the identity type.
             Section(header: Text("Identity Type")) {
                 Picker("Type", selection: $viewModel.formInput.identityType) {
                     ForEach(DittoIdentity.identityTypes, id: \.self) { type in
                         Text(type.rawValue)
                     }
                 }
-#if os(tvOS)
-                .pickerStyle(.automatic) // #TODO: clean this up
-#endif
             }
-            
-            // Section for inputting identity-specific details based on the selected type
+
+            // Section for inputting identity-specific details based on the selected type.
             Section(header: Text("Identity Details"),
                     footer: Text("Applying the configuration will restart the Ditto sync engine.")
-                                .font(.subheadline)
-                                .frame(maxWidth: .infinity)
-                                .multilineTextAlignment(.center)
-                                .padding()
-                ) {
-                
+                .font(.subheadline)
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
+                .padding()
+            ) {
+                // Predefined placeholders
                 let PLACEHOLDER_UUID = "123e4567-e89b-12d3-a456-426614174000"
                 let PLACEHOLDER_URL = "https://example.com"
                 
+                // Dynamically display fields based on the selected identity type.
                 switch(viewModel.formInput.identityType) {
                 case .offlinePlayground:
                     IdentityFormTextField(label: "App ID (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.appID)
@@ -68,7 +73,7 @@ struct IdentityForm: View {
                     Toggle("Enable Cloud Sync", isOn: $viewModel.formInput.enableDittoCloudSync)
                     IdentityFormTextField(label: "Auth Provider", placeholder: "Authentication Provider", text: $viewModel.formInput.authProvider)
                     IdentityFormTextField(label: "Auth Token (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.authToken)
-
+                    
                 case .sharedKey:
                     IdentityFormTextField(label: "App ID (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.appID, isRequired: true)
                     IdentityFormTextField(label: "Shared Key (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.sharedKey, isRequired: true)
@@ -79,18 +84,28 @@ struct IdentityForm: View {
                 }
             }
             
-#if os(tvOS)
+            #if os(tvOS)
+            // tvOS-specific buttons for applying and clearing credentials.
             Button("Apply configuration") {
-                let identityConfiguration = formModel.toIdentityConfiguration()
-                // onSubmit(identityConfiguration)
+                do {
+                    try viewModel.apply()
+                    onApply(.success(())) // Notify success
+                } catch {
+                    onApply(.failure(error)) // Notify failure
+                }
             }
-                
+            
             Button("Clear Credentials…", role: .destructive) {
                 isShowingConfirmClearCredentialsAlert = true
             }
-#endif
+            #endif
         }
-#if !os(tvOS)
+        // Alert for confirming clearing credential, as this is destructive.
+        .alert(isPresented: $isShowingConfirmClearCredentialsAlert) {
+            clearCredentialsAlert
+        }
+        #if !os(tvOS)
+        // Toolbar for non-tvOS platforms with a "Clear Credentials" button.
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
                 Button(action: {
@@ -102,16 +117,18 @@ struct IdentityForm: View {
                 .foregroundColor(.red)
             }
         }
-#endif
-        .alert(isPresented: $isShowingConfirmClearCredentialsAlert) {
-            Alert(
-                title: Text("Are you sure?"),
-                message: Text("This will permanently clear your saved credentials."),
-                primaryButton: .destructive(Text("Clear")) {
-                    onClearCredentials()
-                },
-                secondaryButton: .cancel()
-            )
-        }
+        #endif
+    }
+    
+    /// Alert for clearing credentials.
+    private var clearCredentialsAlert: Alert {
+        Alert(
+            title: Text("Are you sure?"),
+            message: Text("This will permanently clear your saved credentials."),
+            primaryButton: .destructive(Text("Clear")) {
+                onClearCredentials()
+            },
+            secondaryButton: .cancel()
+        )
     }
 }
