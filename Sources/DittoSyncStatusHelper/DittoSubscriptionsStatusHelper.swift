@@ -55,7 +55,7 @@ public class DittoSubscriptionsStatusHelper {
         self.handler = handler
         handler(.idle)
         self.observers = try subscriptions.map { subscription in
-            try ditto.store.registerObserver(query: subscription.queryString, handler: handleObserver)
+            try ditto.store.registerObserver(query: subscription.queryString, arguments: subscription.queryArguments, handler: handleObserver)
         }
     }
 
