@@ -48,22 +48,24 @@ struct IdentityFormTextField: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        if let clipboardText = UIPasteboard.general.string {
+                            text = clipboardText // Set the value of the TextField to the clipboard content
+                        }
+                    }) {
+                        Image(systemName: "doc.on.clipboard.fill")
+                            .resizable() // Make the image resizable
+                            .frame(width: 16, height: 20) // Fix the icon size to 25pt square
+                    }
+                    .contentShape(Rectangle()) // Extend the tappable area visually
+                    .buttonStyle(.borderless) // ensure only the button handles a tap
                 }
+                
                 ClearableTextField(placeholder: placeholder, text: $text)
             }
- 
-            Spacer()
-            
-            Button(action: {
-                if let clipboardText = UIPasteboard.general.string {
-                    text = clipboardText // Set the value of the TextField to the clipboard content
-                }
-            }) {
-                Label("Paste", systemImage: "doc.on.clipboard.fill")
-                    // .font(.subheadline)
-                    .labelStyle(.iconOnly)
-            }
-            .buttonStyle(.borderless) // ensure only the button handles a tap
         }
 #endif
     }
