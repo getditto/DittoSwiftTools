@@ -24,9 +24,9 @@ public class KeychainService {
         
         // Extract supplementary credentials to be saved to Keychain
         let supplementaryData: [String: Any] = [
-            "authProvider": configuration.supplementaryCredentials.authProvider,
-            "authToken": configuration.supplementaryCredentials.authToken,
-            "offlineLicenseToken": configuration.supplementaryCredentials.offlineLicenseToken
+            "authProvider": configuration.supplementaryCredentials.authProvider ?? "",
+            "authToken": configuration.supplementaryCredentials.authToken ?? "",
+            "offlineLicenseToken": configuration.supplementaryCredentials.offlineLicenseToken ?? ""
         ]
         
         // Save supplementary credentials to Keychain
@@ -48,7 +48,7 @@ public class KeychainService {
     
     // MARK: - Load Identity from Keychain
     
-    static func loadConfigurationFromKeychain(authDelegate: AuthDelegate?) -> IdentityConfiguration? {
+    static func loadConfigurationFromKeychain(authDelegate: AuthenticationDelegate?) -> IdentityConfiguration? {
         guard let identityData = loadFromKeychain(key: DITTO_IDENTITY_KEY),
               let identity = reconstructIdentity(from: identityData, authDelegate: authDelegate) else {
             return nil
@@ -136,7 +136,7 @@ extension KeychainService {
         return nil
     }
     
-    private static func reconstructIdentity(from data: [String: Any], authDelegate: AuthDelegate?) -> DittoIdentity? {
+    private static func reconstructIdentity(from data: [String: Any], authDelegate: AuthenticationDelegate?) -> DittoIdentity? {
         guard let type = data["type"] as? String else { return nil }
         
         switch type {

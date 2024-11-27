@@ -19,12 +19,8 @@ struct IdentityForm: View {
     
     @State private var isShowingConfirmClearCredentialsAlert = false
 
-    /// Bound data that holds the form's input values
-    @Binding var formData:IdentityFormData
+    @ObservedObject var viewModel: IdentityFormViewModel
     
-    /// Callback to be executed when the form is submitted
-    var onSubmit: (IdentityConfiguration) -> Void
-
     /// Callback to be executed when the credentials are cleared
     var onClearCredentials: () -> Void
 
@@ -32,7 +28,7 @@ struct IdentityForm: View {
         Form {
             // Section for selecting the identity type
             Section(header: Text("Identity Type")) {
-                Picker("Type", selection: $formData.identityType) {
+                Picker("Type", selection: $viewModel.formInput.identityType) {
                     ForEach(DittoIdentity.identityTypes, id: \.self) { type in
                         Text(type.rawValue)
                     }
@@ -51,39 +47,42 @@ struct IdentityForm: View {
                                 .padding()
                 ) {
                 
-                switch(formData.identityType) {
+                let PLACEHOLDER_UUID = "123e4567-e89b-12d3-a456-426614174000"
+                let PLACEHOLDER_URL = "https://example.com"
+                
+                switch(viewModel.formInput.identityType) {
                 case .offlinePlayground:
-                    IdentityFormTextField(label: "App ID", placeholder: "App ID UUID", text: $formData.appID)
-                    IdentityFormIntInputView(label: "Site ID", placeholder: "Site ID (Number)", int: $formData.siteID)
-                    IdentityFormTextField(label: "Offline License Token", placeholder: "Token", text: $formData.offlineLicenseToken)
+                    IdentityFormTextField(label: "App ID (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.appID)
+                    IdentityFormIntInputView(label: "Site ID", placeholder: "Site ID (Number)", int: $viewModel.formInput.siteID)
+                    IdentityFormTextField(label: "Offline License Token (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.offlineLicenseToken)
                     
                 case .onlinePlayground:
-                    IdentityFormTextField(label: "App ID", placeholder: "App ID", text: $formData.appID, isRequired: true)
-                    IdentityFormTextField(label: "Playground Token", placeholder: "Playground UUID", text: $formData.playgroundToken, isRequired: true)
-                    IdentityFormTextField(label: "Custom Auth URL", placeholder: "Auth Endpoint URL", text: $formData.customAuthURL)
-                    Toggle("Enable Cloud Sync", isOn: $formData.enableDittoCloudSync)
+                    IdentityFormTextField(label: "App ID (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.appID, isRequired: true)
+                    IdentityFormTextField(label: "Playground Token (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.playgroundToken, isRequired: true)
+                    IdentityFormTextField(label: "Custom Auth URL", placeholder: PLACEHOLDER_URL, text: $viewModel.formInput.customAuthURLString)
+                    Toggle("Enable Cloud Sync", isOn: $viewModel.formInput.enableDittoCloudSync)
                     
                 case .onlineWithAuthentication:
-                    IdentityFormTextField(label: "App ID", placeholder: "App ID", text: $formData.appID, isRequired: true)
-                    IdentityFormTextField(label: "Custom Auth URL", placeholder: "Auth Endpoint URL", text: $formData.customAuthURL)
-                    Toggle("Enable Cloud Sync", isOn: $formData.enableDittoCloudSync)
-                    IdentityFormTextField(label: "Auth Provider", placeholder: "Authentication Provider", text: $formData.authProvider)
-                    IdentityFormTextField(label: "Auth Token", placeholder: "Auth Token", text: $formData.authToken)
+                    IdentityFormTextField(label: "App ID (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.appID, isRequired: true)
+                    IdentityFormTextField(label: "Custom Auth URL", placeholder: PLACEHOLDER_URL, text: $viewModel.formInput.customAuthURLString)
+                    Toggle("Enable Cloud Sync", isOn: $viewModel.formInput.enableDittoCloudSync)
+                    IdentityFormTextField(label: "Auth Provider", placeholder: "Authentication Provider", text: $viewModel.formInput.authProvider)
+                    IdentityFormTextField(label: "Auth Token (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.authToken)
 
                 case .sharedKey:
-                    IdentityFormTextField(label: "App ID", placeholder: "App ID", text: $formData.appID, isRequired: true)
-                    IdentityFormTextField(label: "Shared Key", placeholder: "Shared Key UUID", text: $formData.sharedKey, isRequired: true)
-                    IdentityFormTextField(label: "Offline License Token", placeholder: "Token", text: $formData.offlineLicenseToken, isRequired: true)
+                    IdentityFormTextField(label: "App ID (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.appID, isRequired: true)
+                    IdentityFormTextField(label: "Shared Key (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.sharedKey, isRequired: true)
+                    IdentityFormTextField(label: "Offline License Token (UUID)", placeholder: PLACEHOLDER_UUID, text: $viewModel.formInput.offlineLicenseToken, isRequired: true)
                     
                 case .manual:
-                    IdentityFormTextField(label: "Certificate Config", placeholder: "Base64-encoded Certificate", text: $formData.certificateConfig, isRequired: true)
+                    IdentityFormTextField(label: "Certificate Config", placeholder: "Base64-encoded Certificate", text: $viewModel.formInput.certificateConfig, isRequired: true)
                 }
             }
             
 #if os(tvOS)
             Button("Apply configuration") {
-                let identityConfiguration = formData.toIdentityConfiguration()
-                onSubmit(identityConfiguration)
+                let identityConfiguration = formModel.toIdentityConfiguration()
+                // onSubmit(identityConfiguration)
             }
                 
             Button("Clear Credentials…", role: .destructive) {
