@@ -35,7 +35,7 @@ struct ToolsList: View {
 #if !os(tvOS)
             // Do not show on tvOS as export is not currently supported.
             Section(footer: Text("Export all Ditto data on this device as a .zip file.")) {
-                ExportButton()
+                ExportDataButton()
             }
 #endif
         }
@@ -46,9 +46,9 @@ struct ToolsList: View {
 #if !os(tvOS)
 /// A button view that triggers the export of Ditto data.
 ///
-/// `ExportButton` provides the functionality to export Ditto data as a `.zip` file.
+/// `ExportDataButton` provides the functionality to export Ditto data as a `.zip` file.
 /// It shows an alert to confirm the action and, once confirmed, presents a system sheet for sharing the exported file.
-fileprivate struct ExportButton: View {
+fileprivate struct ExportDataButton: View {
     @ObservedObject var dittoService = DittoService.shared
     
     // State variables to manage the presentation of alerts and sheets for exporting data
@@ -74,7 +74,11 @@ fileprivate struct ExportButton: View {
         .disabled(!(dittoService.ditto?.activated ?? false))
         .sheet(isPresented: $isExportDataSharePresented) {
             // Sheet to handle the file sharing of the exported data.
-            ExportData(ditto:  DittoService.shared.ditto!)
+            if let ditto = DittoService.shared.ditto {
+                ExportData(ditto:  ditto)
+            } else {
+                Text("An active Ditto instance must be running in order to export data for security and privacy reasons.")
+            }
         }
     }
 }

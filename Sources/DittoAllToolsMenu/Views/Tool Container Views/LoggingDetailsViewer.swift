@@ -12,12 +12,10 @@ import SwiftUI
 
 struct LoggingDetailsViewer: View {
     
-    // @ObservedObject var dittoManager = DittoManager.shared
+    @ObservedObject var dittoManager = DittoService.shared
     
     var body: some View {
-        //LoggingDetailsView(loggingOption: $dittoManager.loggingOption)
-        Text("hello")
-#warning("TODO: fix Logging Details View")
+        LoggingDetailsView(loggingOption: $dittoManager.loggingOption)
     }
 }
 
