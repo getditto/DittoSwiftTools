@@ -1,16 +1,10 @@
- # DittoSwiftTools  
- <img align="left" src="Img/Ditto_logo.png" alt="Ditto Logo" width="150">  
- <br />  
- <br />  
- <br />  
- <br />  
- <br />  
+ # DittoSwiftTools
  
 DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers in a graphic viewer and 
 in a list view, export Ditto data directory and debug logs, browse collections/documents, and see 
 Ditto's disk usage.
 
-Issues and pull requests welcome!
+For support, please contact Ditto Support (<support@ditto.live>).
 
 ## Requirements
 * iOS 15.0+
