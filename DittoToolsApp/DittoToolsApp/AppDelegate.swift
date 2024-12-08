@@ -1,8 +1,7 @@
 //
-//  DittoMessagesApp.swift
-//  DittoMessages
+//  AppDelegate.swift
 //
-//  Created by Maximilian Alexander on 7/18/22.
+//  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
 import SwiftUI
