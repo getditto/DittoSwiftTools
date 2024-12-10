@@ -19,7 +19,7 @@ let package = Package(
         ),
         .library(
             name: "DittoDataBrowser",
-             targets: ["DittoDataBrowser"]
+            targets: ["DittoDataBrowser"]
         ),
         .library(
             name: "DittoExportLogs",
@@ -53,8 +53,8 @@ let package = Package(
             targets: ["DittoAllToolsMenu"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.8.0"),
-        .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", exact: "4.9.1-rc.1"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.0.0"),
     ],
     targets: [
         .target(name: "DittoHealthMetrics"),
@@ -76,7 +76,7 @@ let package = Package(
             name: "DittoDataBrowser",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
-                .product(name: "OrderedCollections", package: "swift-collections")
+                .product(name: "OrderedCollections", package: "swift-collections"),
             ]
         ),
         .target(
@@ -90,7 +90,7 @@ let package = Package(
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
                 "DittoHealthMetrics",
-                "DittoExportData"
+                "DittoExportData",
             ]
         ),
         .target(
@@ -115,14 +115,14 @@ let package = Package(
             name: "DittoHeartbeat",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
-                "DittoHealthMetrics"
+                "DittoHealthMetrics",
             ]
         ),
         .target(
             name: "DittoPermissionsHealth",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
-                "DittoHealthMetrics"
+                "DittoHealthMetrics",
             ]
         ),
         .target(
@@ -137,9 +137,9 @@ let package = Package(
                 "DittoExportData",
                 "DittoPresenceDegradation",
                 "DittoHeartbeat",
-                "DittoPermissionsHealth"
+                "DittoPermissionsHealth",
             ]
-        )
+        ),
 
     ]
 )
