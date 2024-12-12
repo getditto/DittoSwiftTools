@@ -1,21 +1,20 @@
-///
+//
 //  LoggingDetailsViewer.swift
-//  DittoToolsApp
 //
-//  Created by Eric Turner on 6/1/23.
+//  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
-//  Copyright © 2023 DittoLive Incorporated. All rights reserved.
 
 import DittoExportLogs
 import DittoSwift
 import SwiftUI
 
+
 struct LoggingDetailsViewer: View {
     
-    @ObservedObject var dittoManager = DittoService.shared
-    
+    var ditto: Ditto
+
     var body: some View {
-        LoggingDetailsView(loggingOption: $dittoManager.loggingOption)
+        LoggingDetailsView(ditto: ditto)
     }
 }
 

@@ -11,7 +11,10 @@ import UIKit
 
 
 public struct LoggingDetailsView: View {
-    @Binding var selectedLoggingOption: DittoLogger.LoggingOptions
+    
+    @State var selectedLogLevel = DittoLogger.minimumLogLevel
+    
+    @State var isLoggingEnabled = DittoLogger.enabled
     
     @State private var presentExportLogsShare: Bool = false
     @State private var presentExportLogsAlert: Bool = false
@@ -20,8 +23,10 @@ public struct LoggingDetailsView: View {
     @State private var activityViewController: UIActivityViewController?
 #endif
     
-    public init(loggingOption: Binding<DittoLogger.LoggingOptions>) {
-        self._selectedLoggingOption = loggingOption
+    private let ditto: Ditto
+    
+    public init(ditto: Ditto) {
+        self.ditto = ditto
     }
     
     public var body: some View {
@@ -29,11 +34,20 @@ public struct LoggingDetailsView: View {
             Section(header: Text("Settings"),
                     footer: Text("Changes will be applied immediately.")
             ) {
-                Picker("Log Level", selection: $selectedLoggingOption) {
-                    ForEach(DittoLogger.LoggingOptions.allCases) { option in
-                        Text(option.description)
+                Picker("Log Level", selection: $selectedLogLevel) {
+                    ForEach(DittoLogLevel.displayableCases, id: \.self) { level in
+                        Text(level.displayName).tag(level)
                     }
                 }
+                .onChange(of: selectedLogLevel) { newValue in
+                    DittoLogger.minimumLogLevel = newValue
+                    DittoLogger.minimumLogLevel.saveToStorage()
+                }
+                
+                Toggle("Enable Logging", isOn: $isLoggingEnabled)
+                    .onChange(of: isLoggingEnabled) { newValue in
+                        DittoLogger.enabled = newValue
+                    }
             }
 #if !os(tvOS)
             Section {

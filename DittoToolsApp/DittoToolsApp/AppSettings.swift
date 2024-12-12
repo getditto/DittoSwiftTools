@@ -22,7 +22,6 @@ class AppSettings {
         static let enabledTransports = "live.ditto.DittoCarsApp.settings.enabled-transports"
         static let backgroundNotificationsEnabled = "live.ditto.DittoCarsApp.settings.background-notifications-enabled"
         static let diagnosticsLogsEnabled = "live.ditto.DittoCarsApp.settings.diagnostics-logs-enabled"
-        static let loggingOption = "live.ditto.DittoCarsApp.settings.loggingOption"
     }
 
     private struct Defaults {
@@ -78,13 +77,6 @@ class AppSettings {
         didSet {
             UserDefaults.standard.set(self.diagnosticLogsEnabled, forKey: UserDefaultsKeys.diagnosticsLogsEnabled)
             DiagnosticsManager.shared.isEnabled = self.diagnosticLogsEnabled
-        }
-    }
-
-    /// This property is initialized in the private init() below, setting UserDefaults with a default value, .debug, if not yet set.
-    var loggingOption: DittoLogger.LoggingOptions {
-        didSet {
-            UserDefaults.standard.set(self.loggingOption.rawValue, forKey: UserDefaultsKeys.loggingOption)
         }
     }
 
@@ -170,12 +162,6 @@ class AppSettings {
         self.backgroundNotificationsEnabled = UserDefaults.standard.bool(
             forKey: UserDefaultsKeys.backgroundNotificationsEnabled)
         self.diagnosticLogsEnabled = UserDefaults.standard.bool(forKey: UserDefaultsKeys.diagnosticsLogsEnabled)
-
-        if let logOption = UserDefaults.standard.object(forKey: UserDefaultsKeys.loggingOption) as? Int {
-            self.loggingOption = DittoLogger.LoggingOptions(rawValue: logOption)!
-        } else {
-            self.loggingOption = DittoLogger.LoggingOptions(rawValue: DittoLogger.LoggingOptions.debug.rawValue)!
-        }
     }
 
     // MARK: - Static Functions
