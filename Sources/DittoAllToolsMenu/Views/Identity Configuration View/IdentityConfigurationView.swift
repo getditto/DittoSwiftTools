@@ -97,6 +97,7 @@ struct IdentityConfigurationView: View {
             }
             ToolbarItemGroup(placement: .cancellationAction) {
                 Button("Cancel") { presentationMode.wrappedValue.dismiss() }
+                    .disabled(IdentityConfigurationService.shared.activeConfiguration == nil)
             }
         }
     }

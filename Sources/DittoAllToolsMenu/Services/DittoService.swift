@@ -45,7 +45,6 @@ public class DittoService: ObservableObject {
 
     // MARK: -
 
-    #warning("TODO: check docs syntax for param types")
     /// Initializes the Ditto instance with the given identity configuration.
     ///
     /// - Parameters:

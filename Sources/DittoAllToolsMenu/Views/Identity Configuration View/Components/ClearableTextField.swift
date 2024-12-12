@@ -38,5 +38,3 @@ struct ClearableTextField: View {
         }
     }
 }
-
-#warning("TODO: test on device if clear button appears duplicated")
