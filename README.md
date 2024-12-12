@@ -7,7 +7,7 @@ Ditto's disk usage.
 For support, please contact Ditto Support (<support@ditto.live>).
 
 ## Requirements
-* iOS 15.0+
+* iOS 14.0+ or tvOS 15.0+
 * Swift 5.0+
 
 ## Installation
