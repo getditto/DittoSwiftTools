@@ -132,7 +132,7 @@ enum MenuOption: String, CaseIterable {
             case .dataBrowser:
                 DataBrowserView(ditto: ditto)
             case .logging:
-                LoggingDetailsViewer()
+                LoggingDetailsViewer(ditto: ditto)
             }
         } else {
             EmptyView()  // Return an empty view when ditto is nil
