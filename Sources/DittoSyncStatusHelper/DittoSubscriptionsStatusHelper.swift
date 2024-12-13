@@ -5,7 +5,7 @@
 //  Created by Brian Plattenburg on 11/16/24.
 //
 
-
+import Combine
 import DittoSwift
 
 public typealias DittoSyncSubscriptionStatusHandler = (_ result: DittoSyncSubscriptionsStatus) -> Void
@@ -27,15 +27,17 @@ public class DittoSubscriptionsStatusHelper {
     /// The interval after which a subscription is considered to be idle. Defaults to 1 second.
     public var idleTimeoutInterval: TimeInterval = 1
 
-    public var status: DittoSyncSubscriptionsStatus = .idle {
+    /// The current status for the total set of subscriptions monitored by this helper. This is both `@Published`
+    /// fired to `handler` via `didSet` when the value changes.
+    @Published public private(set) var status: DittoSyncSubscriptionsStatus = .idle {
         didSet {
             guard oldValue != status else { return }
-            handler(status)
+            handler?(status)
         }
     }
 
     private let subscriptions: Set<DittoSyncSubscription>
-    private let handler: DittoSyncSubscriptionStatusHandler
+    private let handler: DittoSyncSubscriptionStatusHandler?
 
     private var timer: Timer? = nil
     private var observers: [DittoStoreObserver] = []
@@ -46,14 +48,12 @@ public class DittoSubscriptionsStatusHelper {
      - Parameters:
         - ditto: A Ditto instance for which sync status is being checked. Used internally to create `DittoStoreObserver`s tracking each query.
         - subscriptions: Which subscriptions to include for this status helper. The aggregate status for all of them will be tracked here, such that  it is only considered `idle` if all subscriptions are `idle`.
-        - handler: A closure called each time the `status` changes.
+        - handler: An closure called each time the `status` changes. Defaults to `nil`
      */
-    init(ditto: Ditto,
-         subscriptions: Set<DittoSyncSubscription>,
-         handler: @escaping DittoSyncSubscriptionStatusHandler) throws {
+    init(ditto: Ditto, subscriptions: Set<DittoSyncSubscription>, handler: DittoSyncSubscriptionStatusHandler? = nil) throws {
         self.subscriptions = subscriptions
         self.handler = handler
-        handler(.idle)
+        handler?(.idle)
         self.observers = try subscriptions.map { subscription in
             try ditto.store.registerObserver(query: subscription.queryString, arguments: subscription.queryArguments, handler: handleObserver)
         }
@@ -65,14 +65,8 @@ public class DittoSubscriptionsStatusHelper {
        - ditto: A Ditto instance for which sync status is being checked. Used internally to create `DittoStoreObserver`s tracking each query.
        - handler: A closure called each time the `status` changes.
      */
-    init(ditto: Ditto,
-         handler: @escaping DittoSyncSubscriptionStatusHandler) throws {
-        self.subscriptions = ditto.sync.subscriptions
-        self.handler = handler
-        handler(.idle)
-        self.observers = try subscriptions.map { subscription in
-            try ditto.store.registerObserver(query: subscription.queryString, arguments: subscription.queryArguments, handler: handleObserver)
-        }
+    convenience init(ditto: Ditto, handler: DittoSyncSubscriptionStatusHandler?) throws {
+        try self.init(ditto: ditto, subscriptions: ditto.sync.subscriptions, handler: handler)
     }
 
     deinit {
