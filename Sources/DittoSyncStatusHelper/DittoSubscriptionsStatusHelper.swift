@@ -42,7 +42,7 @@ public class DittoSubscriptionsStatusHelper {
     private var lastUpdated: Date = .distantPast
 
     /**
-     Creates a new` DittoSyncStatusHelper` for a given set of `DittoSyncSubscription`s
+     Creates a new `DittoSyncStatusHelper` for a given set of `DittoSyncSubscription`s
      - Parameters:
         - ditto: A Ditto instance for which sync status is being checked. Used internally to create `DittoStoreObserver`s tracking each query.
         - subscriptions: Which subscriptions to include for this status helper. The aggregate status for all of them will be tracked here, such that  it is only considered `idle` if all subscriptions are `idle`.
@@ -60,7 +60,7 @@ public class DittoSubscriptionsStatusHelper {
     }
 
     /**
-     Creates a new` DittoSyncStatusHelper` for all of the currently active subscriptions on this Ditto instance *at the time this is created*. It will not update if those subscriptions change
+     Creates a new `DittoSyncStatusHelper` for all of the currently active subscriptions on this Ditto instance *at the time this is created*. It will not update if those subscriptions change
      - Parameters:
        - ditto: A Ditto instance for which sync status is being checked. Used internally to create `DittoStoreObserver`s tracking each query.
        - handler: A closure called each time the `status` changes.
