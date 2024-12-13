@@ -25,8 +25,6 @@ public class DittoService: ObservableObject {
 
     public static let shared = DittoService()
 
-    // MARK: - Init
-
     private init() {
 
         // configure logging
@@ -43,7 +41,7 @@ public class DittoService: ObservableObject {
         }
     }
 
-    // MARK: -
+    // MARK: - Ditto Instance Management
 
     /// Initializes the Ditto instance with the given identity configuration.
     ///
@@ -52,9 +50,9 @@ public class DittoService: ObservableObject {
     ///   - useIsolatedDirectories: Whether to use isolated directories for persistence.
     /// - Throws: `DittoServiceError` if initialization fails.
     func initializeDitto(with identityConfiguration: IdentityConfiguration, useIsolatedDirectories: Bool = true) throws {
-
+        
         // clear existing instance
-        resetDitto()
+        destroyDittoInstance()
 
         do {
             // Determine the persistence directory based on the app ID and directory isolation preference
@@ -63,16 +61,14 @@ public class DittoService: ObservableObject {
                 useIsolatedDirectories: useIsolatedDirectories)
 
             // Attempt to initialize the Ditto instance with the provided identity configuration
-            self.ditto = Ditto(
+            ditto = Ditto(
                 identity: identityConfiguration.identity,
-                persistenceDirectory: storageDirectoryURL)
-
-            // Ensure the Ditto instance was successfully created
-            guard let ditto = self.ditto else {
-                throw DittoServiceError.initializationFailed(
-                    "Identity type: \(identityConfiguration.identity.identityType), "
-                        + "Persistence directory: \(storageDirectoryURL.absoluteString)."
-                )
+                persistenceDirectory: storageDirectoryURL
+            )
+            
+            // Unwrap to ensure the value is valid and available throughout the rest of the method
+            guard let ditto else {
+                throw DittoServiceError.noInstance
             }
 
             print("Ditto instance initialized successfully.")
@@ -87,8 +83,8 @@ public class DittoService: ObservableObject {
             try startSyncEngine()
 
             try setupLiveQueries()
-
-            print("Ditto instance initialized successfully.")
+            
+            print("Ditto initialization process completed successfully.")
 
         } catch let error as DittoServiceError {
             // log and rethrow known service errors
@@ -105,14 +101,37 @@ public class DittoService: ObservableObject {
         //        }
     }
 
-    /// Method to clear Ditto instance, and optionally clear the active configuration (will delete credentials, and the user will have to re-enter them.)
-    func resetDitto(clearingActiveConfiguration: Bool = false) {
-        self.ditto?.delegate = nil
-        self.ditto = nil
+    /// Clears the current Ditto instance and optionally removes the active configuration.
+    ///
+    /// This method deallocates the existing `Ditto` instance by setting it to `nil` and optionally clears the
+    /// active configuration from the `IdentityConfigurationService`. Clearing the configuration will delete
+    /// credentials, requiring the user to re-enter them in future operations.
+    ///
+    /// - Parameter clearConfig: A Boolean value indicating whether the active configuration
+    ///   should also be cleared. If `true`, credentials associated with the active configuration will be
+    ///   removed. Defaults to `false`.
+    func destroyDittoInstance(clearConfig: Bool = false) {
+        
+        collectionsObserver?.stop()
+        collectionsObserver = nil
+        
+        collectionsSubscription?.cancel()
+        collectionsSubscription = nil
+                
+        stopSyncEngine()
+        
+        // Remove the delegate to prevent further interactions with the Ditto instance
+        ditto?.delegate = nil
+        
+        // Deallocate the Ditto instance by setting it to nil
+        ditto = nil
 
-        if clearingActiveConfiguration {
+        // If requested, clear the active configuration from the identity service
+        if clearConfig {
             IdentityConfigurationService.shared.activeConfiguration = nil
         }
+        
+        print("Ditto instance destroyed successfully. Ditto = \(String(describing: ditto))")
     }
 
     // MARK: - Private Helper Methods
@@ -142,6 +161,8 @@ public class DittoService: ObservableObject {
         self.collectionsObserver = ditto.store.collections().observeLocal(eventHandler: { event in
             self.collections = ditto.store.collections().exec()
         })
+        
+        print("Ditto live queries started up successfully.")
     }
 
     // MARK: - Sync Engine Control
@@ -154,58 +175,28 @@ public class DittoService: ObservableObject {
 
         do {
             try ditto.startSync()
+            print("Ditto sync engine started successfully.")
         } catch {
             throw DittoServiceError.syncFailed(error.localizedDescription)
         }
     }
 
     /// Stops the sync engine on the Ditto instance.
-    func stopSyncEngine() throws {
-        guard let ditto = ditto else { throw DittoServiceError.noInstance }
+    func stopSyncEngine() {
+        guard let ditto = ditto else { return }
 
         if !ditto.isSyncActive {
             return
         }
+        
         ditto.stopSync()
+        print("Ditto sync engine stopped successfully.")
     }
 
     /// Restarts the sync engine by stopping and starting it again.
     func restartSyncEngine() throws {
-        try stopSyncEngine()
+        stopSyncEngine()
         try startSyncEngine()
-    }
-}
-
-// MARK: - Persistence Directory Management
-
-extension DittoService {
-    static func persistenceDirectoryURL(appID: String? = "", useIsolatedDirectories: Bool = false) throws -> URL {
-        do {
-            #if os(tvOS)
-                let persistenceDirectory: FileManager.SearchPathDirectory = .cachesDirectory
-            #else
-                let persistenceDirectory: FileManager.SearchPathDirectory = .documentDirectory
-            #endif
-
-            var rootDirectoryURL = try FileManager.default.url(
-                for: persistenceDirectory,
-                in: .userDomainMask,
-                appropriateFor: nil,
-                create: true
-            ).appendingPathComponent("ditto")
-
-            if let appID = appID, !appID.isEmpty {
-                rootDirectoryURL = rootDirectoryURL.appendingPathComponent(appID)
-            }
-
-            if useIsolatedDirectories {
-                rootDirectoryURL = rootDirectoryURL.appendingPathComponent(UUID().uuidString)
-            }
-
-            return rootDirectoryURL
-        } catch {
-            throw DittoServiceError.initializationFailed("Failed to get persistence directory: \(error.localizedDescription)")
-        }
     }
 }
 

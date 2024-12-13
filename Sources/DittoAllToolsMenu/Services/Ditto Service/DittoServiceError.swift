@@ -1,11 +1,10 @@
-// 
+//
 //  DittoServiceError.swift
 //
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
 import Foundation
-
 
 /// Errors that may occur while interacting with the `DittoService`.
 ///
@@ -36,7 +35,6 @@ enum DittoServiceError: Error {
     case syncFailed(String)
 }
 
-
 /// Provides localized error descriptions for `DittoServiceError`.
 extension DittoServiceError: LocalizedError {
 
@@ -46,15 +44,15 @@ extension DittoServiceError: LocalizedError {
         case .noInstance:
             // Error message for missing Ditto instance
             return NSLocalizedString("No Ditto instance is available.", comment: "No instance error")
-            
+
         case .invalidIdentity(let message):
             // Error message for invalid identity with a specific reason
             return NSLocalizedString(message, comment: "Invalid identity error")
-            
+
         case .initializationFailed(let reason):
             // Error message for Ditto initialization failure with a specific reason
             return NSLocalizedString("Ditto initialization failed: \(reason)", comment: "Initialization failure error")
-            
+
         case .syncFailed(let reason):
             // Error message for sync engine failure with a specific reason
             return NSLocalizedString("Failed to start sync: \(reason)", comment: "Sync failure error")
