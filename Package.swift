@@ -14,10 +14,6 @@ let package = Package(
             targets: ["DittoHealthMetrics"]
         ),
         .library(
-            name: "DittoPresenceViewer",
-            targets: ["DittoPresenceViewer"]
-        ),
-        .library(
             name: "DittoDataBrowser",
              targets: ["DittoDataBrowser"]
         ),
@@ -54,24 +50,11 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.8.0"),
+        .package(url: "https://github.com/getditto/DittoPresenceViewer.git", branch: "BP/reset"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
         .target(name: "DittoHealthMetrics"),
-        .target(
-            name: "DittoPresenceViewer",
-            dependencies: [
-                .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            resources: [
-                .copy("Resources/index.html"),
-                .copy("Resources/main.css"),
-                .copy("Resources/main.js"),
-            ],
-            cxxSettings: [
-                .define("ENABLE_BITCODE", to: "NO")
-            ]
-        ),
         .target(
             name: "DittoDataBrowser",
             dependencies: [
@@ -129,7 +112,7 @@ let package = Package(
             name: "DittoAllToolsMenu",
             dependencies: [
                 "DittoHealthMetrics",
-                "DittoPresenceViewer",
+                .product(name: "DittoPresenceViewer", package: "DittoPresenceViewer"),
                 "DittoDataBrowser",
                 "DittoExportLogs",
                 "DittoDiskUsage",
