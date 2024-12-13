@@ -18,24 +18,53 @@ public class IdentityConfigurationService {
     // Current active configuration
     private var storedConfiguration: IdentityConfiguration?
     
+    /// The active identity configuration used by the app.
+    ///
+    /// This property retrieves or sets the currently active identity configuration.
+    /// If no configuration is cached in memory (`storedConfiguration`), it attempts
+    /// to load the configuration from the Keychain using the `authenticationDelegate`.
+    ///
+    /// Setting this property:
+    /// - Saves the new configuration to the Keychain if a valid configuration is provided.
+    /// - Removes the configuration from the Keychain if `nil` is assigned.
+    ///
+    /// Retrieving this property:
+    /// - Returns the cached configuration (`storedConfiguration`) if available.
+    /// - Loads and caches the configuration from the Keychain if one exists.
+    /// - Returns `nil` if no configuration is found.
+    ///
+    /// - Note: Clearing this property (setting it to `nil`) removes the associated
+    ///   credentials from the Keychain.
+    ///
+    /// Example:
+    /// ```swift
+    /// if let config = IdentityConfigurationService.shared.activeConfiguration {
+    ///     print("Loaded configuration: \(config)")
+    /// } else {
+    ///     print("No active configuration found.")
+    /// }
+    /// ```
     var activeConfiguration: IdentityConfiguration? {
         get {
-            // If storedConfiguration is already set, return it directly
+            // Return the cached configuration if already set
             if let configuration = storedConfiguration {
                 return configuration
             }
             
-            // Otherwise, attempt to load it from Keychain using the stored authenticationDelegate
+            // Attempt to load the configuration from the Keychain if not cached, using the stored authenticationDelegate
             if let loadedConfiguration = loadConfigurationFromKeychain(authDelegate: authenticationDelegate) {
                 storedConfiguration = loadedConfiguration // Cache it for future access
                 return loadedConfiguration
             }
             
-            // Return nil if nothing is found in Keychain
+            // Return nil if no configuration is found in Keychain
             return nil
         }
         set {
+            // Cache the new configuration in memory
             storedConfiguration = newValue
+            
+            // Save the new configuration to the Keychain, or remove it if nil
             if let newConfiguration = newValue {
                 saveConfigurationToKeychain(newConfiguration)
                 print("IdentityConfigurationService added credentials!")
