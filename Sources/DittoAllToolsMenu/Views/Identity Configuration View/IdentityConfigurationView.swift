@@ -4,9 +4,8 @@
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
-import SwiftUI
 import DittoSwift
-
+import SwiftUI
 
 struct IdentityConfigurationView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -16,45 +15,16 @@ struct IdentityConfigurationView: View {
         identityConfigurationService: IdentityConfigurationService.shared,
         dittoService: DittoService.shared
     )
-    
+
     @State var isPresentingAlert = false
     @State var validationError: String?
-    
+
     var body: some View {
         NavigationView {
-            Group {
-                #if os(tvOS)
-                HStack {
-                    Image(systemName: "gear")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: .infinity)
-                        .padding(200)
-                        .blendMode(.overlay)
-
-                    IdentityForm(
-                        viewModel: viewModel,
-                        onApply: handleApplyResult,
-                        onClearCredentials: clearCredentials
-                    )
-                }
-                #else
-                IdentityForm(
-                    viewModel: viewModel,
-                    onClearCredentials: clearCredentials
-                )
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar { ToolbarButtons }
-                #endif
-            }
-            .navigationTitle("Configuration")
+            MultiPlatformLayoutView
+                .navigationTitle("Configuration")
         }
-        .onAppear {
-            // Disable interactive dismissal
-            if let topController = UIApplication.shared.windows.first?.rootViewController?.presentedViewController {
-                topController.isModalInPresentation = true
-            }
-        }
+        .onAppear { disableInteractiveDismissal() }
         .alert(isPresented: $isPresentingAlert) {
             Alert(
                 title: Text("Cannot Apply Configuration"),
@@ -63,31 +33,37 @@ struct IdentityConfigurationView: View {
             )
         }
     }
-    
-#warning("TODO: Add Stop and Start buttons")
 
-    func clearCredentials() {
-        dittoService.resetDitto(clearingActiveConfiguration: true)
-        presentationMode.wrappedValue.dismiss()
-        print("IdentityConfigurationView: Credentials cleared.")
+    /// The main content of the view, a two column layout for tvos with an image and a form, otherwise just the form
+    @ViewBuilder
+    private var MultiPlatformLayoutView: some View {
+        #if os(tvOS)
+            HStack {
+                Image(systemName: "gear")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .padding(200)
+                    .blendMode(.overlay)
+
+                formView
+            }
+        #else
+            formView
+                .navigationBarTitleDisplayMode(.inline)
+        #endif
     }
 
-    
-    #if os(tvOS)
-    func handleApplyResult(_ result: Result<Void, Error>) {
-        switch result {
-        case .success:
-            presentationMode.wrappedValue.dismiss()
-        case .failure(let error as DittoServiceError):
-            validationError = error.localizedDescription
-            isPresentingAlert = true
-        case .failure(let error):
-            validationError = "An unknown error occurred: \(error.localizedDescription)"
-            isPresentingAlert = true
-        }
+    /// form for the user to input parameters to create a configuration and apply it
+    @ViewBuilder
+    private var formView: some View {
+        IdentityForm(
+            viewModel: viewModel,
+            onClearCredentials: clearCredentials
+        )
+        .toolbar { ToolbarButtons }
     }
-    #else
-    
+
     private var ToolbarButtons: some ToolbarContent {
         Group {
             ToolbarItemGroup(placement: .confirmationAction) {
@@ -101,7 +77,7 @@ struct IdentityConfigurationView: View {
             }
         }
     }
-    
+
     private func applyConfiguration() {
         do {
             try viewModel.apply()
@@ -114,5 +90,18 @@ struct IdentityConfigurationView: View {
             isPresentingAlert = true
         }
     }
-    #endif
+
+    private func clearCredentials() {
+        dittoService.destroyDittoInstance(clearConfig: true)
+        presentationMode.wrappedValue.dismiss()
+        print("IdentityConfigurationView: Credentials cleared.")
+    }
+
+    /// Disables interactive dismissal for modally presented views.
+    private func disableInteractiveDismissal() {
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+            let rootVC = scene.windows.first?.rootViewController?.presentedViewController
+        else { return }
+        rootVC.isModalInPresentation = true
+    }
 }

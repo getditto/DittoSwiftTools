@@ -165,14 +165,14 @@ class IdentityFormViewModel: ObservableObject {
         } catch let error as DittoServiceError {
             // Handle DittoServiceError cases
             switch error {
-            case .noInstance:
-                validationErrors = ["Ditto instance is not available. Please initialize before applying."]
             case .invalidIdentity(let message):
                 validationErrors = ["Invalid identity configuration: \(message)"]
             case .initializationFailed(let reason):
                 validationErrors = ["Ditto initialization failed: \(reason)"]
             case .syncFailed(let reason):
                 validationErrors = ["Failed to start the sync engine: \(reason)"]
+            default:
+                break
             }
             throw error
         } catch {

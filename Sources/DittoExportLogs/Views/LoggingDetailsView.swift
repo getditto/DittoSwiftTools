@@ -43,7 +43,6 @@ public struct LoggingDetailsView: View {
                     DittoLogger.minimumLogLevel = newValue
                     DittoLogger.minimumLogLevel.saveToStorage()
                 }
-                
                 Toggle("Enable Logging", isOn: $isLoggingEnabled)
                     .onChange(of: isLoggingEnabled) { newValue in
                         DittoLogger.enabled = newValue

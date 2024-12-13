@@ -20,12 +20,6 @@ struct IdentityForm: View {
 
     /// Tracks whether the confirmation alert for clearing credentials is shown.
     @State private var isShowingConfirmClearCredentialsAlert = false
-
-    #if os(tvOS)
-    /// Callback executed when the configuration is applied.
-    /// Used on tvOS to notify the parent of success or failure.
-    var onApply: (Result<Void, Error>) -> Void
-    #endif
     
     /// Callback executed when credentials are cleared.
     /// Invoked by both tvOS and non-tvOS implementations.
@@ -85,16 +79,7 @@ struct IdentityForm: View {
             }
             
             #if os(tvOS)
-            // tvOS-specific buttons for applying and clearing credentials.
-            Button("Apply configuration") {
-                do {
-                    try viewModel.apply()
-                    onApply(.success(())) // Notify success
-                } catch {
-                    onApply(.failure(error)) // Notify failure
-                }
-            }
-            
+            // tvOS-specific buttons for clearing credentials.
             Button("Clear Credentials…", role: .destructive) {
                 isShowingConfirmClearCredentialsAlert = true
             }
