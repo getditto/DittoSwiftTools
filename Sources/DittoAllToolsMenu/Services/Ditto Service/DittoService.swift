@@ -7,8 +7,43 @@
 import Combine
 import DittoSwift
 
-#warning("TODO: comments")
 
+/// A service that manages the lifecycle of a Ditto instance, including initialization, synchronization, and live queries.
+///
+/// `DittoService` is designed as a singleton to provide a centralized interface for working with a Ditto instance
+/// within an app. It allows for initializing Ditto with a specific identity configuration, managing its synchronization
+/// engine, and observing changes to collections via live queries.
+///
+/// ## Features
+/// - **Singleton Access**: Use `DittoService.shared` to access the single instance.
+/// - **Sync Engine Management**: Start, stop, or restart the Ditto synchronization engine.
+/// - **Collection Observations**: Automatically subscribe to and observe changes in the collections stored by Ditto.
+/// - **Identity Management**: Initialize Ditto with a secure identity configuration and manage offline license tokens.
+///
+/// ## Topics
+/// ### Initialization
+/// - `initializeDitto(with:useIsolatedDirectories:)`
+/// - `destroyDittoInstance(clearConfig:)`
+///
+/// ### Synchronization
+/// - `startSyncEngine()`
+/// - `stopSyncEngine()`
+/// - `restartSyncEngine()`
+///
+/// ### Collection Observations
+/// - `setupLiveQueries()`
+///
+/// ### Delegate Handling
+/// - `dittoTransportConditionDidChange(ditto:condition:subsystem:)`
+///
+/// ## Usage
+/// ```swift
+/// let dittoService = DittoService.shared
+/// try? dittoService.initializeDitto(with: identityConfiguration)
+/// dittoService.startSyncEngine()
+/// ```
+///
+/// - Note: This class is tightly coupled with the Ditto SDK and requires appropriate identity and license configurations to function.
 public class DittoService: ObservableObject {
 
     // MARK: - Properties
@@ -23,15 +58,20 @@ public class DittoService: ObservableObject {
 
     // MARK: - Singleton
 
+    /// Shared instance of the `DittoService`.
     public static let shared = DittoService()
 
+    /// Initializes the `DittoService` singleton.
+    ///
+    /// The private initializer sets up logging, attempts to restore an active identity configuration
+    /// from storage, and initializes the Ditto instance if possible.
     private init() {
 
-        // configure logging
+        // Configure Ditto logging
         DittoLogger.minimumLogLevel = DittoLogLevel.restoreFromStorage()
         DittoLogger.enabled = true
 
-        // start ditto
+        // Attempt to initialize Ditto using the active identity configuration
         if let activeIdentityConfiguration = IdentityConfigurationService.shared.activeConfiguration {
             do {
                 try initializeDitto(with: activeIdentityConfiguration)
@@ -47,11 +87,11 @@ public class DittoService: ObservableObject {
     ///
     /// - Parameters:
     ///   - identityConfiguration: The identity configuration used to initialize Ditto.
-    ///   - useIsolatedDirectories: Whether to use isolated directories for persistence.
+    ///   - useIsolatedDirectories: A flag indicating whether to use isolated directories for persistence.
     /// - Throws: `DittoServiceError` if initialization fails.
     func initializeDitto(with identityConfiguration: IdentityConfiguration, useIsolatedDirectories: Bool = true) throws {
-        
-        // clear existing instance
+
+        // Clear any existing instance before initializing a new one
         destroyDittoInstance()
 
         do {
@@ -65,7 +105,7 @@ public class DittoService: ObservableObject {
                 identity: identityConfiguration.identity,
                 persistenceDirectory: storageDirectoryURL
             )
-            
+
             // Unwrap to ensure the value is valid and available throughout the rest of the method
             guard let ditto else {
                 throw DittoServiceError.noInstance
@@ -73,17 +113,16 @@ public class DittoService: ObservableObject {
 
             print("Ditto instance initialized successfully.")
 
-            // Now that we know that it works, we can save it as the active configuration
+            // Save the identity configuration as the active configuration
             IdentityConfigurationService.shared.activeConfiguration = identityConfiguration
 
             // Conditionally set the offline license token if required by the identity type
             try setOfflineLicenseTokenIfNeeded(for: identityConfiguration, on: ditto)
 
-            // Attempt to start the sync engine
+            // Start the sync engine and set up live queries
             try startSyncEngine()
-
             try setupLiveQueries()
-            
+
             print("Ditto initialization process completed successfully.")
 
         } catch let error as DittoServiceError {
@@ -111,32 +150,33 @@ public class DittoService: ObservableObject {
     ///   should also be cleared. If `true`, credentials associated with the active configuration will be
     ///   removed. Defaults to `false`.
     func destroyDittoInstance(clearConfig: Bool = false) {
-        
+
+        // Stop observing changes to collections
         collectionsObserver?.stop()
         collectionsObserver = nil
-        
+
+        // Cancel any active subscriptions
         collectionsSubscription?.cancel()
         collectionsSubscription = nil
-                
+
+        // Stop the sync engine if it is active
         stopSyncEngine()
-        
-        // Remove the delegate to prevent further interactions with the Ditto instance
+
+        // Remove the delegate and deallocate the Ditto instance
         ditto?.delegate = nil
-        
-        // Deallocate the Ditto instance by setting it to nil
         ditto = nil
 
-        // If requested, clear the active configuration from the identity service
+        // Optionally clear the active identity configuration
         if clearConfig {
             IdentityConfigurationService.shared.activeConfiguration = nil
         }
-        
+
         print("Ditto instance destroyed successfully. Ditto = \(String(describing: ditto))")
     }
 
     // MARK: - Private Helper Methods
 
-    /// Helper method to set the offline license token if required
+    /// Sets the offline license token on the Ditto instance if required by the identity type.
     private func setOfflineLicenseTokenIfNeeded(for config: IdentityConfiguration, on ditto: Ditto) throws {
         let identity = config.identity
         guard identity.identityType == .offlinePlayground || identity.identityType == .sharedKey else { return }
@@ -154,20 +194,28 @@ public class DittoService: ObservableObject {
     }
 
     #warning("TODO: What does subscribing to all collections do, in the context of the AllToolsMenu?")
+    /// Sets up live queries to observe collections in the Ditto store.
+    ///
+    /// This method subscribes to changes in the collections and updates the `collections` property in real time.
     private func setupLiveQueries() throws {
         guard let ditto = ditto else { throw DittoServiceError.noInstance }
 
+        // Subscribe to all collections in the Ditto store
         self.collectionsSubscription = ditto.store.collections().subscribe()
+        
+        // Observe local changes to the collections and update the published property
         self.collectionsObserver = ditto.store.collections().observeLocal(eventHandler: { event in
             self.collections = ditto.store.collections().exec()
         })
-        
+
         print("Ditto live queries started up successfully.")
     }
 
     // MARK: - Sync Engine Control
 
-    /// Starts the sync engine on the initialized Ditto instance.
+    /// Starts the sync engine on the Ditto instance.
+        ///
+        /// - Throws: `DittoServiceError` if the sync engine fails to start.
     func startSyncEngine() throws {
         guard let ditto = ditto else { throw DittoServiceError.noInstance }
 
@@ -188,12 +236,14 @@ public class DittoService: ObservableObject {
         if !ditto.isSyncActive {
             return
         }
-        
+
         ditto.stopSync()
         print("Ditto sync engine stopped successfully.")
     }
 
     /// Restarts the sync engine by stopping and starting it again.
+        ///
+        /// - Throws: `DittoServiceError` if restarting the sync engine fails.
     func restartSyncEngine() throws {
         stopSyncEngine()
         try startSyncEngine()
@@ -204,6 +254,12 @@ public class DittoService: ObservableObject {
 
 extension DittoService: DittoDelegate {
 
+    /// Handles updates to Ditto's transport condition.
+        ///
+        /// - Parameters:
+        ///   - ditto: The Ditto instance reporting the condition change.
+        ///   - condition: The new transport condition.
+        ///   - subsystem: The subsystem reporting the condition change.
     public func dittoTransportConditionDidChange(
         ditto: Ditto,
         condition: DittoTransportCondition,
