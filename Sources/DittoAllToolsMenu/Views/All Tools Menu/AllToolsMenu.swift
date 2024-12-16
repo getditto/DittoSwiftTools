@@ -64,7 +64,7 @@ public struct AllToolsMenu: View {
             .toolbar {
                 ToolbarItemGroup(placement: .bottomBar) {
                     VStack(spacing: 0) {
-                        SyncButton(ditto: dittoService.ditto)
+                        SyncButton(dittoService: dittoService)
                         CopyButton
                     }
                 }

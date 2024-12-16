@@ -9,25 +9,26 @@ import SwiftUI
 
 
 struct SyncButton: View {
-    let ditto: Ditto?
+    var dittoService: DittoService?
     
-    @State private var isActive = false
+    @State private var isAnimating = false
     @State private var rotationAngle: Double = 0
     
     var body: some View {
         Button(action: {
-            if let ditto {
+            if let dittoService, let ditto = dittoService.ditto {
                 if ditto.isSyncActive {
-                    ditto.stopSync()
-                    isActive = false
+                    dittoService.stopSyncEngine()
+                    isAnimating = false
+                    rotationAngle = 0
                 } else {
                     try? ditto.startSync()
-                    isActive = true
+                    isAnimating = true
                 }
             }
         }) {
             Group {
-                if let ditto, ditto.activated {
+                if let ditto = dittoService?.ditto, ditto.activated {
                     HStack {
                         Text(ditto.isSyncActive ? "Ditto is active." : "Ditto is not running.")
                             .font(.subheadline)
@@ -35,7 +36,6 @@ struct SyncButton: View {
                         Image(systemName: "arrow.triangle.2.circlepath")
                             .font(.caption)
                             .rotationEffect(.degrees(rotationAngle))
-                            .animation(.default, value: isActive)
                     }
                 } else {
                     Text("No license found.")
@@ -43,11 +43,11 @@ struct SyncButton: View {
             }
         }
         .onAppear {
-            if let ditto {
-                isActive = ditto.isSyncActive
+            if let ditto = dittoService?.ditto {
+                isAnimating = ditto.isSyncActive
             }
         }
-        .onChange(of: isActive) { rotating in
+        .onChange(of: isAnimating) { rotating in
             if rotating {
                 startRotation()
             }
@@ -55,13 +55,9 @@ struct SyncButton: View {
     }
     
     private func startRotation() {
-        // Increment rotation angle in a loop while isRotating is true
-        Timer.scheduledTimer(withTimeInterval: 0.02, repeats: true) { timer in
-            if isActive {
-                rotationAngle += 2
-                if rotationAngle >= 360 { rotationAngle = 0 }
-            } else {
-                timer.invalidate()
+        if isAnimating {
+            withAnimation(.linear(duration: 3.4).repeatForever(autoreverses: false)) {
+                rotationAngle = 360
             }
         }
     }
