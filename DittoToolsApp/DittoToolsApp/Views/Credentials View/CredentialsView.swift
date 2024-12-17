@@ -50,7 +50,7 @@ struct CredentialsView: View {
 
     @ViewBuilder
     private var imageView: some View {
-        Image(systemName: "key.2.on.ring.fill")
+        Image("key.2.on.ring.fill")
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: .infinity)
