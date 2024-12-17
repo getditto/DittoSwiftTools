@@ -13,26 +13,8 @@ struct MenuView: View {
     // Observe DittoService for changes in the Ditto instance
     @ObservedObject var dittoService = DittoService.shared
 
-    // If the license info is not found, present the Credentials view automatically
-    @State var isShowingCredentialsView = (CredentialsService.shared.activeCredentials == nil)
-
-    public let title: String
-
-    // Public initializer with a default value for the title
-    public init(title: String = "Ditto Tools") {
-        self.title = title
-    }
-
     public var body: some View {
         MultiPlatformLayoutView
-            .navigationTitle(title)
-            .navigationBarItems(
-                trailing:
-                    CredentialsButton
-            )
-            .sheet(isPresented: $isShowingCredentialsView) {
-                CredentialsView()
-            }
     }
 
     /// The main content of the view, a two column layout for tvos with an image and a menu, otherwise just the menu
@@ -101,16 +83,4 @@ struct MenuView: View {
             }
         }
     #endif
-
-    @ViewBuilder
-    private var CredentialsButton: some View {
-        Button(action: {
-            isShowingCredentialsView.toggle()
-        }) {
-            Image(systemName: "key.2.on.ring.fill")
-                #if os(tvOS)
-                    .font(.subheadline)
-                #endif
-        }
-    }
 }
