@@ -19,10 +19,10 @@ enum DittoServiceError: Error {
     /// without initializing a `Ditto` instance.
     case noInstance
 
-    /// Indicates that an invalid identity was provided.
+    /// Indicates that invalid credentials were provided.
     ///
-    /// - Parameter message: A custom message detailing the reason why the identity is invalid.
-    case invalidIdentity(String)
+    /// - Parameter message: A custom message detailing the reason why the credentials are invalid.
+    case invalidCredentials(String)
 
     /// Indicates that the initialization of the `Ditto` instance failed.
     ///
@@ -45,9 +45,9 @@ extension DittoServiceError: LocalizedError {
             // Error message for missing Ditto instance
             return NSLocalizedString("No Ditto instance is available.", comment: "No instance error")
 
-        case .invalidIdentity(let message):
-            // Error message for invalid identity with a specific reason
-            return NSLocalizedString(message, comment: "Invalid identity error")
+        case .invalidCredentials(let message):
+            // Error message for invalid credentials with a specific reason
+            return NSLocalizedString(message, comment: "Invalid credentials error")
 
         case .initializationFailed(let reason):
             // Error message for Ditto initialization failure with a specific reason

@@ -16,47 +16,47 @@ import DittoSwift
 struct IdentityFormInput {
     
     /// The selected type of identity for Ditto.
-    var identityType: DittoIdentity.IdentityType
+    var identityType: DittoIdentity.IdentityType = .onlinePlayground
     
     /// The App ID associated with the identity.
     /// - Must not be empty for most identity types.
-    var appID: String
+    var appID: String = ""
     
     /// The offline license token used for offline playground identities.
     /// - Must be a valid UUID.
-    var offlineLicenseToken: String
+    var offlineLicenseToken: String = ""
     
     /// The authentication token used for online playground identities.
     /// - Must be a valid UUID.
-    var playgroundToken: String
+    var playgroundToken: String = ""
     
     /// Indicates whether Ditto Cloud Sync is enabled.
     /// - Applies to specific identity types that support cloud synchronization.
-    var enableDittoCloudSync: Bool
+    var enableDittoCloudSync: Bool = true
     
     /// The authentication provider used for online identities.
     /// - Optional; leave empty if not required by the identity type.
-    var authProvider: String
+    var authProvider: String = ""
     
     /// The authentication token used for online identities.
     /// - Must be a valid UUID if provided.
-    var authToken: String
+    var authToken: String = ""
     
     /// A custom authentication URL provided for specific identity types.
     /// - Must be a valid URL if not empty.
-    var customAuthURLString: String
+    var customAuthURLString: String = ""
     
     /// The site ID used for shared key and offline playground identities.
     /// - Optional; defaults to 0 if not required.
-    var siteID: UInt64
+    var siteID: UInt64 = 0
     
     /// The shared key used for shared key identities.
     /// - Must be a valid UUID if provided.
-    var sharedKey: String
+    var sharedKey: String = ""
     
     /// The certificate configuration used for manual identities.
     /// - Required for manual identities; must not be empty.
-    var certificateConfig: String
+    var certificateConfig: String = ""
     
     /// Validates the input fields of this structure based on the selected identity type.
     ///

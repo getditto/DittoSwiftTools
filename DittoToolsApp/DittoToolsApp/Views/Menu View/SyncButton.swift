@@ -53,6 +53,7 @@ struct SyncButton: View {
                 startRotation()
             }
         }
+        .disabled(dittoService?.ditto == nil)
     }
     
     private func startRotation() {

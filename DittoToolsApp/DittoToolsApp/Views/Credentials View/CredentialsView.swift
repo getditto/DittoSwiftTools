@@ -1,5 +1,5 @@
 //
-//  IdentityConfigurationView.swift
+//  CredentialsView.swift
 //
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
@@ -7,12 +7,12 @@
 import DittoSwift
 import SwiftUI
 
-struct IdentityConfigurationView: View {
+struct CredentialsView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var dittoService = DittoService.shared
 
     @StateObject private var viewModel = IdentityFormViewModel(
-        identityConfigurationService: IdentityConfigurationService.shared,
+        credentialsService: CredentialsService.shared,
         dittoService: DittoService.shared
     )
 
@@ -22,12 +22,12 @@ struct IdentityConfigurationView: View {
     var body: some View {
         NavigationView {
             MultiPlatformLayoutView
-                .navigationTitle("Configuration")
+                .navigationTitle("Credentials")
         }
         .onAppear { disableInteractiveDismissal() }
         .alert(isPresented: $isPresentingAlert) {
             Alert(
-                title: Text("Cannot Apply Configuration"),
+                title: Text("Cannot Apply Credentials"),
                 message: Text(validationError ?? "An unknown error occurred."),
                 dismissButton: .default(Text("OK"))
             )
@@ -47,7 +47,7 @@ struct IdentityConfigurationView: View {
                 .navigationBarTitleDisplayMode(.inline)
         #endif
     }
-    
+
     @ViewBuilder
     private var imageView: some View {
         Image(systemName: "key.2.on.ring")
@@ -61,31 +61,32 @@ struct IdentityConfigurationView: View {
     /// form for the user to input parameters to create a configuration and apply it
     @ViewBuilder
     private var formView: some View {
-        IdentityForm(
-            viewModel: viewModel,
-            onClearCredentials: clearCredentials
-        )
-        .toolbar { ToolbarButtons }
+        IdentityForm(viewModel: viewModel)
+            .toolbar {
+                ToolbarButtons
+            }
     }
 
     private var ToolbarButtons: some ToolbarContent {
         Group {
             ToolbarItemGroup(placement: .confirmationAction) {
                 Button("Apply") {
-                    applyConfiguration()
+                    applyCredentials()
                 }
             }
-            
+
             #if !os(tvOS)
-            ToolbarItemGroup(placement: .cancellationAction) {
-                Button("Cancel") { presentationMode.wrappedValue.dismiss() }
-                    .disabled(IdentityConfigurationService.shared.activeConfiguration == nil)
-            }
+                ToolbarItemGroup(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                    .disabled(CredentialsService.shared.activeCredentials == nil)
+                }
             #endif
         }
     }
 
-    private func applyConfiguration() {
+    private func applyCredentials() {
         do {
             try viewModel.apply()
             presentationMode.wrappedValue.dismiss()
@@ -96,12 +97,6 @@ struct IdentityConfigurationView: View {
             validationError = "An unknown error occurred."
             isPresentingAlert = true
         }
-    }
-
-    private func clearCredentials() {
-        dittoService.destroyDittoInstance(clearConfig: true)
-        presentationMode.wrappedValue.dismiss()
-        print("IdentityConfigurationView: Credentials cleared.")
     }
 
     /// Disables interactive dismissal for modally presented views.

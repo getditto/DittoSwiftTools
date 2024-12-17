@@ -13,16 +13,14 @@ struct MenuView: View {
     // Observe DittoService for changes in the Ditto instance
     @ObservedObject var dittoService = DittoService.shared
 
-    // If the license info is not found, present the identity configuration sheet automatically
-    @State var isShowingIdentityConfiguration = (IdentityConfigurationService.shared.activeConfiguration == nil)
+    // If the license info is not found, present the Credentials view automatically
+    @State var isShowingCredentialsView = (CredentialsService.shared.activeCredentials == nil)
 
     public let title: String
-    public let showIdentityConfiguration: Bool
 
     // Public initializer with a default value for the title
-    public init(title: String = "Ditto Tools", showIdentityConfiguration: Bool = true) {
+    public init(title: String = "Ditto Tools") {
         self.title = title
-        self.showIdentityConfiguration = showIdentityConfiguration
     }
 
     public var body: some View {
@@ -30,19 +28,10 @@ struct MenuView: View {
             .navigationTitle(title)
             .navigationBarItems(
                 trailing:
-                    Group {
-                        if showIdentityConfiguration {
-                            Button(action: {
-                                isShowingIdentityConfiguration.toggle()
-                            }) {
-                                Image(systemName: "key.2.on.ring.fill")
-                                    .font(.caption)
-                            }
-                        }
-                    }
+                    CredentialsButton
             )
-            .sheet(isPresented: $isShowingIdentityConfiguration) {
-                IdentityConfigurationView()
+            .sheet(isPresented: $isShowingCredentialsView) {
+                CredentialsView()
             }
     }
 
@@ -52,7 +41,7 @@ struct MenuView: View {
         #if os(tvOS)
             HStack {
                 VStack {
-                    imageView
+                    LogoView
 
                     SyncButton(dittoService: dittoService)
                         .buttonStyle(.plain)
@@ -80,9 +69,9 @@ struct MenuView: View {
                 }
         #endif
     }
-    
+
     @ViewBuilder
-    private var imageView: some View {
+    private var LogoView: some View {
         Image("Ditto.LogoMark.Blue", bundle: .main)
             .resizable()
             .aspectRatio(contentMode: .fit)
@@ -112,4 +101,18 @@ struct MenuView: View {
             }
         }
     #endif
+
+    @ViewBuilder
+    private var CredentialsButton: some View {
+        Button(action: {
+            isShowingCredentialsView.toggle()
+        }) {
+            Image(systemName: "key.2.on.ring.fill")
+                #if os(tvOS)
+                    .font(.subheadline)
+                    .padding()
+                #endif
+        }
+        .clipShape(Circle())
+    }
 }

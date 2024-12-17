@@ -11,14 +11,14 @@ import DittoSwift
 /// A service that manages the lifecycle of a Ditto instance, including initialization, synchronization, and live queries.
 ///
 /// `DittoService` is designed as a singleton to provide a centralized interface for working with a Ditto instance
-/// within an app. It allows for initializing Ditto with a specific identity configuration, managing its synchronization
+/// within an app. It allows for initializing Ditto with specific credentials, managing its synchronization
 /// engine, and observing changes to collections via live queries.
 ///
 /// ## Features
 /// - **Singleton Access**: Use `DittoService.shared` to access the single instance.
 /// - **Sync Engine Management**: Start, stop, or restart the Ditto synchronization engine.
 /// - **Collection Observations**: Automatically subscribe to and observe changes in the collections stored by Ditto.
-/// - **Identity Management**: Initialize Ditto with a secure identity configuration and manage offline license tokens.
+/// - **Identity Management**: Initialize Ditto with secure Credentials to manage offline license tokens.
 ///
 /// ## Topics
 /// ### Initialization
@@ -39,7 +39,7 @@ import DittoSwift
 /// ## Usage
 /// ```swift
 /// let dittoService = DittoService.shared
-/// try? dittoService.initializeDitto(with: identityConfiguration)
+/// try? dittoService.initializeDitto(with: credentials)
 /// dittoService.startSyncEngine()
 /// ```
 ///
@@ -63,7 +63,7 @@ public class DittoService: ObservableObject {
 
     /// Initializes the `DittoService` singleton.
     ///
-    /// The private initializer sets up logging, attempts to restore an active identity configuration
+    /// The private initializer sets up logging, attempts to restore active Credentials
     /// from storage, and initializes the Ditto instance if possible.
     private init() {
 
@@ -71,10 +71,10 @@ public class DittoService: ObservableObject {
         DittoLogger.minimumLogLevel = DittoLogLevel.restoreFromStorage()
         DittoLogger.enabled = true
 
-        // Attempt to initialize Ditto using the active identity configuration
-        if let activeIdentityConfiguration = IdentityConfigurationService.shared.activeConfiguration {
+        // Attempt to initialize Ditto using the active credentials
+        if let activeCredentials = CredentialsService.shared.activeCredentials {
             do {
-                try initializeDitto(with: activeIdentityConfiguration)
+                try initializeDitto(with: activeCredentials)
             } catch {
                 assertionFailure("Failed to initialize Ditto: \(error.localizedDescription)")
             }
@@ -83,13 +83,13 @@ public class DittoService: ObservableObject {
 
     // MARK: - Ditto Instance Management
 
-    /// Initializes the Ditto instance with the given identity configuration.
+    /// Initializes the Ditto instance with the given Credentials.
     ///
     /// - Parameters:
-    ///   - identityConfiguration: The identity configuration used to initialize Ditto.
+    ///   - credentials: The credentials used to initialize Ditto.
     ///   - useIsolatedDirectories: A flag indicating whether to use isolated directories for persistence.
     /// - Throws: `DittoServiceError` if initialization fails.
-    func initializeDitto(with identityConfiguration: IdentityConfiguration, useIsolatedDirectories: Bool = true) throws {
+    func initializeDitto(with credentials: Credentials, useIsolatedDirectories: Bool = true) throws {
 
         // Clear any existing instance before initializing a new one
         destroyDittoInstance()
@@ -97,12 +97,12 @@ public class DittoService: ObservableObject {
         do {
             // Determine the persistence directory based on the app ID and directory isolation preference
             let storageDirectoryURL = try DittoService.persistenceDirectoryURL(
-                appID: identityConfiguration.identity.appID,
+                appID: credentials.identity.appID,
                 useIsolatedDirectories: useIsolatedDirectories)
 
-            // Attempt to initialize the Ditto instance with the provided identity configuration
+            // Attempt to initialize the Ditto instance with the provided credentials
             ditto = Ditto(
-                identity: identityConfiguration.identity,
+                identity: credentials.identity,
                 persistenceDirectory: storageDirectoryURL
             )
 
@@ -113,11 +113,11 @@ public class DittoService: ObservableObject {
 
             print("Ditto instance initialized successfully.")
 
-            // Save the identity configuration as the active configuration
-            IdentityConfigurationService.shared.activeConfiguration = identityConfiguration
+            // Save the credentials as the active credentials
+            CredentialsService.shared.activeCredentials = credentials
 
             // Conditionally set the offline license token if required by the identity type
-            try setOfflineLicenseTokenIfNeeded(for: identityConfiguration, on: ditto)
+            try setOfflineLicenseTokenIfNeeded(for: credentials, on: ditto)
 
             // Start the sync engine and set up live queries
             try startSyncEngine()
@@ -140,16 +140,16 @@ public class DittoService: ObservableObject {
         //        }
     }
 
-    /// Clears the current Ditto instance and optionally removes the active configuration.
+    /// Clears the current Ditto instance and optionally removes the active credentials.
     ///
     /// This method deallocates the existing `Ditto` instance by setting it to `nil` and optionally clears the
-    /// active configuration from the `IdentityConfigurationService`. Clearing the configuration will delete
-    /// credentials, requiring the user to re-enter them in future operations.
+    /// active credentials from the `CredentialsService`. Clearing the credentials will delete
+    /// credentials completely, requiring the user to re-enter them in future operations.
     ///
-    /// - Parameter clearConfig: A Boolean value indicating whether the active configuration
+    /// - Parameter clearingCredentials: A Boolean value indicating whether the active credentials
     ///   should also be cleared. If `true`, credentials associated with the active configuration will be
     ///   removed. Defaults to `false`.
-    func destroyDittoInstance(clearConfig: Bool = false) {
+    func destroyDittoInstance(clearingCredentials: Bool = false) {
 
         // Stop observing changes to collections
         collectionsObserver?.stop()
@@ -166,9 +166,9 @@ public class DittoService: ObservableObject {
         ditto?.delegate = nil
         ditto = nil
 
-        // Optionally clear the active identity configuration
-        if clearConfig {
-            IdentityConfigurationService.shared.activeConfiguration = nil
+        // Optionally clear the active credentials
+        if clearingCredentials {
+            CredentialsService.shared.activeCredentials = nil
         }
 
         print("Ditto instance destroyed successfully. Ditto = \(String(describing: ditto))")
@@ -177,13 +177,13 @@ public class DittoService: ObservableObject {
     // MARK: - Private Helper Methods
 
     /// Sets the offline license token on the Ditto instance if required by the identity type.
-    private func setOfflineLicenseTokenIfNeeded(for config: IdentityConfiguration, on ditto: Ditto) throws {
+    private func setOfflineLicenseTokenIfNeeded(for config: Credentials, on ditto: Ditto) throws {
         let identity = config.identity
         guard identity.identityType == .offlinePlayground || identity.identityType == .sharedKey else { return }
 
         let credentials = config.supplementaryCredentials
         guard let offlineLicenseToken = credentials.offlineLicenseToken, !offlineLicenseToken.isEmpty else {
-            throw DittoServiceError.invalidIdentity("Offline license token is required but not provided.")
+            throw DittoServiceError.invalidCredentials("Offline license token is required but not provided.")
         }
 
         do {

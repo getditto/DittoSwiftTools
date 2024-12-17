@@ -8,7 +8,7 @@ import DittoSwift
 import Security
 
 
-/// A service to save, load, and delete identity configurations from the Keychain.
+/// A service to save, load, and delete Credentials from the Keychain.
 public class KeychainService {
     
     // Keys used to store data in the Keychain
@@ -17,20 +17,20 @@ public class KeychainService {
     
     // MARK: - Save Identity to Keychain
     
-    /// Saves the identity configuration to the Keychain.
-    /// - Parameter configuration: The identity configuration to save.
+    /// Saves the credentials to the Keychain.
+    /// - Parameter credentials: The Credentials to save.
     /// - Returns: `true` if the save was successful, otherwise `false`.
-    static func saveConfigurationToKeychain(_ configuration: IdentityConfiguration) -> Bool {
-        let identityData = extractIdentityValues(from: configuration.identity)
+    static func saveCredentialsToKeychain(_ credentials: Credentials) -> Bool {
+        let identityData = extractIdentityValues(from: credentials.identity)
         
         // Save identity to Keychain
         let identitySaveSuccess = saveToKeychain(data: identityData, key: DITTO_IDENTITY_KEY)
         
         // Extract supplementary credentials to be saved to Keychain
         let supplementaryData: [String: Any] = [
-            "authProvider": configuration.supplementaryCredentials.authProvider ?? "",
-            "authToken": configuration.supplementaryCredentials.authToken ?? "",
-            "offlineLicenseToken": configuration.supplementaryCredentials.offlineLicenseToken ?? ""
+            "authProvider": credentials.supplementaryCredentials.authProvider ?? "",
+            "authToken": credentials.supplementaryCredentials.authToken ?? "",
+            "offlineLicenseToken": credentials.supplementaryCredentials.offlineLicenseToken ?? ""
         ]
         
         // Save supplementary credentials to Keychain
@@ -40,24 +40,24 @@ public class KeychainService {
         return identitySaveSuccess && supplementarySaveSuccess
     }
     
-    // MARK: - Remove Identity from Keychain
+    // MARK: - Remove Credentials from Keychain
     
-    /// Removes the identity configuration from the Keychain.
+    /// Removes the credentials from the Keychain.
     /// - Returns: `true` if the removal was successful, otherwise `false`.
-    static func removeConfigurationFromKeychain() -> Bool {
-        let identityDeleteSuccess = deleteFromKeychain(key: DITTO_IDENTITY_KEY)
+    static func removeCredentialsFromKeychain() -> Bool {
+        let credentialsDeleteSuccess = deleteFromKeychain(key: DITTO_IDENTITY_KEY)
         let supplementaryDeleteSuccess = deleteFromKeychain(key: DITTO_SUPPLEMENTARY_CREDENTIALS_KEY)
         
         // Return true if both deletions were successful
-        return identityDeleteSuccess && supplementaryDeleteSuccess
+        return credentialsDeleteSuccess && supplementaryDeleteSuccess
     }
     
-    // MARK: - Load Identity from Keychain
+    // MARK: - Load Credentials from Keychain
     
-    /// Loads the identity configuration from the Keychain.
-    /// - Parameter authDelegate: The authentication delegate for the identity.
-    /// - Returns: The loaded identity configuration, or `nil` if loading fails.
-    static func loadConfigurationFromKeychain(authDelegate: AuthenticationDelegate?) -> IdentityConfiguration? {
+    /// Loads the credentials from the Keychain.
+    /// - Parameter authDelegate: The authentication delegate for the credentials.
+    /// - Returns: The loaded credentials, or `nil` if loading fails.
+    static func loadCredentialsFromKeychain(authDelegate: AuthenticationDelegate?) -> Credentials? {
         // Load identity data and reconstruct the identity
         guard let identityData = loadFromKeychain(key: DITTO_IDENTITY_KEY),
               let identity = reconstructIdentity(from: identityData, authDelegate: authDelegate) else {
@@ -72,7 +72,7 @@ public class KeychainService {
             offlineLicenseToken: supplementaryData?["offlineLicenseToken"] as? String ?? ""
         )
         
-        return IdentityConfiguration(identity: identity, supplementaryCredentials: supplementaryCredentials)
+        return Credentials(identity: identity, supplementaryCredentials: supplementaryCredentials)
     }
 }
 
