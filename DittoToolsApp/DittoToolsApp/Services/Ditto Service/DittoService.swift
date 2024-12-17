@@ -193,7 +193,7 @@ public class DittoService: ObservableObject {
         }
     }
 
-    #warning("TODO: What does subscribing to all collections do, in the context of the AllToolsMenu?")
+    #warning("TODO: What does subscribing to all collections do, in the context of the MenuView?")
     /// Sets up live queries to observe collections in the Ditto store.
     ///
     /// This method subscribes to changes in the collections and updates the `collections` property in real time.

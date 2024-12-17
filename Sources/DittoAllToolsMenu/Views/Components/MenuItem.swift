@@ -1,9 +1,6 @@
 //
 //  MenuItem.swift
 //
-//  This file defines views that represent individual menu options and their associated icons in the tools list.
-//  Each `MenuItem` links to the corresponding view based on the selected option. The file also defines supporting views for rendering tool items and their icons.
-//
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
@@ -17,10 +14,10 @@ import DittoSwift
 /// Otherwise, the item is displayed in a disabled state.
 struct MenuItem: View {
     let option: MenuOption
-    @ObservedObject var dittoService = DittoService.shared
+    var ditto: Ditto?
 
     var body: some View {
-        if let ditto = dittoService.ditto, ditto.activated {
+        if let ditto, ditto.activated {
             NavigationLink(destination: option.destinationView(ditto: ditto)) {
                 ToolListItem(title: option.rawValue, systemImageName: option.icon, color: option.color)
             }

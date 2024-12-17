@@ -39,19 +39,23 @@ struct IdentityConfigurationView: View {
     private var MultiPlatformLayoutView: some View {
         #if os(tvOS)
             HStack {
-                Image(systemName: "gear")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: .infinity)
-                    .padding(200)
-                    .blendMode(.overlay)
-
+                imageView
                 formView
             }
         #else
             formView
                 .navigationBarTitleDisplayMode(.inline)
         #endif
+    }
+    
+    @ViewBuilder
+    private var imageView: some View {
+        Image(systemName: "key.2.on.ring")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(maxWidth: .infinity)
+            .padding(180)
+            .blendMode(.overlay)
     }
 
     /// form for the user to input parameters to create a configuration and apply it
@@ -71,10 +75,13 @@ struct IdentityConfigurationView: View {
                     applyConfiguration()
                 }
             }
+            
+            #if !os(tvOS)
             ToolbarItemGroup(placement: .cancellationAction) {
                 Button("Cancel") { presentationMode.wrappedValue.dismiss() }
                     .disabled(IdentityConfigurationService.shared.activeConfiguration == nil)
             }
+            #endif
         }
     }
 

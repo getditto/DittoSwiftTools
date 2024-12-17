@@ -13,7 +13,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            AllToolsMenu()
+            MenuView()
 
             // Default view when no tool is selected.
             Text("Please select a tool.")

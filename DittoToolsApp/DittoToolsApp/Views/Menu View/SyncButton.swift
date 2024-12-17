@@ -27,19 +27,20 @@ struct SyncButton: View {
                 }
             }
         }) {
-            Group {
-                if let ditto = dittoService?.ditto, ditto.activated {
-                    HStack {
-                        Text(ditto.isSyncActive ? "Ditto is active." : "Ditto is not running.")
-                            .font(.subheadline)
-
-                        Image(systemName: "arrow.triangle.2.circlepath")
-                            .font(.caption)
-                            .rotationEffect(.degrees(rotationAngle))
-                    }
-                } else {
-                    Text("No license found.")
+            if let ditto = dittoService?.ditto, ditto.activated {
+                HStack(spacing: 12) {
+                    Text(ditto.isSyncActive ? "Ditto is active." : "Ditto is not running.")
+                        .font(.subheadline)
+                    
+                    #if !os(tvOS)
+                    // The way focus is handled on tvOS can interfere with animation updates, so omit on tvOS.
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .font(.caption)
+                        .rotationEffect(.degrees(rotationAngle))
+                    #endif
                 }
+            } else {
+                Text("No license found.")
             }
         }
         .onAppear {

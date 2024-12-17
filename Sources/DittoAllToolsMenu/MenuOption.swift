@@ -1,10 +1,6 @@
 //
 //  MenuOption.swift
 //
-//  This file defines the `MenuOption` enum, which represents different menu options within the app.
-//  Each option has an associated view, icon, and color. Sections group related options together.
-//  This file also defines functionality to present views based on the selected menu option.
-//
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
