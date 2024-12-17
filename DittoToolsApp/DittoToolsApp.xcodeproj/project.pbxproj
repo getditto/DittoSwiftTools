@@ -33,7 +33,6 @@
 		235C3CF12D10819400AB35AE /* UIScrollView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CF02D10819400AB35AE /* UIScrollView+Extension.swift */; };
 		235C3CF22D10830600AB35AE /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD82D10813300AB35AE /* Credentials.swift */; };
 		235C3CF32D10830600AB35AE /* DittoIdentity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD72D10813300AB35AE /* DittoIdentity+Extension.swift */; };
-		235C3CF42D10830600AB35AE /* SupplementaryCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD92D10813300AB35AE /* SupplementaryCredentials.swift */; };
 		235C3CF52D10831000AB35AE /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD52D10810100AB35AE /* KeychainService.swift */; };
 		235C3CF72D10831000AB35AE /* AuthenticationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD32D10810100AB35AE /* AuthenticationDelegate.swift */; };
 		235C3CF82D10831500AB35AE /* DittoServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD12D10810100AB35AE /* DittoServiceError.swift */; };
@@ -84,7 +83,6 @@
 		235C3CD52D10810100AB35AE /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		235C3CD72D10813300AB35AE /* DittoIdentity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DittoIdentity+Extension.swift"; sourceTree = "<group>"; };
 		235C3CD82D10813300AB35AE /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
-		235C3CD92D10813300AB35AE /* SupplementaryCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryCredentials.swift; sourceTree = "<group>"; };
 		235C3CDA2D10815000AB35AE /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		235C3CDD2D10817300AB35AE /* SyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncButton.swift; sourceTree = "<group>"; };
 		235C3CDF2D10817D00AB35AE /* ClearableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearableTextField.swift; sourceTree = "<group>"; };
@@ -214,7 +212,6 @@
 			children = (
 				235C3CD72D10813300AB35AE /* DittoIdentity+Extension.swift */,
 				235C3CD82D10813300AB35AE /* Credentials.swift */,
-				235C3CD92D10813300AB35AE /* SupplementaryCredentials.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -463,7 +460,6 @@
 				235C3CDE2D10817300AB35AE /* SyncButton.swift in Sources */,
 				235C3CF22D10830600AB35AE /* Credentials.swift in Sources */,
 				235C3CF32D10830600AB35AE /* DittoIdentity+Extension.swift in Sources */,
-				235C3CF42D10830600AB35AE /* SupplementaryCredentials.swift in Sources */,
 				235C3CDC2D10815000AB35AE /* MenuView.swift in Sources */,
 				01F34C9728A2EAE3003BDF17 /* ContentView.swift in Sources */,
 				01F34D0928A31644003BDF17 /* AppDelegate.swift in Sources */,

@@ -7,202 +7,156 @@
 import DittoSwift
 import Security
 
-
 /// A service to save, load, and delete Credentials from the Keychain.
 public class KeychainService {
-    
+
     // Keys used to store data in the Keychain
-    static let DITTO_IDENTITY_KEY = "live.ditto.tools.dittoIdentity"
-    static let DITTO_SUPPLEMENTARY_CREDENTIALS_KEY = "live.ditto.tools.dittoSupplementaryCredentials"
-    
-    // MARK: - Save Identity to Keychain
-    
+    static let DITTO_CREDENTIALS_KEY = "live.ditto.tools.dittoIdentity"
+
+    // MARK: - Save Credentials to Keychain
+
     /// Saves the credentials to the Keychain.
     /// - Parameter credentials: The Credentials to save.
     /// - Returns: `true` if the save was successful, otherwise `false`.
     static func saveCredentialsToKeychain(_ credentials: Credentials) -> Bool {
-        let identityData = extractIdentityValues(from: credentials.identity)
-        
-        // Save identity to Keychain
-        let identitySaveSuccess = saveToKeychain(data: identityData, key: DITTO_IDENTITY_KEY)
-        
-        // Extract supplementary credentials to be saved to Keychain
-        let supplementaryData: [String: Any] = [
-            "authProvider": credentials.supplementaryCredentials.authProvider ?? "",
-            "authToken": credentials.supplementaryCredentials.authToken ?? "",
-            "offlineLicenseToken": credentials.supplementaryCredentials.offlineLicenseToken ?? ""
-        ]
-        
-        // Save supplementary credentials to Keychain
-        let supplementarySaveSuccess = saveToKeychain(data: supplementaryData, key: DITTO_SUPPLEMENTARY_CREDENTIALS_KEY)
-        
-        // Return true if both the identity and supplementary config were saved successfully
-        return identitySaveSuccess && supplementarySaveSuccess
+        let credentialsData = serializeCredentials(credentials)
+        return saveToKeychain(data: credentialsData, key: DITTO_CREDENTIALS_KEY)
     }
-    
+
+    // MARK: - Load Credentials from Keychain
+
+    /// Loads the credentials from the Keychain.
+    /// - Parameter authDelegate: The authentication delegate for credentials reconstruction.
+    /// - Returns: The loaded credentials, or `nil` if loading fails.
+    static func loadCredentialsFromKeychain(authDelegate: AuthenticationDelegate?) -> Credentials? {
+        guard let credentialsData = loadFromKeychain(key: DITTO_CREDENTIALS_KEY) else { return nil }
+        return deserializeCredentials(from: credentialsData, authDelegate: authDelegate)
+    }
+
     // MARK: - Remove Credentials from Keychain
-    
+
     /// Removes the credentials from the Keychain.
     /// - Returns: `true` if the removal was successful, otherwise `false`.
     static func removeCredentialsFromKeychain() -> Bool {
-        let credentialsDeleteSuccess = deleteFromKeychain(key: DITTO_IDENTITY_KEY)
-        let supplementaryDeleteSuccess = deleteFromKeychain(key: DITTO_SUPPLEMENTARY_CREDENTIALS_KEY)
-        
-        // Return true if both deletions were successful
-        return credentialsDeleteSuccess && supplementaryDeleteSuccess
-    }
-    
-    // MARK: - Load Credentials from Keychain
-    
-    /// Loads the credentials from the Keychain.
-    /// - Parameter authDelegate: The authentication delegate for the credentials.
-    /// - Returns: The loaded credentials, or `nil` if loading fails.
-    static func loadCredentialsFromKeychain(authDelegate: AuthenticationDelegate?) -> Credentials? {
-        // Load identity data and reconstruct the identity
-        guard let identityData = loadFromKeychain(key: DITTO_IDENTITY_KEY),
-              let identity = reconstructIdentity(from: identityData, authDelegate: authDelegate) else {
-            return nil
-        }
-        
-        // Load supplementary credentials
-        let supplementaryData = loadFromKeychain(key: DITTO_SUPPLEMENTARY_CREDENTIALS_KEY)
-        let supplementaryCredentials = SupplementaryCredentials(
-            authProvider: supplementaryData?["authProvider"] as? String ?? "",
-            authToken: supplementaryData?["authToken"] as? String ?? "",
-            offlineLicenseToken: supplementaryData?["offlineLicenseToken"] as? String ?? ""
-        )
-        
-        return Credentials(identity: identity, supplementaryCredentials: supplementaryCredentials)
+        return deleteFromKeychain(key: DITTO_CREDENTIALS_KEY)
     }
 }
 
-
 extension KeychainService {
 
-    // MARK: - Save and Delete Utilities
+    // MARK: - Serialization and Deserialization
 
-    /// Saves a dictionary to the Keychain.
-    /// - Parameters:
-    ///   - data: The data to save as a dictionary.
-    ///   - key: The key to associate with the data.
-    /// - Returns: `true` if the save was successful, otherwise `false`.
-    private static func saveToKeychain(data: [String: Any], key: String) -> Bool {
-        let jsonData = try? JSONSerialization.data(withJSONObject: data)
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: key,
-            kSecValueData as String: jsonData ?? Data()
-        ]
-
-        SecItemDelete(query as CFDictionary)  // Remove existing item if present
-        let status = SecItemAdd(query as CFDictionary, nil)
-        return status == errSecSuccess
-    }
-    
-    /// Deletes data from the Keychain.
-    /// - Parameter key: The key associated with the data to delete.
-    /// - Returns: `true` if the deletion was successful, otherwise `false`.
-    private static func deleteFromKeychain(key: String) -> Bool {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: key
-        ]
-        let status = SecItemDelete(query as CFDictionary)
-        return status == errSecSuccess
+    /// Converts `Credentials` into a storable dictionary.
+    private static func serializeCredentials(_ credentials: Credentials) -> [String: Any] {
+        var data: [String: Any] = extractIdentityValues(from: credentials.identity)
+        data["authProvider"] = credentials.authProvider ?? ""
+        data["authToken"] = credentials.authToken ?? ""
+        data["offlineLicenseToken"] = credentials.offlineLicenseToken ?? ""
+        return data
     }
 
-    // MARK: - Serializing Utilities
+    /// Reconstructs `Credentials` from a dictionary.
+    private static func deserializeCredentials(from data: [String: Any], authDelegate: AuthenticationDelegate?) -> Credentials? {
+        guard let identity = reconstructIdentity(from: data, authDelegate: authDelegate) else { return nil }
+        return Credentials(
+            identity: identity,
+            authProvider: data["authProvider"] as? String ?? "",
+            authToken: data["authToken"] as? String ?? "",
+            offlineLicenseToken: data["offlineLicenseToken"] as? String ?? ""
+        )
+    }
 
-    /// Converts a `DittoIdentity` into a dictionary for saving.
-    /// - Parameter identity: The identity to convert.
-    /// - Returns: A dictionary representation of the identity.
+    /// Extracts identity values into a dictionary.
     private static func extractIdentityValues(from identity: DittoIdentity) -> [String: Any] {
         switch identity {
         case .offlinePlayground(let appID, let siteID):
             return ["type": "offlinePlayground", "appID": appID ?? "", "siteID": siteID ?? 0]
-
-        case .onlineWithAuthentication(let appID, _, let enableDittoCloudSync, let customAuthURL):
-            return ["type": "onlineWithAuthentication", "appID": appID, "enableDittoCloudSync": enableDittoCloudSync, "customAuthURL": customAuthURL?.absoluteString ?? ""]
-
-        case .onlinePlayground(let appID, let token, let enableDittoCloudSync, let customAuthURL):
-            return ["type": "onlinePlayground", "appID": appID, "token": token, "enableDittoCloudSync": enableDittoCloudSync, "customAuthURL": customAuthURL?.absoluteString ?? ""]
-
+        case .onlineWithAuthentication(let appID, _, let enableCloudSync, let customAuthURL):
+            return [
+                "type": "onlineWithAuthentication", "appID": appID, "enableCloudSync": enableCloudSync,
+                "customAuthURL": customAuthURL?.absoluteString ?? "",
+            ]
+        case .onlinePlayground(let appID, let token, let enableCloudSync, let customAuthURL):
+            return [
+                "type": "onlinePlayground", "appID": appID, "token": token, "enableCloudSync": enableCloudSync,
+                "customAuthURL": customAuthURL?.absoluteString ?? "",
+            ]
         case .sharedKey(let appID, let sharedKey, let siteID):
             return ["type": "sharedKey", "appID": appID, "sharedKey": sharedKey, "siteID": siteID ?? 0]
-
         case .manual(let certificateConfig):
             return ["type": "manual", "certificateConfig": certificateConfig]
-        
         @unknown default:
             fatalError("Encountered an unknown DittoIdentity case.")
         }
     }
-    
-    // MARK: - Deserializing Utilities
-    
-    /// Loads data from the Keychain and converts it to a dictionary.
-    /// - Parameter key: The key associated with the data to load.
-    /// - Returns: A dictionary representation of the data, or `nil` if loading fails.
-    private static func loadFromKeychain(key: String) -> [String: Any]? {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: key,
-            kSecReturnData as String: kCFBooleanTrue!,
-            kSecMatchLimit as String: kSecMatchLimitOne
-        ]
 
-        var dataTypeRef: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
-        
-        if status == errSecSuccess, let retrievedData = dataTypeRef as? Data {
-            return try? JSONSerialization.jsonObject(with: retrievedData, options: []) as? [String: Any]
-        }
-        
-        return nil
-    }
-    
     /// Reconstructs a `DittoIdentity` from a dictionary.
-    /// - Parameters:
-    ///   - data: The dictionary to reconstruct from.
-    ///   - authDelegate: The authentication delegate required for some identity types.
-    /// - Returns: A `DittoIdentity` if reconstruction succeeds, otherwise `nil`.
     private static func reconstructIdentity(from data: [String: Any], authDelegate: AuthenticationDelegate?) -> DittoIdentity? {
         guard let type = data["type"] as? String else { return nil }
-        
         switch type {
         case "offlinePlayground":
             let appID = data["appID"] as? String
             let siteID = data["siteID"] as? UInt64
             return .offlinePlayground(appID: appID, siteID: siteID)
-
         case "onlineWithAuthentication":
-            guard let authDelegate = authDelegate else {
-                fatalError("Cannot reconstruct Identity from Keychain without a valid AuthDelegate.")
-            }
+            guard let authDelegate = authDelegate else { return nil }
             let appID = data["appID"] as! String
-            let enableDittoCloudSync = data["enableDittoCloudSync"] as! Bool
+            let enableCloudSync = data["enableCloudSync"] as! Bool
             let customAuthURL = URL(string: data["customAuthURL"] as! String)
-            return .onlineWithAuthentication(appID: appID, authenticationDelegate: authDelegate, enableDittoCloudSync: enableDittoCloudSync, customAuthURL: customAuthURL)
-
+            return .onlineWithAuthentication(
+                appID: appID, authenticationDelegate: authDelegate, enableDittoCloudSync: enableCloudSync, customAuthURL: customAuthURL)
         case "onlinePlayground":
             let appID = data["appID"] as! String
             let token = data["token"] as! String
-            let enableDittoCloudSync = data["enableDittoCloudSync"] as! Bool
+            let enableCloudSync = data["enableCloudSync"] as! Bool
             let customAuthURL = URL(string: data["customAuthURL"] as! String)
-            return .onlinePlayground(appID: appID, token: token, enableDittoCloudSync: enableDittoCloudSync, customAuthURL: customAuthURL)
-
+            return .onlinePlayground(appID: appID, token: token, enableDittoCloudSync: enableCloudSync, customAuthURL: customAuthURL)
         case "sharedKey":
             let appID = data["appID"] as! String
             let sharedKey = data["sharedKey"] as! String
             let siteID = data["siteID"] as? UInt64
             return .sharedKey(appID: appID, sharedKey: sharedKey, siteID: siteID)
-
         case "manual":
             let certificateConfig = data["certificateConfig"] as! String
             return .manual(certificateConfig: certificateConfig)
-
         default:
             return nil
         }
+    }
+
+    // MARK: - Keychain Utilities
+
+    private static func saveToKeychain(data: [String: Any], key: String) -> Bool {
+        let jsonData = try? JSONSerialization.data(withJSONObject: data)
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key,
+            kSecValueData as String: jsonData ?? Data(),
+        ]
+        SecItemDelete(query as CFDictionary)
+        return SecItemAdd(query as CFDictionary, nil) == errSecSuccess
+    }
+
+    private static func loadFromKeychain(key: String) -> [String: Any]? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key,
+            kSecReturnData as String: kCFBooleanTrue!,
+            kSecMatchLimit as String: kSecMatchLimitOne,
+        ]
+        var dataTypeRef: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
+        if status == errSecSuccess, let data = dataTypeRef as? Data {
+            return try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+        }
+        return nil
+    }
+
+    private static func deleteFromKeychain(key: String) -> Bool {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key,
+        ]
+        return SecItemDelete(query as CFDictionary) == errSecSuccess
     }
 }

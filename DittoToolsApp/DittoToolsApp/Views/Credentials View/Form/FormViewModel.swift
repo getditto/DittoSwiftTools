@@ -46,19 +46,19 @@ class FormViewModel: ObservableObject {
             formInput.appID = appID
             formInput.enableDittoCloudSync = enableDittoCloudSync
             formInput.customAuthURLString = customAuthURL?.absoluteString ?? ""
-            formInput.authProvider = credentials.supplementaryCredentials.authProvider ?? ""
-            formInput.authToken = credentials.supplementaryCredentials.authToken ?? ""
+            formInput.authProvider = credentials.authProvider ?? ""
+            formInput.authToken = credentials.authToken ?? ""
 
         case .offlinePlayground(let appID, let siteID):
             formInput.appID = appID ?? ""
             formInput.siteID = siteID ?? .zero
-            formInput.offlineLicenseToken = credentials.supplementaryCredentials.offlineLicenseToken ?? ""
+            formInput.offlineLicenseToken = credentials.offlineLicenseToken ?? ""
 
         case .sharedKey(let appID, let sharedKey, let siteID):
             formInput.appID = appID
             formInput.sharedKey = sharedKey
             formInput.siteID = siteID ?? .zero
-            formInput.offlineLicenseToken = credentials.supplementaryCredentials.offlineLicenseToken ?? ""
+            formInput.offlineLicenseToken = credentials.offlineLicenseToken ?? ""
 
         case .manual(let certificateConfig):
             formInput.certificateConfig = certificateConfig
@@ -122,15 +122,11 @@ class FormViewModel: ObservableObject {
             throw DittoServiceError.invalidCredentials("Unsupported or unknown Ditto Identity type encountered.")
         }
 
-        // Create supplementary credentials (optional)
-        let supplementaryCredentials = SupplementaryCredentials(
-            authProvider: formInput.authProvider,
-            authToken: formInput.authToken,
-            offlineLicenseToken: formInput.offlineLicenseToken
-        )
-
         // Create Credentials
-        let credentials = Credentials(identity: identity, supplementaryCredentials: supplementaryCredentials)
+        let credentials = Credentials(identity: identity,
+                                      authProvider: formInput.authProvider,
+                                      authToken: formInput.authToken,
+                                      offlineLicenseToken: formInput.offlineLicenseToken)
 
         // Return the fully validated Credentials object
         return credentials

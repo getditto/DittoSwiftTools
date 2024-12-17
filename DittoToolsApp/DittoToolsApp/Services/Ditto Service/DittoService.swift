@@ -7,7 +7,6 @@
 import Combine
 import DittoSwift
 
-
 /// A service that manages the lifecycle of a Ditto instance, including initialization, synchronization, and live queries.
 ///
 /// `DittoService` is designed as a singleton to provide a centralized interface for working with a Ditto instance
@@ -147,8 +146,7 @@ public class DittoService: ObservableObject {
     /// credentials completely, requiring the user to re-enter them in future operations.
     ///
     /// - Parameter clearingCredentials: A Boolean value indicating whether the active credentials
-    ///   should also be cleared. If `true`, credentials associated with the active configuration will be
-    ///   removed. Defaults to `false`.
+    ///   should also be cleared. If `true`, the active credentials will be removed. Defaults to `false`.
     func destroyDittoInstance(clearingCredentials: Bool = false) {
 
         // Stop observing changes to collections
@@ -177,11 +175,10 @@ public class DittoService: ObservableObject {
     // MARK: - Private Helper Methods
 
     /// Sets the offline license token on the Ditto instance if required by the identity type.
-    private func setOfflineLicenseTokenIfNeeded(for config: Credentials, on ditto: Ditto) throws {
-        let identity = config.identity
+    private func setOfflineLicenseTokenIfNeeded(for credentials: Credentials, on ditto: Ditto) throws {
+        let identity = credentials.identity
         guard identity.identityType == .offlinePlayground || identity.identityType == .sharedKey else { return }
 
-        let credentials = config.supplementaryCredentials
         guard let offlineLicenseToken = credentials.offlineLicenseToken, !offlineLicenseToken.isEmpty else {
             throw DittoServiceError.invalidCredentials("Offline license token is required but not provided.")
         }
@@ -202,7 +199,7 @@ public class DittoService: ObservableObject {
 
         // Subscribe to all collections in the Ditto store
         self.collectionsSubscription = ditto.store.collections().subscribe()
-        
+
         // Observe local changes to the collections and update the published property
         self.collectionsObserver = ditto.store.collections().observeLocal(eventHandler: { event in
             self.collections = ditto.store.collections().exec()
@@ -214,8 +211,8 @@ public class DittoService: ObservableObject {
     // MARK: - Sync Engine Control
 
     /// Starts the sync engine on the Ditto instance.
-        ///
-        /// - Throws: `DittoServiceError` if the sync engine fails to start.
+    ///
+    /// - Throws: `DittoServiceError` if the sync engine fails to start.
     func startSyncEngine() throws {
         guard let ditto = ditto else { throw DittoServiceError.noInstance }
 
@@ -242,8 +239,8 @@ public class DittoService: ObservableObject {
     }
 
     /// Restarts the sync engine by stopping and starting it again.
-        ///
-        /// - Throws: `DittoServiceError` if restarting the sync engine fails.
+    ///
+    /// - Throws: `DittoServiceError` if restarting the sync engine fails.
     func restartSyncEngine() throws {
         stopSyncEngine()
         try startSyncEngine()
@@ -255,11 +252,11 @@ public class DittoService: ObservableObject {
 extension DittoService: DittoDelegate {
 
     /// Handles updates to Ditto's transport condition.
-        ///
-        /// - Parameters:
-        ///   - ditto: The Ditto instance reporting the condition change.
-        ///   - condition: The new transport condition.
-        ///   - subsystem: The subsystem reporting the condition change.
+    ///
+    /// - Parameters:
+    ///   - ditto: The Ditto instance reporting the condition change.
+    ///   - condition: The new transport condition.
+    ///   - subsystem: The subsystem reporting the condition change.
     public func dittoTransportConditionDidChange(
         ditto: Ditto,
         condition: DittoTransportCondition,

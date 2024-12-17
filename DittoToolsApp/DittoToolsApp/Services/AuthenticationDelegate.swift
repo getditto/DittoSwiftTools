@@ -27,8 +27,8 @@ public class AuthenticationDelegate: DittoAuthenticationDelegate {
         }
 
         // Ensure both authToken and authProvider are available
-        guard let authToken = credentials.supplementaryCredentials.authToken,
-            let authProvider = credentials.supplementaryCredentials.authProvider
+        guard let authToken = credentials.authToken,
+            let authProvider = credentials.authProvider
         else {
             print("Missing authToken or authProvider in the credentials.")
             return
@@ -65,8 +65,8 @@ public class AuthenticationDelegate: DittoAuthenticationDelegate {
         }
 
         // Ensure both authToken and authProvider are available
-        guard let authToken = credentials.supplementaryCredentials.authToken,
-            let authProvider = credentials.supplementaryCredentials.authProvider
+        guard let authToken = credentials.authToken,
+            let authProvider = credentials.authProvider
         else {
             print("Missing authToken or authProvider in the Credentials.")
             return
