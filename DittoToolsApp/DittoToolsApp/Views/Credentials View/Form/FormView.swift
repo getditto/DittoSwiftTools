@@ -28,6 +28,7 @@ struct FormView: View {
                         Text(type.rawValue)
                     }
                 }
+                .pickerStyle(.menu)
             }
 
             // Section for inputting identity-specific details based on the selected type.
