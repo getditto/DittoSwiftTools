@@ -50,12 +50,12 @@ struct CredentialsView: View {
 
     @ViewBuilder
     private var imageView: some View {
-        Image(systemName: "key.2.on.ring")
+        Image(systemName: "key.2.on.ring.fill")
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: .infinity)
             .padding(180)
-            .blendMode(.overlay)
+            .foregroundColor(Color(UIColor.tertiaryLabel))
     }
 
     /// form for the user to input parameters to create a configuration and apply it

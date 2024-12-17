@@ -76,7 +76,7 @@ struct MenuView: View {
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: .infinity)
-            .foregroundColor(.blue)
+            .foregroundColor(.dittoBlue)
             .padding(180)
     }
 
@@ -110,9 +110,7 @@ struct MenuView: View {
             Image(systemName: "key.2.on.ring.fill")
                 #if os(tvOS)
                     .font(.subheadline)
-                    .padding()
                 #endif
         }
-        .clipShape(Circle())
     }
 }
