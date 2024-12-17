@@ -1,5 +1,5 @@
 //
-//  IdentityForm.swift
+//  FormView.swift
 //
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
@@ -9,12 +9,12 @@ import SwiftUI
 
 /// A view that allows users to configure different identity types for Ditto.
 ///
-/// `IdentityForm` displays a dynamic form where fields adjust based on the selected identity type.
+/// `FormView` displays a dynamic form where fields adjust based on the selected identity type.
 /// The form gathers input data for creating and applying a `Credentials` configuration object.
-struct IdentityForm: View {
+struct FormView: View {
 
     /// The view model containing the identity form state and logic.
-    @ObservedObject var viewModel: IdentityFormViewModel
+    @ObservedObject var viewModel: FormViewModel
 
     /// Tracks whether the confirmation prompt for clearing credentials is shown.
     @State private var isShowingConfirmClearCredentials = false

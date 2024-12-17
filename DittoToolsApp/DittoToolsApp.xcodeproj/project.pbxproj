@@ -23,11 +23,11 @@
 		14E35DB12B7F345C0018EC3B /* DittoHeartbeat in Frameworks */ = {isa = PBXBuildFile; productRef = 14E35DB02B7F345C0018EC3B /* DittoHeartbeat */; };
 		235C3CDC2D10815000AB35AE /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CDA2D10815000AB35AE /* MenuView.swift */; };
 		235C3CDE2D10817300AB35AE /* SyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CDD2D10817300AB35AE /* SyncButton.swift */; };
-		235C3CE92D10817D00AB35AE /* IdentityFormInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE42D10817D00AB35AE /* IdentityFormInput.swift */; };
+		235C3CE92D10817D00AB35AE /* FormInputData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE42D10817D00AB35AE /* FormInputData.swift */; };
 		235C3CEA2D10817D00AB35AE /* IdentityFormInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE02D10817D00AB35AE /* IdentityFormInputView.swift */; };
 		235C3CEB2D10817D00AB35AE /* CredentialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE72D10817D00AB35AE /* CredentialsView.swift */; };
-		235C3CEC2D10817D00AB35AE /* IdentityFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE52D10817D00AB35AE /* IdentityFormViewModel.swift */; };
-		235C3CED2D10817D00AB35AE /* IdentityForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE32D10817D00AB35AE /* IdentityForm.swift */; };
+		235C3CEC2D10817D00AB35AE /* FormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE52D10817D00AB35AE /* FormViewModel.swift */; };
+		235C3CED2D10817D00AB35AE /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE32D10817D00AB35AE /* FormView.swift */; };
 		235C3CEE2D10817D00AB35AE /* IdentityFormTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE12D10817D00AB35AE /* IdentityFormTextField.swift */; };
 		235C3CEF2D10817D00AB35AE /* ClearableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CDF2D10817D00AB35AE /* ClearableTextField.swift */; };
 		235C3CF12D10819400AB35AE /* UIScrollView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CF02D10819400AB35AE /* UIScrollView+Extension.swift */; };
@@ -90,9 +90,9 @@
 		235C3CDF2D10817D00AB35AE /* ClearableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearableTextField.swift; sourceTree = "<group>"; };
 		235C3CE02D10817D00AB35AE /* IdentityFormInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityFormInputView.swift; sourceTree = "<group>"; };
 		235C3CE12D10817D00AB35AE /* IdentityFormTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityFormTextField.swift; sourceTree = "<group>"; };
-		235C3CE32D10817D00AB35AE /* IdentityForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityForm.swift; sourceTree = "<group>"; };
-		235C3CE42D10817D00AB35AE /* IdentityFormInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityFormInput.swift; sourceTree = "<group>"; };
-		235C3CE52D10817D00AB35AE /* IdentityFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityFormViewModel.swift; sourceTree = "<group>"; };
+		235C3CE32D10817D00AB35AE /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
+		235C3CE42D10817D00AB35AE /* FormInputData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormInputData.swift; sourceTree = "<group>"; };
+		235C3CE52D10817D00AB35AE /* FormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormViewModel.swift; sourceTree = "<group>"; };
 		235C3CE72D10817D00AB35AE /* CredentialsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsView.swift; sourceTree = "<group>"; };
 		235C3CF02D10819400AB35AE /* UIScrollView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extension.swift"; sourceTree = "<group>"; };
 		23B911012CC00EB600FD41EF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -284,21 +284,21 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
-		235C3CE62D10817D00AB35AE /* Identity Configuration Form */ = {
+		235C3CE62D10817D00AB35AE /* Form */ = {
 			isa = PBXGroup;
 			children = (
-				235C3CE32D10817D00AB35AE /* IdentityForm.swift */,
-				235C3CE42D10817D00AB35AE /* IdentityFormInput.swift */,
-				235C3CE52D10817D00AB35AE /* IdentityFormViewModel.swift */,
+				235C3CE32D10817D00AB35AE /* FormView.swift */,
+				235C3CE42D10817D00AB35AE /* FormInputData.swift */,
+				235C3CE52D10817D00AB35AE /* FormViewModel.swift */,
 			);
-			path = "Identity Configuration Form";
+			path = Form;
 			sourceTree = "<group>";
 		};
 		235C3CE82D10817D00AB35AE /* Credentials View */ = {
 			isa = PBXGroup;
 			children = (
 				235C3CE22D10817D00AB35AE /* Components */,
-				235C3CE62D10817D00AB35AE /* Identity Configuration Form */,
+				235C3CE62D10817D00AB35AE /* Form */,
 				235C3CE72D10817D00AB35AE /* CredentialsView.swift */,
 			);
 			path = "Credentials View";
@@ -470,13 +470,13 @@
 				235C3CF82D10831500AB35AE /* DittoServiceError.swift in Sources */,
 				235C3CF92D10831500AB35AE /* DittoService.swift in Sources */,
 				235C3CFA2D10831500AB35AE /* DittoService+PersistenceDirectory.swift in Sources */,
-				235C3CE92D10817D00AB35AE /* IdentityFormInput.swift in Sources */,
+				235C3CE92D10817D00AB35AE /* FormInputData.swift in Sources */,
 				235C3CEA2D10817D00AB35AE /* IdentityFormInputView.swift in Sources */,
 				23DCC4062D1186C0008E92B6 /* CredentialsService.swift in Sources */,
 				235C3CEB2D10817D00AB35AE /* CredentialsView.swift in Sources */,
 				235C3CF12D10819400AB35AE /* UIScrollView+Extension.swift in Sources */,
-				235C3CEC2D10817D00AB35AE /* IdentityFormViewModel.swift in Sources */,
-				235C3CED2D10817D00AB35AE /* IdentityForm.swift in Sources */,
+				235C3CEC2D10817D00AB35AE /* FormViewModel.swift in Sources */,
+				235C3CED2D10817D00AB35AE /* FormView.swift in Sources */,
 				235C3CEE2D10817D00AB35AE /* IdentityFormTextField.swift in Sources */,
 				235C3CEF2D10817D00AB35AE /* ClearableTextField.swift in Sources */,
 				235C3CF52D10831000AB35AE /* KeychainService.swift in Sources */,

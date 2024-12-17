@@ -1,5 +1,5 @@
 //
-//  IdentityFormViewModel.swift
+//  FormViewModel.swift
 //
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
@@ -7,7 +7,7 @@
 import DittoSwift
 import SwiftUI
 
-class IdentityFormViewModel: ObservableObject {
+class FormViewModel: ObservableObject {
     // Form fields grouped into a struct
     @Published var formInput: IdentityFormInput
 

@@ -11,7 +11,7 @@ struct CredentialsView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var dittoService = DittoService.shared
 
-    @StateObject private var viewModel = IdentityFormViewModel(
+    @StateObject private var viewModel = FormViewModel(
         credentialsService: CredentialsService.shared,
         dittoService: DittoService.shared
     )
@@ -61,7 +61,7 @@ struct CredentialsView: View {
     /// form for the user to input parameters to create a configuration and apply it
     @ViewBuilder
     private var formView: some View {
-        IdentityForm(viewModel: viewModel)
+        FormView(viewModel: viewModel)
             .toolbar {
                 ToolbarButtons
             }

@@ -1,5 +1,5 @@
 // 
-//  IdentityFormInput.swift
+//  FormInputData.swift
 //
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
@@ -8,12 +8,12 @@ import SwiftUI
 import DittoSwift
 
 
-/// Represents the user input data for configuring a Ditto identity.
+/// Represents user input data required to configure and validate a Ditto identity.
 ///
 /// This structure collects all the necessary fields required to create and validate
 /// a `DittoIdentity` configuration. The `validate()` method ensures the integrity
 /// of the input data based on the selected identity type.
-struct IdentityFormInput {
+struct FormInputData {
     
     /// The selected type of identity for Ditto.
     var identityType: DittoIdentity.IdentityType = .onlinePlayground
