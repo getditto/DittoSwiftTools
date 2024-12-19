@@ -1,12 +1,13 @@
 {
+  "originHash" : "94264eae0e137f69f5c96ceeed970cb1eb9add178c309082c19795b2d47b774e",
   "pins" : [
     {
       "identity" : "dittopresenceviewer",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getditto/DittoPresenceViewer.git",
       "state" : {
-        "branch" : "BP/reset",
-        "revision" : "643ce32441378972eaa9a21a1af7c0c398b2880b"
+        "revision" : "1f1f912fe7e526356bc271b9c75c411c3e4341f4",
+        "version" : "1.0.0"
       }
     },
     {
@@ -28,5 +29,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
