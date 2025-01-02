@@ -50,7 +50,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.8.0"),
-        .package(url: "https://github.com/getditto/DittoPresenceViewer.git", from: "1.0.0"),
+        .package(url: "https://github.com/getditto/DittoPresenceViewer.git", from: "1.0.1"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
