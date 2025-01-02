@@ -62,16 +62,30 @@ struct DiskUsageState {
     }
 }
 
+extension DiskUsageState: Equatable {
+    static var defaultState: DiskUsageState {
+        DiskUsageState(
+            rootPath: "",
+            totalSizeInBytes: 0,
+            totalSize: "0 bytes",
+            children: [],
+            lastUpdated: DiskUsageViewModel.dateFormatter.string(from: Date()),
+            unhealthySizeInBytes: DittoDiskUsageConstants.fiveHundredMegabytesInBytes
+        )
+    }
+}
+
 public class DiskUsageViewModel: ObservableObject {
-
-    @Published var diskUsage: DiskUsageState?
-    var cancellable: Cancellable?
-
-    /// The size over which disk usage is considered unhealthy when used as a `HealthMetric` with the heartbeat tool (this only considers `ditto_store` and `ditto_replication`). Defaults to 500MB
-    public var unhealthySizeInBytes: Int = DittoDiskUsageConstants.fiveHundredMegabytesInBytes
+    @Published var diskUsage: DiskUsageState? = DiskUsageState.defaultState
+    
+    /// The size over which disk usage is considered unhealthy when used as a `HealthMetric` with the heartbeat tool (this only considers `ditto_store` 
+    /// and `ditto_replication`). Defaults to 500MB
+    public var unhealthySizeInBytes: Int { DittoDiskUsageConstants.fiveHundredMegabytesInBytes }
 
     /// Convenience property for Ditto instance.
-    private var ditto: Ditto
+    var ditto: Ditto
+
+    var cancellable: Cancellable?
 
     /// Formats file sizes like:
     /// - 248 bytes
@@ -100,7 +114,8 @@ public class DiskUsageViewModel: ObservableObject {
         self.ditto = ditto
         cancellable = ditto.diskUsage
             .diskUsagePublisher()
-            .map { diskUsage in
+            .map { [weak self] diskUsage in
+                guard let self = self else { return nil }
                 let children = diskUsage.childItems
                     .map { (child: DiskUsageItem) in
                         DiskUsage(
@@ -120,8 +135,11 @@ public class DiskUsageViewModel: ObservableObject {
                     unhealthySizeInBytes: self.unhealthySizeInBytes
                 )
             }
+            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .assign(to: \.diskUsage, on: self)
+            .sink { [weak self] diskUsage in
+                self?.diskUsage = diskUsage
+            }
     }
 }
 
@@ -131,6 +149,10 @@ extension DiskUsageViewModel: HealthMetricProvider {
     }
     
     public func getCurrentState() -> DittoHealthMetrics.HealthMetric {
-        diskUsage?.healthMetric ?? HealthMetric(isHealthy: true, details: [DittoDiskUsageConstants.healthMetricName: DittoDiskUsageConstants.noData])
+        diskUsage?.healthMetric ?? 
+        HealthMetric(
+            isHealthy: true, 
+            details: [DittoDiskUsageConstants.healthMetricName: DittoDiskUsageConstants.noData]
+        )
     }
 }
