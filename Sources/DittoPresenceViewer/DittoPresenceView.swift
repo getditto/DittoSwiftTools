@@ -36,13 +36,13 @@ public typealias PlatformViewController = NSViewController
  let ditto: Ditto
 
  func showPresence() {
- let presenceView = DittoPresenceView(ditto: ditto)
- // maybe add it to an existing view
- self.view.addSubview(presenceView)
+     let presenceView = DittoPresenceView(ditto: ditto)
+     // maybe add it to an existing view
+     self.view.addSubview(presenceView)
 
- // or add it as a view controller
- let viewController = DittoPresenceView(ditto: ditto).viewController
- present(viewController: viewController, animated: true)
+     // or add it as a view controller
+     let viewController = DittoPresenceView(ditto: ditto).viewController
+     present(viewController: viewController, animated: true)
  }
  ```
  */
@@ -68,7 +68,7 @@ public class DittoPresenceView: PlatformView {
             }
         }
     }
-
+    
     deinit {
         stopObservingPresence()
         webView.removeFromSuperview()
@@ -114,7 +114,7 @@ public class DittoPresenceView: PlatformView {
      Initializes a new `DittoPresenceView`.
 
      - Parameter ditto: A reference to the `Ditto` which you would like
-     to visualize presence status for.
+       to visualize presence status for.
      */
     public convenience init(ditto: Ditto) {
         self.init(frame: .zero)
@@ -131,8 +131,8 @@ public class DittoPresenceView: PlatformView {
         super.init(coder: coder)
         setup()
     }
-
-
+    
+    
     // MARK: Private Functions
 
     private func setup() {
@@ -168,15 +168,15 @@ public class DittoPresenceView: PlatformView {
                 }
             }
         }
-        //        // Comment out the ditto observer above and toggle following to test presence with
-        //        // fake data. Several different mock drivers exist:
-        //        // - runFrequentConnectionChanges()
-        //        // - runFrequentRSSIChanges()
-        //        // - runLargeMesh()
-        //        // - runMassiveMesh()
-        //        MockData.runLargeMesh() { [weak self] json in
-        //            self?.webView.updateNetwork(json: json, completionHandler: nil)
-        //        }
+//        // Comment out the ditto observer above and toggle following to test presence with
+//        // fake data. Several different mock drivers exist:
+//        // - runFrequentConnectionChanges()
+//        // - runFrequentRSSIChanges()
+//        // - runLargeMesh()
+//        // - runMassiveMesh()
+//        MockData.runLargeMesh() { [weak self] json in
+//            self?.webView.updateNetwork(json: json, completionHandler: nil)
+//        }
     }
 
     private func stopObservingPresence() {
