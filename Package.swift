@@ -14,6 +14,10 @@ let package = Package(
             targets: ["DittoHealthMetrics"]
         ),
         .library(
+            name: "DittoPresenceViewer",
+            targets: ["DittoPresenceViewer"]
+        ),
+        .library(
             name: "DittoDataBrowser",
              targets: ["DittoDataBrowser"]
         ),
@@ -50,11 +54,18 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.8.0"),
-        .package(url: "https://github.com/getditto/DittoPresenceViewer.git", from: "1.0.1"),
+        .package(url: "https://github.com/bplattenburg/DittoPresenceViewerCore.git", branch: "BP/box"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
         .target(name: "DittoHealthMetrics"),
+        .target(
+            name: "DittoPresenceViewer",
+            dependencies: [
+                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
+                .product(name: "DittoPresenceViewerCore", package: "DittoPresenceViewerCore"),
+            ]
+        ),
         .target(
             name: "DittoDataBrowser",
             dependencies: [
@@ -112,7 +123,7 @@ let package = Package(
             name: "DittoAllToolsMenu",
             dependencies: [
                 "DittoHealthMetrics",
-                .product(name: "DittoPresenceViewer", package: "DittoPresenceViewer"),
+                "DittoPresenceViewer",
                 "DittoDataBrowser",
                 "DittoExportLogs",
                 "DittoDiskUsage",
