@@ -36,13 +36,13 @@ public typealias PlatformViewController = NSViewController
  let ditto: Ditto
 
  func showPresence() {
-     let presenceView = DittoPresenceView(ditto: ditto)
-     // maybe add it to an existing view
-     self.view.addSubview(presenceView)
+      let presenceView = DittoPresenceView(ditto: ditto)
+      // maybe add it to an existing view
+      self.view.addSubview(presenceView)
 
-     // or add it as a view controller
-     let viewController = DittoPresenceView(ditto: ditto).viewController
-     present(viewController: viewController, animated: true)
+      // or add it as a view controller
+      let viewController = DittoPresenceView(ditto: ditto).viewController
+      present(viewController: viewController, animated: true)
  }
  ```
  */
