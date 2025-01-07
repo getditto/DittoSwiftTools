@@ -1,19 +1,13 @@
-# DittoSwiftTools  
- <img align="left" src="Img/Ditto_logo.png" alt="Ditto Logo" width="150">  
- <br />  
- <br />  
- <br />  
- <br />  
- <br />  
+ # DittoSwiftTools
  
 DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers in a graphic viewer and 
 in a list view, export Ditto data directory and debug logs, browse collections/documents, and see 
 Ditto's disk usage.
 
-Issues and pull requests welcome!
+For support, please contact Ditto Support (<support@ditto.live>).
 
 ## Requirements
-* iOS 15.0+
+* iOS 14.0+ or tvOS 15.0+
 * Swift 5.0+
 
 ## Installation
@@ -238,25 +232,28 @@ Or present it as a sheet:
 }
 ```
         
-#### Export Logs
-
-The ExportLogs tool allows you to export a file of the logs from your application as a zip file.
+#### Export Logs  
+Allows you to export a file of the logs from your applcation as a zip file.  
 
  <img src="/Img/exportLogs.png" alt="Export Logs Image" width="300">  
 
-To integrate ExportLogs, add it to your SwiftUI or UIKit app. It is recommended to call ExportLogs from within a [sheet](https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:)).
+First, make sure the "DittoExportLogs" is added to your Target. Then, use `import DittoExportLogs` 
+to import the Export Logs.
 
-#### SwiftUI  
+**SwiftUI**  
+
+Use `ExportLogs()` to export the logs. It is recommended to call `ExportLogs` from within a [sheet](https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:)).  
 
 ```
 .sheet(isPresented: $isPresented) {
     ExportLogs()
 }
-```
+```  
 
-#### UIKit
+**UIKit**  
 
-Pass `ExportLogs()` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) to present it as a view controller:  
+Pass `ExportLogs()` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
+which will return a view controller you can use to present.  
 
 ```
 let vc = UIHostingController(rootView: ExportLogs())

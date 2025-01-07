@@ -11,19 +11,13 @@ import Combine
 import DittoExportData
 
 public struct DittoDiskUsageView: View {
-
     @Environment(\.presentationMode) var presentationMode
-
-    // Export Ditto Directory
-    @State private var presentExportDataShare: Bool = false
-    @State private var presentExportDataAlert: Bool = false
-
-    var ditto: Ditto
-    @ObservedObject var viewModel: DiskUsageViewModel
+    @StateObject private var viewModel: DiskUsageViewModel
+    @State private var presentExportDataAlert = false
+    @State private var presentExportDataShare = false    
 
     public init(ditto: Ditto) {
-        self.ditto = ditto
-        self.viewModel = DiskUsageViewModel(ditto: ditto)
+        _viewModel = StateObject(wrappedValue: DiskUsageViewModel(ditto: ditto))
     }
 
     public var body: some View {
@@ -80,27 +74,28 @@ public struct DittoDiskUsageView: View {
                 }
                 .sheet(isPresented: $presentExportDataShare) {
                     #if !os(tvOS)
-                    ExportData(ditto: self.ditto)
+                    ExportData(ditto: viewModel.ditto)
+                    #endif
+                }
+                .alert(isPresented: $presentExportDataAlert) {
+                    #if os(tvOS)
+                    Alert(title: Text("Export Ditto Directory"),
+                          message: Text("Exporting the Ditto Directory on tvOS does not work at this time."))
+                    #else
+                    Alert(title: Text("Export Ditto Directory"),
+                          message:
+                            Text("Compressing the data may take a while."),
+                          primaryButton: .default(
+                            Text("Export"),
+                            action: {
+                                presentExportDataShare = true
+                            }),
+                          secondaryButton: .cancel()
+                    )
                     #endif
                 }
             }
-            .alert(isPresented: $presentExportDataAlert) {
-                #if os(tvOS)
-                Alert(title: Text("Export Ditto Directory"),
-                      message: Text("Exporting the Ditto Directory on tvOS does not work at this time."))
-                #else
-                Alert(title: Text("Export Ditto Directory"),
-                      message:
-                        Text("Compressing the data may take a while."),
-                      primaryButton: .default(
-                        Text("Export"),
-                        action: {
-                            presentExportDataShare = true
-                        }),
-                      secondaryButton: .cancel()
-                )
-                #endif
-            }
+
             Section {
                 Button {
                     presentationMode.wrappedValue.dismiss()

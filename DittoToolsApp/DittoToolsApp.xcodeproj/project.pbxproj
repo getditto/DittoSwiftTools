@@ -91,6 +91,7 @@
 		235C3CF02D10819400AB35AE /* UIScrollView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extension.swift"; sourceTree = "<group>"; };
 		23B911012CC00EB600FD41EF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		23DCC4052D1186C0008E92B6 /* CredentialsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsService.swift; sourceTree = "<group>"; };
+		A4DA69372D15ED96000A6DCA /* DittoToolsApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DittoToolsApp.entitlements; sourceTree = "<group>"; };
 		F87DC47A2988581000899FEC /* DittoSwiftTools */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DittoSwiftTools; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -157,6 +158,7 @@
 		01F34C9328A2EAE3003BDF17 /* DittoToolsApp */ = {
 			isa = PBXGroup;
 			children = (
+                A4DA69372D15ED96000A6DCA /* DittoToolsApp.entitlements */,
 				235C3CD62D10810100AB35AE /* Services */,
 				01F34CE428A30798003BDF17 /* Model */,
 				01F34D0028A310A5003BDF17 /* Views */,
@@ -632,6 +634,7 @@
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=appletv*]" = "tvOS Assets";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+                CODE_SIGN_ENTITLEMENTS = DittoToolsApp/DittoToolsApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "DittoToolsApp/Preview\\ Content";
@@ -658,7 +661,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = dittolive.DittoToolsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3";
@@ -673,6 +676,7 @@
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=appletv*]" = "tvOS Assets";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+                CODE_SIGN_ENTITLEMENTS = DittoToolsApp/DittoToolsApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "DittoToolsApp/Preview\\ Content";
@@ -699,7 +703,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = dittolive.DittoToolsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3";
