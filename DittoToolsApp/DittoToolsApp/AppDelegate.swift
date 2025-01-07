@@ -1,7 +1,7 @@
 //
 //  AppDelegate.swift
 //
-//  Copyright © 2024 DittoLive Incorporated. All rights reserved.
+//  Copyright © 2025 DittoLive Incorporated. All rights reserved.
 //
 
 import SwiftUI

@@ -21,15 +21,13 @@
 		146ED3F629C4F13100A56229 /* DittoPeersList in Frameworks */ = {isa = PBXBuildFile; productRef = 146ED3F529C4F13100A56229 /* DittoPeersList */; };
 		14B7342C2A296A4E0081CEF2 /* DittoExportLogs in Frameworks */ = {isa = PBXBuildFile; productRef = 14B7342B2A296A4E0081CEF2 /* DittoExportLogs */; };
 		14E35DB12B7F345C0018EC3B /* DittoHeartbeat in Frameworks */ = {isa = PBXBuildFile; productRef = 14E35DB02B7F345C0018EC3B /* DittoHeartbeat */; };
+		231250CE2D2D892B00EFB3C4 /* FormState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231250CD2D2D892B00EFB3C4 /* FormState.swift */; };
+		231250D02D2DAEA200EFB3C4 /* FormField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231250CF2D2DAEA200EFB3C4 /* FormField.swift */; };
 		235C3CDC2D10815000AB35AE /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CDA2D10815000AB35AE /* MenuView.swift */; };
 		235C3CDE2D10817300AB35AE /* SyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CDD2D10817300AB35AE /* SyncButton.swift */; };
-		235C3CE92D10817D00AB35AE /* FormInputData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE42D10817D00AB35AE /* FormInputData.swift */; };
-		235C3CEA2D10817D00AB35AE /* IdentityFormInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE02D10817D00AB35AE /* IdentityFormInputView.swift */; };
 		235C3CEB2D10817D00AB35AE /* CredentialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE72D10817D00AB35AE /* CredentialsView.swift */; };
 		235C3CEC2D10817D00AB35AE /* FormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE52D10817D00AB35AE /* FormViewModel.swift */; };
 		235C3CED2D10817D00AB35AE /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE32D10817D00AB35AE /* FormView.swift */; };
-		235C3CEE2D10817D00AB35AE /* IdentityFormTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE12D10817D00AB35AE /* IdentityFormTextField.swift */; };
-		235C3CEF2D10817D00AB35AE /* ClearableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CDF2D10817D00AB35AE /* ClearableTextField.swift */; };
 		235C3CF12D10819400AB35AE /* UIScrollView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CF02D10819400AB35AE /* UIScrollView+Extension.swift */; };
 		235C3CF22D10830600AB35AE /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD82D10813300AB35AE /* Credentials.swift */; };
 		235C3CF32D10830600AB35AE /* DittoIdentity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD72D10813300AB35AE /* DittoIdentity+Extension.swift */; };
@@ -76,6 +74,8 @@
 		01F34CE028A30781003BDF17 /* MainThreadMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainThreadMonitor.swift; sourceTree = "<group>"; };
 		01F34CE128A30781003BDF17 /* DiagnosticsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiagnosticsManager.swift; sourceTree = "<group>"; };
 		01F34D0828A31644003BDF17 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		231250CD2D2D892B00EFB3C4 /* FormState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormState.swift; sourceTree = "<group>"; };
+		231250CF2D2DAEA200EFB3C4 /* FormField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormField.swift; sourceTree = "<group>"; };
 		235C3CCF2D10810100AB35AE /* DittoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoService.swift; sourceTree = "<group>"; };
 		235C3CD02D10810100AB35AE /* DittoService+PersistenceDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DittoService+PersistenceDirectory.swift"; sourceTree = "<group>"; };
 		235C3CD12D10810100AB35AE /* DittoServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoServiceError.swift; sourceTree = "<group>"; };
@@ -85,11 +85,7 @@
 		235C3CD82D10813300AB35AE /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		235C3CDA2D10815000AB35AE /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		235C3CDD2D10817300AB35AE /* SyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncButton.swift; sourceTree = "<group>"; };
-		235C3CDF2D10817D00AB35AE /* ClearableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearableTextField.swift; sourceTree = "<group>"; };
-		235C3CE02D10817D00AB35AE /* IdentityFormInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityFormInputView.swift; sourceTree = "<group>"; };
-		235C3CE12D10817D00AB35AE /* IdentityFormTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityFormTextField.swift; sourceTree = "<group>"; };
 		235C3CE32D10817D00AB35AE /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
-		235C3CE42D10817D00AB35AE /* FormInputData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormInputData.swift; sourceTree = "<group>"; };
 		235C3CE52D10817D00AB35AE /* FormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormViewModel.swift; sourceTree = "<group>"; };
 		235C3CE72D10817D00AB35AE /* CredentialsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsView.swift; sourceTree = "<group>"; };
 		235C3CF02D10819400AB35AE /* UIScrollView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extension.swift"; sourceTree = "<group>"; };
@@ -274,9 +270,7 @@
 		235C3CE22D10817D00AB35AE /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				235C3CDF2D10817D00AB35AE /* ClearableTextField.swift */,
-				235C3CE02D10817D00AB35AE /* IdentityFormInputView.swift */,
-				235C3CE12D10817D00AB35AE /* IdentityFormTextField.swift */,
+				231250CF2D2DAEA200EFB3C4 /* FormField.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -285,7 +279,7 @@
 			isa = PBXGroup;
 			children = (
 				235C3CE32D10817D00AB35AE /* FormView.swift */,
-				235C3CE42D10817D00AB35AE /* FormInputData.swift */,
+				231250CD2D2D892B00EFB3C4 /* FormState.swift */,
 				235C3CE52D10817D00AB35AE /* FormViewModel.swift */,
 			);
 			path = Form;
@@ -294,9 +288,9 @@
 		235C3CE82D10817D00AB35AE /* Credentials View */ = {
 			isa = PBXGroup;
 			children = (
+				235C3CE72D10817D00AB35AE /* CredentialsView.swift */,
 				235C3CE22D10817D00AB35AE /* Components */,
 				235C3CE62D10817D00AB35AE /* Form */,
-				235C3CE72D10817D00AB35AE /* CredentialsView.swift */,
 			);
 			path = "Credentials View";
 			sourceTree = "<group>";
@@ -466,15 +460,13 @@
 				235C3CF82D10831500AB35AE /* DittoServiceError.swift in Sources */,
 				235C3CF92D10831500AB35AE /* DittoService.swift in Sources */,
 				235C3CFA2D10831500AB35AE /* DittoService+PersistenceDirectory.swift in Sources */,
-				235C3CE92D10817D00AB35AE /* FormInputData.swift in Sources */,
-				235C3CEA2D10817D00AB35AE /* IdentityFormInputView.swift in Sources */,
 				23DCC4062D1186C0008E92B6 /* CredentialsService.swift in Sources */,
+				231250D02D2DAEA200EFB3C4 /* FormField.swift in Sources */,
 				235C3CEB2D10817D00AB35AE /* CredentialsView.swift in Sources */,
 				235C3CF12D10819400AB35AE /* UIScrollView+Extension.swift in Sources */,
 				235C3CEC2D10817D00AB35AE /* FormViewModel.swift in Sources */,
+				231250CE2D2D892B00EFB3C4 /* FormState.swift in Sources */,
 				235C3CED2D10817D00AB35AE /* FormView.swift in Sources */,
-				235C3CEE2D10817D00AB35AE /* IdentityFormTextField.swift in Sources */,
-				235C3CEF2D10817D00AB35AE /* ClearableTextField.swift in Sources */,
 				235C3CF52D10831000AB35AE /* KeychainService.swift in Sources */,
 				235C3CF72D10831000AB35AE /* AuthenticationDelegate.swift in Sources */,
 			);

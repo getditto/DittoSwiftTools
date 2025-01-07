@@ -1,156 +1,184 @@
 //
 //  FormViewModel.swift
 //
-//  Copyright © 2024 DittoLive Incorporated. All rights reserved.
+//  Copyright © 2025 DittoLive Incorporated. All rights reserved.
 //
 
 import DittoSwift
 import SwiftUI
 
+/// Manages the state and logic for the identity form.
+///
+/// `FormViewModel` is responsible for:
+/// - Populating the form with existing credentials.
+/// - Validating and applying form data.
+/// - Clearing active credentials and managing error states.
 class FormViewModel: ObservableObject {
-    // Form fields grouped into a struct
-    @Published var formInput: FormInputData
 
-    // Validation errors for the form
+    /// Holds the current state of the form, including user inputs.
+    @Published var formState = FormState()
+
+    /// Tracks validation errors for the form.
     @Published var validationErrors: [String] = []
 
+    /// Service for managing credentials.
     private let credentialsService: CredentialsService
+
+    /// Service for interacting with Ditto.
     private let dittoService: DittoService
 
-    // Initializer that automatically adopts active configuration if available
+    // MARK: - Initializer
+
+    /// Initializes the view model and populates the form with active credentials, if available.
+    ///
+    /// - Parameters:
+    ///   - credentialsService: The service responsible for managing credentials.
+    ///   - dittoService: The service responsible for initializing and managing Ditto.
     init(credentialsService: CredentialsService, dittoService: DittoService) {
         self.credentialsService = credentialsService
         self.dittoService = dittoService
 
-        // Initialize formInput with default values
-        self.formInput = FormInputData()
-
-        // Check for an active configuration in the service
+        // Check for an active configuration
         if let credentials = credentialsService.activeCredentials {
-            populateFromCredentials(credentials)
+            populate(with: credentials)
         }
     }
 
-    /// Populate the ViewModel fields from an Credentials
-    private func populateFromCredentials(_ credentials: Credentials) {
-        formInput.identityType = credentials.identity.identityType
+    // MARK: - Public Methods
+
+    /// Validates and applies the form data to initialize Ditto.
+    ///
+    /// Throws an error if validation fails or Ditto initialization fails.
+    func apply() throws {
+        do {
+            let credentials = try createCredentials()
+            try dittoService.initializeDitto(with: credentials)
+            validationErrors = []
+        } catch {
+            handleError(error)
+            throw error
+        }
+    }
+
+    /// Checks if credentials can be cleared.
+    ///
+    /// - Returns: `true` if there are active credentials to clear; otherwise, `false`.
+    func canClearCredentials() -> Bool {
+        credentialsService.activeCredentials != nil
+    }
+
+    /// Clears the active credentials and resets the form state.
+    func clearCredentials() {
+        dittoService.destroyDittoInstance(clearingCredentials: true)
+        self.formState = FormState()
+        print("CredentialsView: Credentials cleared.")
+    }
+
+    // MARK: - Private Methods
+
+    /// Populates the form state with the given credentials.
+    ///
+    /// - Parameter credentials: The credentials to populate the form with.
+    private func populate(with credentials: Credentials) {
+        formState.identityType = credentials.identity.identityType
 
         switch credentials.identity {
         case .onlinePlayground(let appID, let token, let enableDittoCloudSync, let customAuthURL):
-            formInput.appID = appID
-            formInput.playgroundToken = token
-            formInput.enableDittoCloudSync = enableDittoCloudSync
-            formInput.customAuthURLString = customAuthURL?.absoluteString ?? ""
+            formState.appID = appID
+            formState.playgroundToken = token
+            formState.enableDittoCloudSync = enableDittoCloudSync
+            formState.customAuthURLString = customAuthURL?.absoluteString ?? ""
 
         case .onlineWithAuthentication(let appID, _, let enableDittoCloudSync, let customAuthURL):
-            formInput.appID = appID
-            formInput.enableDittoCloudSync = enableDittoCloudSync
-            formInput.customAuthURLString = customAuthURL?.absoluteString ?? ""
-            formInput.authProvider = credentials.authProvider ?? ""
-            formInput.authToken = credentials.authToken ?? ""
+            formState.appID = appID
+            formState.enableDittoCloudSync = enableDittoCloudSync
+            formState.customAuthURLString = customAuthURL?.absoluteString ?? ""
+            formState.authProvider = credentials.authProvider ?? ""
+            formState.authToken = credentials.authToken ?? ""
 
         case .offlinePlayground(let appID, let siteID):
-            formInput.appID = appID ?? ""
-            formInput.siteID = siteID ?? .zero
-            formInput.offlineLicenseToken = credentials.offlineLicenseToken ?? ""
+            formState.appID = appID ?? ""
+            formState.siteID = siteID ?? .zero
+            formState.offlineLicenseToken = credentials.offlineLicenseToken ?? ""
 
         case .sharedKey(let appID, let sharedKey, let siteID):
-            formInput.appID = appID
-            formInput.sharedKey = sharedKey
-            formInput.siteID = siteID ?? .zero
-            formInput.offlineLicenseToken = credentials.offlineLicenseToken ?? ""
+            formState.appID = appID
+            formState.sharedKey = sharedKey
+            formState.siteID = siteID ?? .zero
+            formState.offlineLicenseToken = credentials.offlineLicenseToken ?? ""
 
         case .manual(let certificateConfig):
-            formInput.certificateConfig = certificateConfig
+            formState.certificateConfig = certificateConfig
 
         @unknown default:
             fatalError("Encountered an unknown DittoIdentity case.")
         }
     }
 
-    /// Converts the current form data into an `Credentials` object.
+    /// Creates a `Credentials` object from the form state.
     ///
     /// This utility method generates an `Credentials` instance based on the values
     /// entered in the form. It creates the appropriate `DittoIdentity` based on the selected identity type,
     /// and adds any necessary supplementary credentials such as authentication tokens or offline license tokens.
+    ///
+    /// - Throws: `DittoServiceError.invalidCredentials` if validation fails or the identity type is unsupported.
     /// - Returns: A fully configured `Credentials` object.
     private func createCredentials() throws -> Credentials {
-
-        // Validate the form values before trying to create a Credentials object
-        let validationErrors = formInput.validate()
-        if let firstError = validationErrors.first {
-            throw DittoServiceError.invalidCredentials(firstError)
+        // Validate the form values before attempting creation
+        let validationErrors = formState.validate()
+        guard validationErrors.isEmpty else {
+            self.validationErrors = validationErrors
+            throw DittoServiceError.invalidCredentials("Validation failed: \(validationErrors.joined(separator: ", "))")
         }
 
+        // Map formInput data to a DittoIdentity
         let identity: DittoIdentity
-
-        // Create the appropriate DittoIdentity based on the form data
-        switch formInput.identityType {
+        switch formState.identityType {
         case .offlinePlayground:
             identity = .offlinePlayground(
-                appID: formInput.appID,
-                siteID: formInput.siteID
+                appID: formState.appID,
+                siteID: formState.siteID
             )
-
         case .onlineWithAuthentication:
             identity = .onlineWithAuthentication(
-                appID: formInput.appID,
+                appID: formState.appID,
                 authenticationDelegate: credentialsService.authenticationDelegate,
-                enableDittoCloudSync: formInput.enableDittoCloudSync,
-                customAuthURL: URL(string: formInput.customAuthURLString) ?? nil
+                enableDittoCloudSync: formState.enableDittoCloudSync,
+                customAuthURL: URL(string: formState.customAuthURLString) ?? nil
             )
-
         case .onlinePlayground:
             identity = .onlinePlayground(
-                appID: formInput.appID,
-                token: formInput.playgroundToken,
-                enableDittoCloudSync: formInput.enableDittoCloudSync,
-                customAuthURL: URL(string: formInput.customAuthURLString)
+                appID: formState.appID,
+                token: formState.playgroundToken,
+                enableDittoCloudSync: formState.enableDittoCloudSync,
+                customAuthURL: URL(string: formState.customAuthURLString)
             )
-
         case .sharedKey:
             identity = .sharedKey(
-                appID: formInput.appID,
-                sharedKey: formInput.sharedKey,
-                siteID: formInput.siteID
+                appID: formState.appID,
+                sharedKey: formState.sharedKey,
+                siteID: formState.siteID
             )
-
         case .manual:
-            identity = .manual(certificateConfig: formInput.certificateConfig)
-
+            identity = .manual(certificateConfig: formState.certificateConfig)
         @unknown default:
             throw DittoServiceError.invalidCredentials("Unsupported or unknown Ditto Identity type encountered.")
         }
 
-        // Create Credentials
-        let credentials = Credentials(identity: identity,
-                                      authProvider: formInput.authProvider,
-                                      authToken: formInput.authToken,
-                                      offlineLicenseToken: formInput.offlineLicenseToken)
-
-        // Return the fully validated Credentials object
-        return credentials
+        // Create and return Credentials
+        return Credentials(
+            identity: identity,
+            authProvider: formState.authProvider,
+            authToken: formState.authToken,
+            offlineLicenseToken: formState.offlineLicenseToken)
     }
 
-    func canClearCredentials() -> Bool {
-        credentialsService.activeCredentials != nil
-    }
-
-    /// Handles the "Apply" action by validating and persisting the form data
-    func apply() throws {
-        do {
-            // Convert to Credentials
-            let credentials = try createCredentials()
-
-            // Initialize Ditto
-            try dittoService.initializeDitto(with: credentials)
-
-            // Clear validation errors on success
-            validationErrors = []
-
-        } catch let error as DittoServiceError {
-            // Handle DittoServiceError cases
-            switch error {
+    /// Handles errors during validation or Ditto initialization.
+    ///
+    /// - Parameter error: The error to process and store in `validationErrors`.
+    private func handleError(_ error: Error) {
+        if let dittoError = error as? DittoServiceError {
+            switch dittoError {
             case .invalidCredentials(let message):
                 validationErrors = ["Invalid credentials: \(message)"]
             case .initializationFailed(let reason):
@@ -158,19 +186,10 @@ class FormViewModel: ObservableObject {
             case .syncFailed(let reason):
                 validationErrors = ["Failed to start the sync engine: \(reason)"]
             default:
-                break
+                validationErrors = ["An unknown error occurred."]
             }
-            throw error
-        } catch {
-            // Handle unexpected errors
+        } else {
             validationErrors = ["An unexpected error occurred: \(error.localizedDescription)"]
-            throw error
         }
-    }
-
-    func clearCredentials() {
-        dittoService.destroyDittoInstance(clearingCredentials: true)
-        self.formInput = FormInputData()
-        print("CredentialsView: Credentials cleared.")
     }
 }
