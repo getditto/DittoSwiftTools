@@ -17,9 +17,3 @@ struct LoggingDetailsViewer: View {
         LoggingDetailsView(ditto: ditto)
     }
 }
-
-//struct LoggingDetailsViewer_Previews: PreviewProvider {
-//    static var previews: some View {
-//        LoggingDetailsViewer(dittoManager: DittoManager.shared)
-//    }
-//}
