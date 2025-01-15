@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Back~tv-app-store@1280w.png",
+      "idiom" : "tv"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

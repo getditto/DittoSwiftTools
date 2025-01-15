@@ -6,6 +6,7 @@ let package = Package(
     name: "DittoSwiftTools",
     platforms: [
         .iOS(.v14),
+        .macCatalyst(.v14),
         .tvOS(.v15),
     ],
     products: [
@@ -134,6 +135,5 @@ let package = Package(
                 "DittoPermissionsHealth"
             ]
         )
-
     ]
 )
