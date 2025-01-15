@@ -189,63 +189,48 @@ let vc = UIHostingController(rootView: DataBrowser(ditto: DittoManager.shared.di
 present(vc, animated: true)
 ```  
 
-### 5. Logging and Export Logs  
+### 5. Logging and Export Logs
 #### Logging Level  
-Allows you to choose Ditto logging level at runtime.  
+
+The LoggingDetailsView allows you to choose the Ditto logging level at runtime and toggle whether logging is enabled. Changes made through the LoggingDetailsView are automatically persisted using UserDefaults, ensuring the selected log level and enabled status are restored when the app restarts.
 
  <img src="/Img/loggingLevel.png" alt="Logging Level Image" width="300">  
 
-**SwiftUI + Combine**
 
-In your class conforming to the `Observable Object` protocol, e.g., DittoManager, create a published 
-variable to store the selected logging option. The `LoggingOptions` enum is an extension on `DittoLogger`, 
-defined in the DittoExportLogs module.  
-```
-import Combine  
-import DittoExportLogs  
-import DittoSwift  
-import Foundation  
+#### SwiftUI
 
-class DittoManager: ObservableObject {  
-    @Published var loggingOption: DittoLogger.LoggingOptions  
-    private var cancellables = Set<AnyCancellable>()  
-      
-    init() {  
-        self.loggingOption = DittoLogger.LoggingOptions.error  // initial level value
-          
-        // subscribe to loggingOption changes  
-        // make sure log level is set _before_ starting ditto  
-        $loggingOption  
-            .sink { [weak self] logOption in  
-                switch logOption {  
-                case .disabled:  
-                    DittoLogger.enabled = false  
-                default:  
-                    DittoLogger.enabled = true  
-                    DittoLogger.minimumLogLevel = DittoLogLevel(rawValue: logOption.rawValue)!  
-                }
-            }
-            .store(in: &cancellables)
- 
-        ... 
+To integrate the LoggingDetailsView into your app, simply pass your Ditto instance to the view. The picker will display the available log levels, and the toggle will allow enabling or disabling logging.
+
 ```
-Create a SwiftUI view struct as a wrapper view to use as a subview or in a list, initializing with 
-your `Observable Object` class instance. In the body, include the `LoggingDetailsView`, initializing 
-with the published property. The `LoggingDetailsView` binds the published property to the logging 
-level options picker, and selection changes are reflected back to your subscriber.   
-```  
 import DittoExportLogs
 import DittoSwift
 import SwiftUI
 
 struct LoggingDetailsViewer: View {
-    @ObservedObject var dittoManager = DittoManager.shared
-    
     var body: some View {
-        LoggingDetailsView(loggingOption: $dittoManager.loggingOption)
+        LoggingDetailsView(ditto: <ditto instance>)
     }
-}        
-```  
+}
+```
+
+You can embed the LoggingDetailsView into your app’s navigation hierarchy or display it as a modal view. For example:
+
+```
+NavigationView {
+    VStack {
+        LoggingDetailsView()
+    }
+    .navigationTitle("Logging Settings")
+}
+```
+
+Or present it as a sheet:
+
+```
+.sheet(isPresented: $isPresented) {
+    LoggingDetailsView()
+}
+```
         
 #### Export Logs  
 Allows you to export a file of the logs from your applcation as a zip file.  
@@ -274,7 +259,7 @@ which will return a view controller you can use to present.
 let vc = UIHostingController(rootView: ExportLogs())
 
 present(vc, animated: true)
-```  
+```
                                                          
 
 ### 6. Export Data Directory

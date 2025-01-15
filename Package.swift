@@ -141,6 +141,5 @@ let package = Package(
                 "DittoPermissionsHealth"
             ]
         )
-
     ]
 )
