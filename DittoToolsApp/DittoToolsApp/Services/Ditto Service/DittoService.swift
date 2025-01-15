@@ -131,12 +131,6 @@ public class DittoService: ObservableObject {
         } catch {
             throw DittoServiceError.initializationFailed("Unexpected error: \(error.localizedDescription)")
         }
-
-        #warning("TODO: Add diagnostics and live query setup")
-        //        DispatchQueue.main.async {
-        //            // Configure diagnostics if needed
-        //            // DiagnosticsManager.shared.isEnabled = AppSettings.shared.diagnosticLogsEnabled
-        //        }
     }
 
     /// Clears the current Ditto instance and optionally removes the active credentials.

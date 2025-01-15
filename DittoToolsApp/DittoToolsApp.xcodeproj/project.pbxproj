@@ -71,8 +71,6 @@
 		01F34CAF28A2EAE5003BDF17 /* DittoToolsAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoToolsAppUITests.swift; sourceTree = "<group>"; };
 		01F34CB128A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoToolsAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		01F34CC328A2EC4A003BDF17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		01F34CE028A30781003BDF17 /* MainThreadMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainThreadMonitor.swift; sourceTree = "<group>"; };
-		01F34CE128A30781003BDF17 /* DiagnosticsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiagnosticsManager.swift; sourceTree = "<group>"; };
 		01F34D0828A31644003BDF17 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		231250CD2D2D892B00EFB3C4 /* FormState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormState.swift; sourceTree = "<group>"; };
 		231250CF2D2DAEA200EFB3C4 /* FormField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormField.swift; sourceTree = "<group>"; };
@@ -158,11 +156,10 @@
 		01F34C9328A2EAE3003BDF17 /* DittoToolsApp */ = {
 			isa = PBXGroup;
 			children = (
-                A4DA69372D15ED96000A6DCA /* DittoToolsApp.entitlements */,
+				A4DA69372D15ED96000A6DCA /* DittoToolsApp.entitlements */,
 				235C3CD62D10810100AB35AE /* Services */,
 				01F34CE428A30798003BDF17 /* Model */,
 				01F34D0028A310A5003BDF17 /* Views */,
-				01F34CDF28A3076D003BDF17 /* Debug Tools */,
 				01F34CC328A2EC4A003BDF17 /* Info.plist */,
 				01F34D0828A31644003BDF17 /* AppDelegate.swift */,
 				23B911012CC00EB600FD41EF /* Assets.xcassets */,
@@ -194,15 +191,6 @@
 				01F34CB128A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift */,
 			);
 			path = DittoToolsAppUITests;
-			sourceTree = "<group>";
-		};
-		01F34CDF28A3076D003BDF17 /* Debug Tools */ = {
-			isa = PBXGroup;
-			children = (
-				01F34CE128A30781003BDF17 /* DiagnosticsManager.swift */,
-				01F34CE028A30781003BDF17 /* MainThreadMonitor.swift */,
-			);
-			path = "Debug Tools";
 			sourceTree = "<group>";
 		};
 		01F34CE428A30798003BDF17 /* Model */ = {
@@ -383,7 +371,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1340;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					01F34C9028A2EAE3003BDF17 = {
 						CreatedOnToolsVersion = 13.4.1;
@@ -634,7 +622,7 @@
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=appletv*]" = "tvOS Assets";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-                CODE_SIGN_ENTITLEMENTS = DittoToolsApp/DittoToolsApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = DittoToolsApp/DittoToolsApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "DittoToolsApp/Preview\\ Content";
@@ -676,7 +664,7 @@
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=appletv*]" = "tvOS Assets";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-                CODE_SIGN_ENTITLEMENTS = DittoToolsApp/DittoToolsApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = DittoToolsApp/DittoToolsApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "DittoToolsApp/Preview\\ Content";
@@ -714,7 +702,6 @@
 		01F34CB928A2EAE5003BDF17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -734,7 +721,6 @@
 		01F34CBA28A2EAE5003BDF17 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -754,7 +740,6 @@
 		01F34CBC28A2EAE5003BDF17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3T2VMFZPPQ;
@@ -772,7 +757,6 @@
 		01F34CBD28A2EAE5003BDF17 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3T2VMFZPPQ;
