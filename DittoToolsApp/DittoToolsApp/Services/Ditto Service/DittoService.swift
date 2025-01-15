@@ -1,23 +1,30 @@
 //
 //  DittoService.swift
 //
-//  Copyright © 2024 DittoLive Incorporated. All rights reserved.
+//  Copyright © 2025 DittoLive Incorporated. All rights reserved.
 //
 
 import Combine
 import DittoSwift
 
-/// A service that manages the lifecycle of a Ditto instance, including initialization, synchronization, and live queries.
+/// A service that manages the lifecycle of a Ditto instance, including initialization, and synchronization.
 ///
 /// `DittoService` is designed as a singleton to provide a centralized interface for working with a Ditto instance
-/// within an app. It allows for initializing Ditto with specific credentials, managing its synchronization
-/// engine, and observing changes to collections via live queries.
+/// within an app. It allows for initializing Ditto with specific credentials, and managing its synchronization engine.
 ///
 /// ## Features
 /// - **Singleton Access**: Use `DittoService.shared` to access the single instance.
 /// - **Sync Engine Management**: Start, stop, or restart the Ditto synchronization engine.
-/// - **Collection Observations**: Automatically subscribe to and observe changes in the collections stored by Ditto.
 /// - **Identity Management**: Initialize Ditto with secure Credentials to manage offline license tokens.
+///
+/// ## Usage:
+///   ```swift
+///   let dittoService = DittoService.shared
+///   try? dittoService.initializeDitto(with: credentials)
+///   dittoService.startSyncEngine()
+///   ```
+///
+/// - Note: This service is tightly coupled with the Ditto SDK and requires identity and license configuration.
 ///
 /// ## Topics
 /// ### Initialization
@@ -29,31 +36,14 @@ import DittoSwift
 /// - `stopSyncEngine()`
 /// - `restartSyncEngine()`
 ///
-/// ### Collection Observations
-/// - `setupLiveQueries()`
-///
 /// ### Delegate Handling
 /// - `dittoTransportConditionDidChange(ditto:condition:subsystem:)`
-///
-/// ## Usage
-/// ```swift
-/// let dittoService = DittoService.shared
-/// try? dittoService.initializeDitto(with: credentials)
-/// dittoService.startSyncEngine()
-/// ```
-///
-/// - Note: This class is tightly coupled with the Ditto SDK and requires appropriate identity and license configurations to function.
 public class DittoService: ObservableObject {
 
     // MARK: - Properties
 
     /// Optional Ditto instance that can be initialized later
     @Published public private(set) var ditto: Ditto?
-
-    @Published var collections = [DittoCollection]()
-
-    var collectionsSubscription: DittoSubscription?
-    var collectionsObserver: DittoLiveQuery?
 
     // MARK: - Singleton
 
@@ -118,9 +108,8 @@ public class DittoService: ObservableObject {
             // Conditionally set the offline license token if required by the identity type
             try setOfflineLicenseTokenIfNeeded(for: credentials, on: ditto)
 
-            // Start the sync engine and set up live queries
+            // Start the sync engine
             try startSyncEngine()
-            try setupLiveQueries()
 
             print("Ditto initialization process completed successfully.")
 
@@ -142,14 +131,6 @@ public class DittoService: ObservableObject {
     /// - Parameter clearingCredentials: A Boolean value indicating whether the active credentials
     ///   should also be cleared. If `true`, the active credentials will be removed. Defaults to `false`.
     func destroyDittoInstance(clearingCredentials: Bool = false) {
-
-        // Stop observing changes to collections
-        collectionsObserver?.stop()
-        collectionsObserver = nil
-
-        // Cancel any active subscriptions
-        collectionsSubscription?.cancel()
-        collectionsSubscription = nil
 
         // Stop the sync engine if it is active
         stopSyncEngine()
@@ -182,24 +163,6 @@ public class DittoService: ObservableObject {
         } catch {
             throw DittoServiceError.initializationFailed("Could not set offline license token.")
         }
-    }
-
-    #warning("TODO: What does subscribing to all collections do, in the context of the MenuView?")
-    /// Sets up live queries to observe collections in the Ditto store.
-    ///
-    /// This method subscribes to changes in the collections and updates the `collections` property in real time.
-    private func setupLiveQueries() throws {
-        guard let ditto = ditto else { throw DittoServiceError.noInstance }
-
-        // Subscribe to all collections in the Ditto store
-        self.collectionsSubscription = ditto.store.collections().subscribe()
-
-        // Observe local changes to the collections and update the published property
-        self.collectionsObserver = ditto.store.collections().observeLocal(eventHandler: { event in
-            self.collections = ditto.store.collections().exec()
-        })
-
-        print("Ditto live queries started up successfully.")
     }
 
     // MARK: - Sync Engine Control
