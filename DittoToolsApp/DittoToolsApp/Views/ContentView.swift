@@ -48,6 +48,10 @@ struct ContentView: View {
 
 }
 
-#Preview {
-    ContentView()
+#Preview("Content View") {
+    ContentView(isShowingCredentialsView: false)
+}
+
+#Preview("Credentials View") {
+    ContentView(isShowingCredentialsView: true)
 }
