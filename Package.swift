@@ -54,7 +54,7 @@ let package = Package(
             targets: ["DittoAllToolsMenu"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.8.0"),
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.9.1"),
         .package(url: "https://github.com/getditto/DittoPresenceViewerCore.git", from: "2.0.0"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
