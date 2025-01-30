@@ -4,8 +4,14 @@
 //  Copyright © 2025 DittoLive Incorporated. All rights reserved.
 //
 
-import Combine
 import DittoSwift
+
+/// Represents the different states of the Ditto sync engine
+public enum DittoSyncState: String {
+    case noLicense = "No license found."
+    case inactive = "Ditto is not running."
+    case active = "Ditto is active."
+}
 
 /// A service that manages the lifecycle of a Ditto instance, including initialization, and synchronization.
 ///
@@ -13,15 +19,21 @@ import DittoSwift
 /// within an app. It allows for initializing Ditto with specific credentials, and managing its synchronization engine.
 ///
 /// ## Features
-/// - **Singleton Access**: Use `DittoService.shared` to access the single instance.
-/// - **Sync Engine Management**: Start, stop, or restart the Ditto synchronization engine.
-/// - **Identity Management**: Initialize Ditto with secure Credentials to manage offline license tokens.
+/// - **Singleton Access**: Use `DittoService.shared` to access the single instance
+/// - **State Management**: Track the Ditto sync engine state through the `syncState` property
+/// - **Sync Engine Control**: Start, stop, or restart the Ditto synchronization engine
+/// - **Identity Management**: Initialize Ditto with secure Credentials to manage offline license tokens
 ///
 /// ## Usage:
 ///   ```swift
 ///   let dittoService = DittoService.shared
 ///   try? dittoService.initializeDitto(with: credentials)
-///   dittoService.startSyncEngine()
+///   try? dittoService.startSyncEngine()
+///   
+///   // Observe sync state changes
+///   if dittoService.syncState == .active {
+///       print("Sync engine is running")
+///   }
 ///   ```
 ///
 /// - Note: This service is tightly coupled with the Ditto SDK and requires identity and license configuration.
@@ -29,7 +41,11 @@ import DittoSwift
 /// ## Topics
 /// ### Initialization
 /// - `initializeDitto(with:useIsolatedDirectories:)`
-/// - `destroyDittoInstance(clearConfig:)`
+/// - `destroyDittoInstance(clearingCredentials:)`
+///
+/// ### State Management
+/// - `syncState`: Current state of the Ditto sync engine
+/// - `DittoSyncState`: Enum representing possible sync states
 ///
 /// ### Synchronization
 /// - `startSyncEngine()`
@@ -44,6 +60,9 @@ public class DittoService: ObservableObject {
 
     /// Optional Ditto instance that can be initialized later
     @Published public private(set) var ditto: Ditto?
+
+    /// Tracks the current state of the sync engine
+    @Published public private(set) var syncState: DittoSyncState = .noLicense
 
     // MARK: - Singleton
 
@@ -131,7 +150,6 @@ public class DittoService: ObservableObject {
     /// - Parameter clearingCredentials: A Boolean value indicating whether the active credentials
     ///   should also be cleared. If `true`, the active credentials will be removed. Defaults to `false`.
     func destroyDittoInstance(clearingCredentials: Bool = false) {
-
         // Stop the sync engine if it is active
         stopSyncEngine()
 
@@ -144,10 +162,25 @@ public class DittoService: ObservableObject {
             CredentialsService.shared.activeCredentials = nil
         }
 
+        updateSyncState()
         print("Ditto instance destroyed successfully. Ditto = \(String(describing: ditto))")
     }
 
-    // MARK: - Private Helper Methods
+    // MARK: - Private Methods
+
+    /// Updates the sync state by checking both activation and sync status of the Ditto instance
+    private func updateSyncState() {
+        guard let ditto else {
+            syncState = .noLicense
+            return
+        }
+
+        if ditto.activated {
+            syncState = ditto.isSyncActive ? .active : .inactive
+        } else {
+            syncState = .noLicense
+        }
+    }
 
     /// Sets the offline license token on the Ditto instance if required by the identity type.
     private func setOfflineLicenseTokenIfNeeded(for credentials: Credentials, on ditto: Ditto) throws {
@@ -171,27 +204,31 @@ public class DittoService: ObservableObject {
     ///
     /// - Throws: `DittoServiceError` if the sync engine fails to start.
     func startSyncEngine() throws {
-        guard let ditto = ditto else { throw DittoServiceError.noInstance }
-
+        guard let ditto else { throw DittoServiceError.noInstance }
         ditto.delegate = self
-
         do {
             try ditto.startSync()
+            updateSyncState()
             print("Ditto sync engine started successfully.")
         } catch {
+            updateSyncState()
             throw DittoServiceError.syncFailed(error.localizedDescription)
         }
     }
 
     /// Stops the sync engine on the Ditto instance.
     func stopSyncEngine() {
-        guard let ditto = ditto else { return }
-
-        if !ditto.isSyncActive {
+        guard let ditto else {
+            updateSyncState()
+            print("Ditto is not running.")
             return
         }
 
-        ditto.stopSync()
+        if ditto.isSyncActive {
+            ditto.stopSync()
+        }
+
+        updateSyncState()
         print("Ditto sync engine stopped successfully.")
     }
 
