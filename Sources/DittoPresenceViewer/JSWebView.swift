@@ -2,7 +2,7 @@
 //  Copyright © 2020 DittoLive Incorporated. All rights reserved.
 //
 
-@preconcurrency import Foundation
+import Foundation
 #if canImport(WebKit)
 import WebKit
 #endif
