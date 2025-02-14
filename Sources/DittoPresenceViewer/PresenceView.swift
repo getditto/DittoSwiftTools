@@ -20,6 +20,7 @@ import AppKit
 #endif
 
 #if canImport(WebKit)
+@available(macOS 10.15, *)
 public struct PresenceView: View {
     private var ditto: Ditto
 
