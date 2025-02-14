@@ -2,6 +2,7 @@
 //  Copyright © 2020 DittoLive Incorporated. All rights reserved.
 //
 
+import Foundation
 import DittoPresenceViewerCore
 
 #if canImport(WebKit)
