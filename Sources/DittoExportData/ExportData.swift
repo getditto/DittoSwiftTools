@@ -24,10 +24,10 @@ public struct ExportData: UIViewControllerRepresentable {
 
         let zippedURL = zipDittoDirectory()
 
-        let avc = UIActivityViewController(activityItems: [zippedURL as Any], applicationActivities: nil)
-        avc.excludedActivityTypes = [.postToVimeo, .postToWeibo, .postToFlickr, .postToTwitter, .postToFacebook, .postToTencentWeibo, .addToReadingList, .assignToContact, .openInIBooks]
+        let activityViewController = UIActivityViewController(activityItems: [zippedURL as Any], applicationActivities: nil)
+        activityViewController.excludedActivityTypes = [.postToVimeo, .postToWeibo, .postToFlickr, .postToTwitter, .postToFacebook, .postToTencentWeibo, .addToReadingList, .assignToContact, .openInIBooks]
 
-        return avc
+        return activityViewController
     }
 
     private func zipDittoDirectory() -> URL? {
