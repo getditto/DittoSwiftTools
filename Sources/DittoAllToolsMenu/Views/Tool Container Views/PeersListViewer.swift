@@ -16,6 +16,9 @@ struct PeersListViewer: View {
     var ditto: Ditto
 
     var body: some View {
+#if !os(macOS)
+
         PeersListView(ditto: ditto)
+#endif
     }
 }

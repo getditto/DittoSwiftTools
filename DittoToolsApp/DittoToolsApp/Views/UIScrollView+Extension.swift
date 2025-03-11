@@ -4,9 +4,10 @@
 //  Copyright © 2025 DittoLive Incorporated. All rights reserved.
 //
 
+#if os(tvOS)
+
 import UIKit
 
-#if os(tvOS)
 extension UIScrollView {
 
     /// Overrides the `clipsToBounds` property to always return `false`.

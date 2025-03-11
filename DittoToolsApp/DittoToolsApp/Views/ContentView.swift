@@ -4,6 +4,7 @@
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
+
 import DittoAllToolsMenu
 import DittoSwift
 import SwiftUI
@@ -17,10 +18,18 @@ struct ContentView: View {
         NavigationView {
             MenuView()
                 .navigationTitle("Ditto Tools")
+            #if os(macOS)
+                .toolbar {
+                    ToolbarItem(placement: .automatic) {
+                        CredentialsButton
+                    }
+                }
+            #else
                 .navigationBarItems(
                     trailing:
                         CredentialsButton
                 )
+            #endif
                 .sheet(isPresented: $isShowingCredentialsView) {
                     CredentialsView()
                 }

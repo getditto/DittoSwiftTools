@@ -14,6 +14,9 @@ struct LoggingDetailsViewer: View {
     var ditto: Ditto
 
     var body: some View {
+#if !os(macOS)
+
         LoggingDetailsView(ditto: ditto)
+        #endif
     }
 }

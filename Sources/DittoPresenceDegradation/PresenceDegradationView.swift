@@ -5,6 +5,8 @@
 //  Created by Walker Erekson on 2/13/24.
 //
 
+#if !os(macOS)
+
 import SwiftUI
 import DittoSwift
 
@@ -121,3 +123,4 @@ public struct PresenceDegradationView: View {
     }
 }
 
+#endif

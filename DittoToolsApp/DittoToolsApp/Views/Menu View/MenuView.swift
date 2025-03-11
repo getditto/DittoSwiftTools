@@ -37,7 +37,9 @@ struct MenuView: View {
                 AllToolsMenu(ditto: DittoService.shared.ditto)
                     .listStyle(.grouped)
             }
-
+        #elseif os(macOS)
+        Text("Menu is not available on macOS")
+        
         #else
             AllToolsMenu(ditto: DittoService.shared.ditto)
                 .listStyle(.insetGrouped)
@@ -65,8 +67,10 @@ struct MenuView: View {
     #if !os(tvOS)
         private var CopyButton: some View {
             Button(action: {
+                #if !os(macOS)
                 // Copy SDK version to clipboard on tap
                 UIPasteboard.general.string = Ditto.version
+                #endif
             }) {
                 HStack {
                     if let ditto = dittoService.ditto {

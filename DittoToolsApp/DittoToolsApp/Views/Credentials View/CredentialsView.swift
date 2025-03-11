@@ -40,15 +40,18 @@ struct CredentialsView: View {
                 .navigationTitle("Credentials")
         }
         .onAppear { disableInteractiveDismissal() }
-        .actionSheet(isPresented: $isShowingConfirmClearCredentials) {
-            clearCredentialsActionSheet
+        .alert("Cannot Apply Credentials", isPresented: $isShowingValidationErrorAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(validationError ?? "An unknown error occurred.")
         }
-        .alert(isPresented: $isShowingValidationErrorAlert) {
-            Alert(
-                title: Text("Cannot Apply Credentials"),
-                message: Text(validationError ?? "An unknown error occurred."),
-                dismissButton: .default(Text("OK"))
-            )
+        .confirmationDialog("Are you sure?", isPresented: $isShowingConfirmClearCredentials, titleVisibility: .visible) {
+            Button("Delete Credentials", role: .destructive) {
+                viewModel.clearCredentials()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will permanently delete your saved credentials.")
         }
         #if os(tvOS)
             .onExitCommand {
@@ -73,12 +76,15 @@ struct CredentialsView: View {
                 imageView
                 formView
             }
+        #elseif os(macOS)
+            formView
         #else
             formView
                 .navigationBarTitleDisplayMode(.inline)
         #endif
     }
 
+    #if os(tvOS)
     /// A decorative image displayed on tvOS.
     private var imageView: some View {
         Image("key.2.on.ring.fill")
@@ -88,6 +94,7 @@ struct CredentialsView: View {
             .padding(180)
             .foregroundColor(Color(UIColor.tertiaryLabel))
     }
+    #endif
 
     /// The credentials form, consisting of fields and action buttons.
     private var formView: some View {
@@ -146,26 +153,30 @@ struct CredentialsView: View {
         Button("Clear Credentials…") {
             isShowingConfirmClearCredentials = true
         }
+        #if os(macOS)
+        .foregroundColor(viewModel.canClearCredentials() ? Color(NSColor.systemRed) : nil)
+        #else
         .foregroundColor(viewModel.canClearCredentials() ? Color(UIColor.systemRed) : nil)
+        #endif
         .disabled(!viewModel.canClearCredentials())
     }
 
     // MARK: - Clear Credentials ActionSheet
 
     /// Action sheet shown to confirm clearing credentials.
-    private var clearCredentialsActionSheet: ActionSheet {
-        ActionSheet(
-            title: Text("Are you sure?"),
-            message: Text("This will permanently delete your saved credentials."),
-            buttons: [
-                .cancel(),
-                .destructive(
-                    Text("Delete Credentials"),
-                    action: viewModel.clearCredentials
-                ),
-            ]
-        )
-    }
+//    private var clearCredentialsActionSheet: ActionSheet {
+//        ActionSheet(
+//            title: Text("Are you sure?"),
+//            message: Text("This will permanently delete your saved credentials."),
+//            buttons: [
+//                .cancel(),
+//                .destructive(
+//                    Text("Delete Credentials"),
+//                    action: viewModel.clearCredentials
+//                ),
+//            ]
+//        )
+//    }
 
     // MARK: - Disable Interactive Dismissal
 
@@ -174,9 +185,16 @@ struct CredentialsView: View {
     /// This ensures users intentionally navigate away from the view, especially
     /// when working with important data like credentials.
     private func disableInteractiveDismissal() {
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-            let rootVC = scene.windows.first?.rootViewController?.presentedViewController
-        else { return }
-        rootVC.isModalInPresentation = true
+        #if os(macOS)
+        if let window = NSApplication.shared.windows.first {
+            window.isMovable = false
+            window.styleMask.remove(.closable) // Disables the close button
+        }
+        #else
+        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootVC = scene.windows.first?.rootViewController?.presentedViewController {
+            rootVC.isModalInPresentation = true
+        }
+        #endif
     }
 }

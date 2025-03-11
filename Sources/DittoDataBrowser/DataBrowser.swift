@@ -5,6 +5,8 @@
 //  Created by Walker Erekson on 11/3/22.
 //
 
+#if !os(macOS)
+
 import SwiftUI
 import DittoSwift
 
@@ -62,3 +64,5 @@ public struct DataBrowser: View {
             })
     }
 }
+
+#endif

@@ -47,9 +47,15 @@ struct FormView<ApplyButton: View, CancelButton: View, ClearButton: View>: View 
                     ToolbarItemGroup(placement: .cancellationAction) {
                         cancelButton
                     }
+                    #if os(macOS)
+                    ToolbarItemGroup(placement: .automatic) {
+                        clearButton
+                    }
+                    #else
                     ToolbarItem(placement: .bottomBar) {
                         clearButton
                     }
+                    #endif
                 }
             #endif
         }

@@ -5,6 +5,8 @@
 //  Created by Walker Erekson on 11/7/22.
 //
 
+#if !os(macOS)
+
 import SwiftUI
 import DittoSwift
 
@@ -194,3 +196,5 @@ struct SearchBar: View {
         })
     }
 }
+
+#endif

@@ -5,6 +5,8 @@
 //  Created by Walker Erekson on 2/26/24.
 //
 
+#if !os(macOS)
+
 import SwiftUI
 import Combine
 
@@ -164,4 +166,4 @@ public struct PermissionsHealth: View {
     }
 }
 
-
+#endif

@@ -108,6 +108,7 @@ enum MenuOption: String, CaseIterable {
     @ViewBuilder
     func destinationView(ditto: Ditto?) -> some View {
         if let ditto = ditto {
+            #if !os(macOS)
             switch self {
             case .presenceViewer:
 #if canImport(WebKit)
@@ -130,6 +131,7 @@ enum MenuOption: String, CaseIterable {
             case .logging:
                 LoggingDetailsViewer(ditto: ditto)
             }
+            #endif
         } else {
             EmptyView()  // Return an empty view when ditto is nil
         }

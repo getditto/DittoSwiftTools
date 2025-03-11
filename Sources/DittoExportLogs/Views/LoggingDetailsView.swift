@@ -3,7 +3,7 @@
 //
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
-
+#if !os(macOS)
 import Combine
 import DittoSwift
 import SwiftUI
@@ -106,3 +106,4 @@ struct ActivityViewControllerWrapper: UIViewControllerRepresentable {
         // No need to update the view controller here
     }
 }
+#endif

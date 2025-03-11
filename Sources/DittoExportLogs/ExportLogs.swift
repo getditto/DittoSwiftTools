@@ -1,3 +1,5 @@
+#if !os(macOS)
+
 import DittoSwift
 
 #if canImport(SwiftUI)
@@ -51,5 +53,5 @@ public struct ExportLogs: UIViewControllerRepresentable {
         }
     }
 }
-
+#endif
 
