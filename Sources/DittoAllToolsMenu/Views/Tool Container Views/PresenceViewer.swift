@@ -2,6 +2,9 @@
 //  Copyright © 2022 DittoLive Incorporated. All rights reserved.
 //
 
+#if !os(macOS)
+
+
 import SwiftUI
 import UIKit
 import DittoPresenceViewer
@@ -16,4 +19,5 @@ struct PresenceViewer: View {
         PresenceView(ditto: ditto)
     }
 }
+#endif
 #endif

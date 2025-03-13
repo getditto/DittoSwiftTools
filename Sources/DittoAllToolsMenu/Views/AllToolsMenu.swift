@@ -81,7 +81,10 @@ fileprivate struct ExportDataButton: View {
         .sheet(isPresented: $isExportDataSharePresented) {
             // Sheet to handle the file sharing of the exported data.
             if let ditto {
+#if !os(macOS)
+
                 ExportData(ditto:  ditto)
+                #endif
             } else {
                 Text("An active Ditto instance must be running in order to export data for security and privacy reasons.")
             }

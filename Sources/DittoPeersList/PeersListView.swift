@@ -5,6 +5,7 @@
 //  Created by Eric Turner on 3/7/23.
 //
 //  Copyright © 2023 DittoLive Incorporated. All rights reserved.
+#if !os(macOS)
 
 import DittoSwift
 import SwiftUI
@@ -117,3 +118,4 @@ public struct PeersListView: View {
         }
     }
 }
+#endif

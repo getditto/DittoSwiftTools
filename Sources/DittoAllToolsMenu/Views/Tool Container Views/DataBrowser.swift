@@ -15,7 +15,10 @@ struct DataBrowserView: View {
     var ditto: Ditto
     
     var body: some View {
+#if !os(macOS)
+
        DataBrowser(ditto: ditto)
+        #endif
     }
 }
 

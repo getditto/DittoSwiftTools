@@ -22,6 +22,7 @@ enum FormFieldType: Equatable {
         case base64
     }
 
+    #if !os(macOS)
     /// The appropriate keyboard type for the field.
     var keyboardType: UIKeyboardType {
         switch self {
@@ -38,6 +39,7 @@ enum FormFieldType: Equatable {
             return .default
         }
     }
+    #endif
 }
 
 // MARK: - FormField View
@@ -127,15 +129,21 @@ struct FormField: View {
                     isTextFieldFocused = isEditing
                 }
             )
+            #if !os(macOS)
             .keyboardType(type.keyboardType)
+            #endif
             .autocorrectionDisabled()
+            #if !os(macOS)
             .autocapitalization(subtype == .uuid ? .allCharacters : .none)
             .font(.system(.body, design: .monospaced))
+            #endif
             .multilineTextAlignment(textAlignment)
 
             #if !os(tvOS)
             Image(systemName: "xmark.circle.fill")
+            #if !os(macOS)
                 .foregroundColor(Color(UIColor.tertiaryLabel))  // Semantic colors for light/dark mode
+            #endif
                 .opacity(!stringValue.isEmpty && isTextFieldFocused ? 1 : 0)  // Fade animation
                 .animation(.easeInOut(duration: 0.1), value: stringValue)
                 .animation(.easeInOut(duration: 0.1), value: isTextFieldFocused)
@@ -148,8 +156,10 @@ struct FormField: View {
     @ViewBuilder
     private var numberField: some View {
         TextField(placeholder ?? "", value: $intValue, formatter: NumberFormatter())
+        #if !os(macOS)
             .keyboardType(type.keyboardType)
             .font(.system(.body, design: .monospaced))
+        #endif
             .autocorrectionDisabled()
             .multilineTextAlignment(textAlignment)
     }

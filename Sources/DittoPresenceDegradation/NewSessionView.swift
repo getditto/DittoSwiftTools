@@ -5,6 +5,8 @@
 //  Created by Walker Erekson on 2/13/24.
 //
 
+#if !os(macOS)
+
 import SwiftUI
 
 public struct NewSessionView: View {
@@ -72,4 +74,4 @@ func getStartTime() -> String {
     return DateFormatter.isoDate.string(from: Date())
 }
 
-
+#endif
