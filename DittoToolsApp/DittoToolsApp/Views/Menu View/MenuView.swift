@@ -38,8 +38,7 @@ struct MenuView: View {
                     .listStyle(.grouped)
             }
         #elseif os(macOS)
-        Text("Menu is not available on macOS")
-        
+            AllToolsMenu(ditto: DittoService.shared.ditto)
         #else
             AllToolsMenu(ditto: DittoService.shared.ditto)
                 .listStyle(.insetGrouped)
