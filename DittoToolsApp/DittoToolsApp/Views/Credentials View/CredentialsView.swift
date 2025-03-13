@@ -161,23 +161,6 @@ struct CredentialsView: View {
         .disabled(!viewModel.canClearCredentials())
     }
 
-    // MARK: - Clear Credentials ActionSheet
-
-    /// Action sheet shown to confirm clearing credentials.
-//    private var clearCredentialsActionSheet: ActionSheet {
-//        ActionSheet(
-//            title: Text("Are you sure?"),
-//            message: Text("This will permanently delete your saved credentials."),
-//            buttons: [
-//                .cancel(),
-//                .destructive(
-//                    Text("Delete Credentials"),
-//                    action: viewModel.clearCredentials
-//                ),
-//            ]
-//        )
-//    }
-
     // MARK: - Disable Interactive Dismissal
 
     /// Disables interactive dismissal for modally presented views to prevent accidental exits.
