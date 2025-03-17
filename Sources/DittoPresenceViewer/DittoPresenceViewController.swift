@@ -34,14 +34,6 @@ import AppKit
  */
 final class DittoPresenceViewController: PlatformViewController {
 
-    // MARK: Constants
-
-    private struct LocalizedStrings {
-        static let title = NSLocalizedString("Ditto Presence",
-                                             bundle: Bundle.presenceViewerResourceBundle,
-                                             comment: "View controller title for the presence UI")
-    }
-
     // MARK: - Properties
 
 #if canImport(UIKit)
@@ -83,7 +75,7 @@ final class DittoPresenceViewController: PlatformViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = LocalizedStrings.title
+        title = "Ditto Presence"
 
 #if canImport(UIKit)
 #if os(tvOS)
@@ -128,7 +120,7 @@ final class DittoPresenceViewController: PlatformViewController {
 #if canImport(UIKit)
         guard navigationController == nil else { return }
 
-        navigationItem.title = LocalizedStrings.title
+        navigationItem.title = "Ditto Presence"
 #if !os(tvOS)
         navigationItem.largeTitleDisplayMode = .never
 #endif

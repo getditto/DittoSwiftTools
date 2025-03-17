@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import DittoPresenceViewerCore
 
 #if canImport(WebKit)
 import WebKit
@@ -28,12 +29,9 @@ class VisJSWebView: JSWebView {
     }
 
     private func setup() {
-        let bundle = Bundle.module
-        let webDistDirURL = bundle.bundleURL.appendingPathComponent("dist")
-        let htmlURL = bundle.url(forResource: "index", withExtension: "html")!
-        let htmlString = try! String(contentsOf: htmlURL, encoding: .utf8)
+        let htmlString = try! String(contentsOf: DittoPresenceViewerResources.htmlURL, encoding: .utf8)
 #if canImport(WebKit)
-        webView.loadHTMLString(htmlString, baseURL: webDistDirURL)
+        webView.loadHTMLString(htmlString, baseURL: DittoPresenceViewerResources.webDistDirURL)
 #endif
     }
 

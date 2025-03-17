@@ -56,6 +56,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.9.1"),
+        .package(url: "https://github.com/getditto/DittoPresenceViewerCore.git", from: "2.0.0"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],
     targets: [
@@ -63,15 +64,8 @@ let package = Package(
         .target(
             name: "DittoPresenceViewer",
             dependencies: [
-                .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ],
-            resources: [
-                .copy("Resources/index.html"),
-                .copy("Resources/main.css"),
-                .copy("Resources/main.js"),
-            ],
-            cxxSettings: [
-                .define("ENABLE_BITCODE", to: "NO")
+                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
+                .product(name: "DittoPresenceViewerCore", package: "DittoPresenceViewerCore"),
             ]
         ),
         .target(
