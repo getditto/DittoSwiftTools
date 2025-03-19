@@ -73,7 +73,9 @@ fileprivate struct ExportDataButton: View {
         }
         .sheet(isPresented: $isExportDataSharePresented) {
             #if os(iOS)
-            ExportData(ditto: viewModel.ditto)
+            if let ditto {
+                ExportData(ditto: ditto)
+            }
             #endif
         }
         .alert(isPresented: $presentExportDataAlert) {

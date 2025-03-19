@@ -35,23 +35,27 @@ struct CredentialsView: View {
     @State var validationError: String?
 
     var body: some View {
-        NavigationView {
-            MultiPlatformLayoutView
-                .navigationTitle("Credentials")
-        }
-        .onAppear { disableInteractiveDismissal() }
-        .alert("Cannot Apply Credentials", isPresented: $isShowingValidationErrorAlert) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(validationError ?? "An unknown error occurred.")
-        }
-        .confirmationDialog("Are you sure?", isPresented: $isShowingConfirmClearCredentials, titleVisibility: .visible) {
-            Button("Delete Credentials", role: .destructive) {
-                viewModel.clearCredentials()
+        if #available(iOS 15.0, *) {
+            NavigationView {
+                MultiPlatformLayoutView
+                    .navigationTitle("Credentials")
             }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This will permanently delete your saved credentials.")
+            .onAppear { disableInteractiveDismissal() }
+            .alert("Cannot Apply Credentials", isPresented: $isShowingValidationErrorAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(validationError ?? "An unknown error occurred.")
+            }
+            .confirmationDialog("Are you sure?", isPresented: $isShowingConfirmClearCredentials, titleVisibility: .visible) {
+                Button("Delete Credentials", role: .destructive) {
+                    viewModel.clearCredentials()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This will permanently delete your saved credentials.")
+            }
+        } else {
+            // Fallback on earlier versions
         }
         #if os(tvOS)
             .onExitCommand {
