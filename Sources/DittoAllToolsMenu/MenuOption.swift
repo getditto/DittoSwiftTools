@@ -108,8 +108,9 @@ enum MenuOption: String, CaseIterable {
     @ViewBuilder
     func destinationView(ditto: Ditto?) -> some View {
         if let ditto = ditto {
-            #if !os(macOS)
             switch self {
+#if !os(macOS)
+
             case .presenceViewer:
 #if canImport(WebKit)
                 PresenceViewer(ditto: ditto)
@@ -120,8 +121,11 @@ enum MenuOption: String, CaseIterable {
                 PeersListViewer(ditto: ditto)
             case .presenceDegradation:
                 PresenceDegradationViewer(ditto: ditto)
+#endif
             case .diskUsage:
                 DiskUsageViewer(ditto: ditto)
+#if !os(macOS)
+
             case .permissionsHealth:
                 PermissionsHealthViewer()
             case .heartbeat:
@@ -130,8 +134,11 @@ enum MenuOption: String, CaseIterable {
                 DataBrowserView(ditto: ditto)
             case .logging:
                 LoggingDetailsViewer(ditto: ditto)
+#endif
+            default:
+                EmptyView()
+
             }
-            #endif
         } else {
             EmptyView()  // Return an empty view when ditto is nil
         }

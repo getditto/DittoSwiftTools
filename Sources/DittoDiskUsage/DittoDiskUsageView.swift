@@ -73,7 +73,7 @@ public struct DittoDiskUsageView: View {
                     Label("Export Data Directory", systemImage: "square.and.arrow.up")
                 }
                 .sheet(isPresented: $presentExportDataShare) {
-                    #if !os(tvOS) && !os(macOS)
+                    #if os(iOS)
                     ExportData(ditto: viewModel.ditto)
                     #endif
                 }
@@ -88,7 +88,11 @@ public struct DittoDiskUsageView: View {
                           primaryButton: .default(
                             Text("Export"),
                             action: {
+                                #if os(iOS)
                                 presentExportDataShare = true
+                                #elseif os(macOS)
+                                ExportData_macOS(ditto: viewModel.ditto).export()
+                                #endif
                             }),
                           secondaryButton: .cancel()
                     )

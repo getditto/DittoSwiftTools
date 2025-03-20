@@ -40,6 +40,7 @@ struct CredentialsView: View {
                 .navigationTitle("Credentials")
         }
         .onAppear { disableInteractiveDismissal() }
+        #if os(macOS)
         .alert("Cannot Apply Credentials", isPresented: $isShowingValidationErrorAlert) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -53,6 +54,19 @@ struct CredentialsView: View {
         } message: {
             Text("This will permanently delete your saved credentials.")
         }
+        #else
+        .actionSheet(isPresented: $isShowingConfirmClearCredentials) {
+            clearCredentialsActionSheet
+        }
+        .alert(isPresented: $isShowingValidationErrorAlert) {
+            Alert(
+                title: Text("Cannot Apply Credentials"),
+                message: Text(validationError ?? "An unknown error occurred."),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+        #endif
+
         #if os(tvOS)
             .onExitCommand {
                 // Prevent navigation back if no credentials are available.
@@ -160,6 +174,25 @@ struct CredentialsView: View {
         #endif
         .disabled(!viewModel.canClearCredentials())
     }
+    
+    #if os(iOS)
+    // MARK: - Clear Credentials ActionSheet
+
+    /// Action sheet shown to confirm clearing credentials.
+    private var clearCredentialsActionSheet: ActionSheet {
+        ActionSheet(
+            title: Text("Are you sure?"),
+            message: Text("This will permanently delete your saved credentials."),
+            buttons: [
+                .cancel(),
+                .destructive(
+                    Text("Delete Credentials"),
+                    action: viewModel.clearCredentials
+                ),
+            ]
+        )
+    }
+    #endif
 
     // MARK: - Disable Interactive Dismissal
 

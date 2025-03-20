@@ -62,33 +62,46 @@ fileprivate struct ExportDataButton: View {
     @State private var isExportDataSharePresented = false
 
     var body: some View {
-        Button(action: {
-            presentExportDataAlert.toggle()
-        }) {
-            Text("Export Data…")
-                .foregroundColor(.accentColor)
-        }
-        .alert(isPresented: $presentExportDataAlert) {
-            Alert(title: Text("Are you sure?"),
-                  message: Text("Compressing the Ditto directory data may take a while."),
-                  primaryButton: .cancel(Text("Cancel")),
-                  secondaryButton: .default(Text("Export…")) {
-                    isExportDataSharePresented = true
-                print("ok!")
-            })
-        }
-        .disabled(!(ditto?.activated ?? false))
-        .sheet(isPresented: $isExportDataSharePresented) {
-            // Sheet to handle the file sharing of the exported data.
-            if let ditto {
-#if !os(macOS)
-
-                ExportData(ditto:  ditto)
-                #endif
+        Button {
+            if ditto != nil {
+                self.presentExportDataAlert.toggle()
             } else {
                 Text("An active Ditto instance must be running in order to export data for security and privacy reasons.")
             }
+        } label: {
+            Label("Export Data Directory", systemImage: "square.and.arrow.up")
         }
+        .sheet(isPresented: $isExportDataSharePresented) {
+            #if os(iOS)
+            if let ditto {
+                ExportData(ditto: ditto)
+            }
+            #endif
+        }
+        .alert(isPresented: $presentExportDataAlert) {
+            #if os(tvOS)
+            Alert(title: Text("Export Ditto Directory"),
+                  message: Text("Exporting the Ditto Directory on tvOS does not work at this time."))
+            #else
+            Alert(title: Text("Export Ditto Directory"),
+                  message:
+                    Text("Compressing the data may take a while."),
+                  primaryButton: .default(
+                    Text("Export"),
+                    action: {
+                        #if os(iOS)
+                        isExportDataSharePresented = true
+                        #elseif os(macOS)
+                        if let ditto {
+                            ExportData_macOS(ditto: ditto).export()
+                        }
+                        #endif
+                    }),
+                  secondaryButton: .cancel()
+            )
+            #endif
+        }
+        .disabled(!(ditto?.activated ?? false))
     }
 }
 #endif
