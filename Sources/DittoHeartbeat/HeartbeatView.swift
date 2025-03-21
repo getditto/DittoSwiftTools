@@ -6,8 +6,6 @@
 //
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 
-#if !os(macOS)
-
 import Combine
 import DittoSwift
 import SwiftUI
@@ -111,7 +109,7 @@ public struct HeartbeatView: View {
         .onDisappear { vm.stopHeartbeat() }
         .navigationTitle(String.hbInfoTitle)
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 Button {
                     vm.isPaused.toggle()
                 } label: {
@@ -124,5 +122,3 @@ public struct HeartbeatView: View {
         }
     }
 }
-
-#endif
