@@ -14,9 +14,7 @@ struct HeartBeatViewer: View {
     var ditto: Ditto
 
     var body: some View {
-#if !os(macOS)
         HeartbeatView(ditto: ditto)
-#endif
     }
 }
 
