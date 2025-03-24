@@ -5,8 +5,6 @@
 //  Created by Walker Erekson on 2/26/24.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 import Combine
 
@@ -143,15 +141,27 @@ public struct PermissionsHealth: View {
     }
     
     func openBluetoothSettings() {
-        if let url = URL(string: "App-Prefs:root=Bluetooth") {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        }
+        #if os(iOS)
+            if let url = URL(string: "App-Prefs:root=Bluetooth") {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        #elseif os(macOS)
+            if let url = URL(string: "x-apple.systempreferences:com.apple.Bluetooth") {
+                NSWorkspace.shared.open(url)
+            }
+        #endif
     }
     
     func openWifiSettings() {
-        if let url = URL(string: "App-Prefs:root=WIFI") {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        }
+        #if os(iOS)
+            if let url = URL(string: "App-Prefs:root=WIFI") {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        #elseif os(macOS)
+            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.network") {
+                NSWorkspace.shared.open(url)
+            }
+        #endif
     }
     
     func checkBluetoothState(state: String) -> Bool {
@@ -165,5 +175,3 @@ public struct PermissionsHealth: View {
         }
     }
 }
-
-#endif
