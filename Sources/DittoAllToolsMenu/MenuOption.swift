@@ -109,13 +109,14 @@ enum MenuOption: String, CaseIterable {
     func destinationView(ditto: Ditto?) -> some View {
         if let ditto = ditto {
             switch self {
-#if !os(macOS)
             case .presenceViewer:
 #if canImport(WebKit)
                 PresenceViewer(ditto: ditto)
 #else
                 EmptyView()
 #endif
+
+#if !os(macOS)
             case .peersList:
                 PeersListViewer(ditto: ditto)
             case .presenceDegradation:
