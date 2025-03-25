@@ -10,10 +10,7 @@ import DittoPermissionsHealth
 
 struct PermissionsHealthViewer: View {
     var body: some View {
-#if !os(macOS)
-
         PermissionsHealth()
-        #endif
     }
 }
 
