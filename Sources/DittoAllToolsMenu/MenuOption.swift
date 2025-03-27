@@ -115,10 +115,9 @@ enum MenuOption: String, CaseIterable {
 #else
                 EmptyView()
 #endif
-
-#if !os(macOS)
             case .peersList:
                 PeersListViewer(ditto: ditto)
+#if !os(macOS)
             case .presenceDegradation:
                 PresenceDegradationViewer(ditto: ditto)
 #endif
