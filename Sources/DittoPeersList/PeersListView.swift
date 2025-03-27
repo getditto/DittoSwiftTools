@@ -5,7 +5,6 @@
 //  Created by Eric Turner on 3/7/23.
 //
 //  Copyright © 2023 DittoLive Incorporated. All rights reserved.
-#if !os(macOS)
 
 import DittoSwift
 import SwiftUI
@@ -50,14 +49,14 @@ public struct PeersListView: View {
         }
 #if os(tvOS)
         .listStyle(.grouped)
-#else
+#elseif !os(macOS)
         .listStyle(.insetGrouped)
         .navigationBarTitleDisplayMode(.inline)
 #endif
         .onDisappear { vm.cleanup() }
         .navigationTitle("Peers List")
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 Button {
                     vm.isPaused.toggle()
                 } label: {
@@ -118,4 +117,3 @@ public struct PeersListView: View {
         }
     }
 }
-#endif
