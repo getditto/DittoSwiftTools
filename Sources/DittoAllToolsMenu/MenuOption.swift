@@ -135,7 +135,6 @@ enum MenuOption: String, CaseIterable {
 #endif
             default:
                 EmptyView()
-
             }
         } else {
             EmptyView()  // Return an empty view when ditto is nil
