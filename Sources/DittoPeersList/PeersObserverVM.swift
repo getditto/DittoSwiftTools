@@ -58,7 +58,7 @@ import Foundation
 }
 
 // For sorting addresses of remote peers in func remotePeerAddresses() above
-extension DittoAddress: Comparable {
+extension DittoAddress: @retroactive Comparable {
     public static func < (lhs: DittoSwift.DittoAddress, rhs: DittoSwift.DittoAddress) -> Bool {
         lhs.hashValue < rhs.hashValue
     }

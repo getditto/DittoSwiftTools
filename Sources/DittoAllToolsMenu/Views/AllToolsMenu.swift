@@ -37,7 +37,6 @@ public struct AllToolsMenu: View {
                     }
                 }
             }
-            
 #if !os(tvOS)
             // Do not show on tvOS as export is not currently supported.
             Section(footer: Text("Export all Ditto data on this device as a .zip file.")) {
@@ -63,11 +62,7 @@ fileprivate struct ExportDataButton: View {
 
     var body: some View {
         Button {
-            if ditto != nil {
-                self.presentExportDataAlert.toggle()
-            } else {
-                Text("An active Ditto instance must be running in order to export data for security and privacy reasons.")
-            }
+            self.presentExportDataAlert.toggle()
         } label: {
             Label("Export Data Directory", systemImage: "square.and.arrow.up")
         }
@@ -79,27 +74,31 @@ fileprivate struct ExportDataButton: View {
             #endif
         }
         .alert(isPresented: $presentExportDataAlert) {
-            #if os(tvOS)
-            Alert(title: Text("Export Ditto Directory"),
-                  message: Text("Exporting the Ditto Directory on tvOS does not work at this time."))
-            #else
-            Alert(title: Text("Export Ditto Directory"),
-                  message:
-                    Text("Compressing the data may take a while."),
-                  primaryButton: .default(
-                    Text("Export"),
-                    action: {
-                        #if os(iOS)
-                        isExportDataSharePresented = true
-                        #elseif os(macOS)
-                        if let ditto {
-                            ExportData_macOS(ditto: ditto).export()
-                        }
-                        #endif
-                    }),
-                  secondaryButton: .cancel()
-            )
-            #endif
+            if ditto != nil {
+#if os(tvOS)
+                Alert(title: Text("Export Ditto Directory"),
+                      message: Text("Exporting the Ditto Directory on tvOS does not work at this time."))
+#else
+                Alert(title: Text("Export Ditto Directory"),
+                      message:
+                        Text("Compressing the data may take a while."),
+                      primaryButton: .default(
+                        Text("Export"),
+                        action: {
+#if os(iOS)
+                            isExportDataSharePresented = true
+#elseif os(macOS)
+                            if let ditto {
+                                ExportData_macOS(ditto: ditto).export()
+                            }
+#endif
+                        }),
+                      secondaryButton: .cancel()
+                )
+#endif
+            } else {
+                Alert(title: Text("An active Ditto instance must be running in order to export data for security and privacy reasons."))
+            }
         }
         .disabled(!(ditto?.activated ?? false))
     }
