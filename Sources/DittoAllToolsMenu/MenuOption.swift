@@ -130,8 +130,6 @@ enum MenuOption: String, CaseIterable {
 #if !os(macOS)
             case .dataBrowser:
                 DataBrowserView(ditto: ditto)
-            case .logging:
-                LoggingDetailsViewer(ditto: ditto)
 #endif
             default:
                 EmptyView()

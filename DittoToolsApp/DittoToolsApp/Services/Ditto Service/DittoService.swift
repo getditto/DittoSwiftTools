@@ -57,7 +57,6 @@ public class DittoService: ObservableObject {
     private init() {
 
         // Configure Ditto logging
-        DittoLogger.minimumLogLevel = DittoLogLevel.restoreFromStorage()
         DittoLogger.enabled = true
 
         // Attempt to initialize Ditto using the active credentials

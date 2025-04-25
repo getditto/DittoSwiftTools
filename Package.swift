@@ -24,10 +24,6 @@ let package = Package(
              targets: ["DittoDataBrowser"]
         ),
         .library(
-            name: "DittoExportLogs",
-            targets: ["DittoExportLogs"]
-        ),
-        .library(
             name: "DittoDiskUsage",
             targets: ["DittoDiskUsage"]
         ),
@@ -76,12 +72,6 @@ let package = Package(
             ]
         ),
         .target(
-            name: "DittoExportLogs",
-            dependencies: [
-                .product(name: "DittoSwift", package: "DittoSwiftPackage")
-            ]
-        ),
-        .target(
             name: "DittoDiskUsage",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
@@ -127,7 +117,6 @@ let package = Package(
                 "DittoHealthMetrics",
                 "DittoPresenceViewer",
                 "DittoDataBrowser",
-                "DittoExportLogs",
                 "DittoDiskUsage",
                 "DittoPeersList",
                 "DittoExportData",
