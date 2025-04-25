@@ -28,13 +28,25 @@ in the Swift Package Manager.*
 
 ## Usage
 
-There are six targets in this package: 
+There are several targets in this package:
+- DittoAllToolsMenu
 - DittoPresenceViewer  
 - DittoPeersList  
 - DittoDiskUsage  
 - DittoDataBrowser 
 - DittoExportLogs  
 - DittoExportData    
+- DittoPermissionsHealth
+- DittoHeartbeat
+
+### 1. All Tools Menu
+This tool provides an easy way to integrate all of our tools together in a single handy SwiftUI menu by passing in your `Ditto` instance. We typically recommend this tool for integration, unless you need limited specific tools for your app.
+
+To use this view, simply pass your `Ditto` instance in, e.g.:
+
+```swift
+AllToolsMenu(ditto: ditto)
+```
   
 
 ### 1. Presence Viewer
