@@ -28,16 +28,28 @@ in the Swift Package Manager.*
 
 ## Usage
 
-There are six targets in this package: 
+There are several targets in this package:
+- DittoAllToolsMenu
 - DittoPresenceViewer  
 - DittoPeersList  
 - DittoDiskUsage  
 - DittoDataBrowser 
 - DittoExportLogs  
 - DittoExportData    
+- DittoPermissionsHealth
+- DittoHeartbeat
+
+### All Tools Menu
+This tool provides an easy way to integrate all of our tools together in a single handy SwiftUI menu by passing in your `Ditto` instance. We typically recommend this tool for integration, unless you need limited specific tools for your app.
+
+To use this view, simply pass your `Ditto` instance in, e.g.:
+
+```swift
+AllToolsMenu(ditto: ditto)
+```
   
 
-### 1. Presence Viewer
+### Presence Viewer
 The Presence Viewer displays a mesh graph that allows you to see all connected peers within the mesh 
 and the transport each peer is using to make a connection.  
 
@@ -79,7 +91,7 @@ func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 }
 ```
 
-### 2. Peers List
+### Peers List
 Peers List displays local and connected remote peers within the mesh in a list view, and the transport 
 each peer is using to make a connection.
 
@@ -146,7 +158,7 @@ let vc = UIHostingController(rootView: DittoDiskUsageView(ditto: DittoManager.sh
 present(vc, animated: true)
 ```
 
-### 4. Data Browser
+### Data Browser
 The Ditto Data Browser allows you to view all your collections, documents within each collection and 
 the properties/values of a document. With the Data Browser, you can observe any changes that are made 
 to your collections and documents in real time.  
@@ -189,7 +201,7 @@ let vc = UIHostingController(rootView: DataBrowser(ditto: DittoManager.shared.di
 present(vc, animated: true)
 ```  
 
-### 5. Logging and Export Logs
+### Logging and Export Logs
 #### Logging Level  
 
 The LoggingDetailsView allows you to choose the Ditto logging level at runtime and toggle whether logging is enabled. Changes made through the LoggingDetailsView are automatically persisted using UserDefaults, ensuring the selected log level and enabled status are restored when the app restarts.
@@ -262,7 +274,7 @@ present(vc, animated: true)
 ```
                                                          
 
-### 6. Export Data Directory
+### Export Data Directory
 
 ExportData allows you to export the Ditto store directory as a zip file.
 
@@ -289,7 +301,7 @@ let vc = UIHostingController(rootView: ExportData(ditto: ditto))
 present(vc, animated: true)
 ```
 
-### 7. Presence Degradation Reporter
+### Presence Degradation Reporter
 
 Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected. Provides a callback function that will allow you to monitor the status of the mesh.
 
@@ -336,7 +348,7 @@ let vc = UIHostingController(rootView: PresenceDegradationView(ditto: <diito>))
 present(vc, animated: true)
 ```
 
-### 8. Permissions Health
+### Permissions Health
 
 Permissions Health allows you to see the status of ditto's required services and permissions.
 
@@ -367,7 +379,7 @@ let vc = UIHostingController(rootView: PermissionsHealth())
 present(vc, animated: true)
 ```
 
-### 9. Heartbeat
+### Heartbeat
 
 The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh. It allows you to regularly report data and health of the device.
 
