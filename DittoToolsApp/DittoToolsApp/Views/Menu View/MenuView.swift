@@ -55,7 +55,7 @@ struct MenuView: View {
 
     @ViewBuilder
     private var LogoView: some View {
-        Image("Ditto.LogoMark.Blue", bundle: .main)
+        Image("Ditto.LogoMark", bundle: .main)
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: .infinity)

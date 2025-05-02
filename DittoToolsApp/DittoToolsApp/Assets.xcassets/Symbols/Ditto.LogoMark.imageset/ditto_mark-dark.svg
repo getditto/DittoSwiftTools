@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 376 416">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #0a0a0a;
+      }
+    </style>
+  </defs>
+  <!-- Generator: Adobe Illustrator 28.7.1, SVG Export Plug-In . SVG Version: 1.2.0 Build 142)  -->
+  <g>
+    <g id="Mark">
+      <polygon id="block-center" class="cls-1" points="170 240 170 176 166 172 102 172 98 176 98 240 102 244 166 244 170 240"/>
+      <polygon id="block-small-bottom" class="cls-1" points="50 260 46 264 46 302 50 306 88 306 92 302 92 264 88 260 50 260"/>
+      <polygon id="block-small-top" class="cls-1" points="50 110 46 114 46 152 50 156 88 156 92 152 92 114 88 110 50 110"/>
+      <path id="chevron" class="cls-1" d="M326,162h-72l-4-4v-62l-4-4h-64l-4-4v-38l-4-4h-44l-4,4v46l4,4h48l4,4v62l4,4h68l4,4v68l-4,4h-68l-4,4v62l-4,4h-48l-4,4v46l4,4h44l4-4v-38l4-4h64l4-4v-62l4-4h72l4-4v-84l-4-4Z"/>
+    </g>
+  </g>
+</svg>
