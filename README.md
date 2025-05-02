@@ -27,15 +27,27 @@ in the Swift Package Manager.*
 
 ## Usage
 
-There are six targets in this package: 
+There are several targets in this package:
+- DittoAllToolsMenu
 - DittoPresenceViewer  
 - DittoPeersList  
 - DittoDiskUsage  
 - DittoDataBrowser 
 - DittoExportData    
+- DittoPermissionsHealth
+- DittoHeartbeat
+
+### All Tools Menu
+This tool provides an easy way to integrate all of our tools together in a single handy SwiftUI menu by passing in your `Ditto` instance. We typically recommend this tool for integration, unless you need limited specific tools for your app.
+
+To use this view, simply pass your `Ditto` instance in, e.g.:
+
+```swift
+AllToolsMenu(ditto: ditto)
+```
   
 
-### 1. Presence Viewer
+### Presence Viewer
 The Presence Viewer displays a mesh graph that allows you to see all connected peers within the mesh 
 and the transport each peer is using to make a connection.  
 
@@ -144,7 +156,7 @@ let vc = UIHostingController(rootView: DittoDiskUsageView(ditto: DittoManager.sh
 present(vc, animated: true)
 ```
 
-### 4. Data Browser
+### Data Browser
 The Ditto Data Browser allows you to view all your collections, documents within each collection and 
 the properties/values of a document. With the Data Browser, you can observe any changes that are made 
 to your collections and documents in real time.  
