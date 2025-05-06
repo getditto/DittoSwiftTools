@@ -19,7 +19,6 @@
 		0E60040F2B7BFCD500C27FAF /* DittoPresenceDegradation in Frameworks */ = {isa = PBXBuildFile; productRef = 0E60040E2B7BFCD500C27FAF /* DittoPresenceDegradation */; };
 		0ED091502C640FFF00F6403B /* DittoAllToolsMenu in Frameworks */ = {isa = PBXBuildFile; productRef = 0ED0914F2C640FFF00F6403B /* DittoAllToolsMenu */; };
 		146ED3F629C4F13100A56229 /* DittoPeersList in Frameworks */ = {isa = PBXBuildFile; productRef = 146ED3F529C4F13100A56229 /* DittoPeersList */; };
-		14B7342C2A296A4E0081CEF2 /* DittoExportLogs in Frameworks */ = {isa = PBXBuildFile; productRef = 14B7342B2A296A4E0081CEF2 /* DittoExportLogs */; };
 		14E35DB12B7F345C0018EC3B /* DittoHeartbeat in Frameworks */ = {isa = PBXBuildFile; productRef = 14E35DB02B7F345C0018EC3B /* DittoHeartbeat */; };
 		231250CE2D2D892B00EFB3C4 /* FormState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231250CD2D2D892B00EFB3C4 /* FormState.swift */; };
 		231250D02D2DAEA200EFB3C4 /* FormField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231250CF2D2DAEA200EFB3C4 /* FormField.swift */; };
@@ -106,7 +105,6 @@
 				0E03301C2B8D3C0100C20156 /* DittoPermissionsHealth in Frameworks */,
 				F87DC47C2988584200899FEC /* DittoDataBrowser in Frameworks */,
 				074F006F2C514DB900211F51 /* DittoSwift in Frameworks */,
-				14B7342C2A296A4E0081CEF2 /* DittoExportLogs in Frameworks */,
 				14E35DB12B7F345C0018EC3B /* DittoHeartbeat in Frameworks */,
 				146ED3F629C4F13100A56229 /* DittoPeersList in Frameworks */,
 				074F006D2C514DB900211F51 /* DittoObjC in Frameworks */,
