@@ -42,6 +42,8 @@ There are several targets in this package:
 ### All Tools Menu
 This tool provides an easy way to integrate all of our tools together in a single handy SwiftUI menu by passing in your `Ditto` instance. We typically recommend this tool for integration, unless you need limited specific tools for your app.
 
+<img src="/Img/AllToolsMenu.jpg" alt="All Tools Menu">
+
 To use this view, simply pass your `Ditto` instance in, e.g.:
 
 ```swift
