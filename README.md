@@ -1,8 +1,7 @@
  # DittoSwiftTools
  
 DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers in a graphic viewer and 
-in a list view, export Ditto data directory and debug logs, browse collections/documents, and see 
-Ditto's disk usage.
+in a list view, export Ditto data directory, browse collections/documents, and more.
 
 For support, please contact Ditto Support (<support@ditto.live>).
 
@@ -34,7 +33,6 @@ There are several targets in this package:
 - DittoPeersList  
 - DittoDiskUsage  
 - DittoDataBrowser 
-- DittoExportLogs  
 - DittoExportData    
 - DittoPermissionsHealth
 - DittoHeartbeat
@@ -127,7 +125,7 @@ let vc = UIHostingController(rootView: PeersListView(ditto: DittoManager.shared.
 present(vc, animated: true)
 ```
 
-### 3. Disk Usage  
+### Disk Usage  
 Disk Usage allows you to see Ditto's file space usage. In addition to viewing it you can also export the shown data.
 
  <img src="/Img/diskUsage.png" alt="Disk Usage Image" width="300">  
@@ -202,79 +200,6 @@ let vc = UIHostingController(rootView: DataBrowser(ditto: DittoManager.shared.di
 
 present(vc, animated: true)
 ```  
-
-### Logging and Export Logs
-#### Logging Level  
-
-The LoggingDetailsView allows you to choose the Ditto logging level at runtime and toggle whether logging is enabled. Changes made through the LoggingDetailsView are automatically persisted using UserDefaults, ensuring the selected log level and enabled status are restored when the app restarts.
-
- <img src="/Img/loggingLevel.png" alt="Logging Level Image" width="300">  
-
-
-#### SwiftUI
-
-To integrate the LoggingDetailsView into your app, simply pass your Ditto instance to the view. The picker will display the available log levels, and the toggle will allow enabling or disabling logging.
-
-```
-import DittoExportLogs
-import DittoSwift
-import SwiftUI
-
-struct LoggingDetailsViewer: View {
-    var body: some View {
-        LoggingDetailsView(ditto: <ditto instance>)
-    }
-}
-```
-
-You can embed the LoggingDetailsView into your app’s navigation hierarchy or display it as a modal view. For example:
-
-```
-NavigationView {
-    VStack {
-        LoggingDetailsView()
-    }
-    .navigationTitle("Logging Settings")
-}
-```
-
-Or present it as a sheet:
-
-```
-.sheet(isPresented: $isPresented) {
-    LoggingDetailsView()
-}
-```
-        
-#### Export Logs  
-Allows you to export a file of the logs from your applcation as a zip file.  
-
- <img src="/Img/exportLogs.png" alt="Export Logs Image" width="300">  
-
-First, make sure the "DittoExportLogs" is added to your Target. Then, use `import DittoExportLogs` 
-to import the Export Logs.
-
-**SwiftUI**  
-
-Use `ExportLogs()` to export the logs. It is recommended to call `ExportLogs` from within a [sheet](https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:)).  
-
-```
-.sheet(isPresented: $isPresented) {
-    ExportLogs()
-}
-```  
-
-**UIKit**  
-
-Pass `ExportLogs()` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
-which will return a view controller you can use to present.  
-
-```
-let vc = UIHostingController(rootView: ExportLogs())
-
-present(vc, animated: true)
-```
-                                                         
 
 ### Export Data Directory
 
