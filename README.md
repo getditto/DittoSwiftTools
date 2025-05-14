@@ -44,10 +44,23 @@ This tool provides an easy way to integrate all of our tools together in a singl
 
 <img src="/Img/AllToolsMenu.jpg" alt="All Tools Menu">
 
-To use this view, simply pass your `Ditto` instance in, e.g.:
+You can use this view in SwiftUI or UIKit
+
+**SwiftUI**
+
+Simply pass your `Ditto` instance in, e.g.:
 
 ```swift
 AllToolsMenu(ditto: ditto)
+```
+
+**UIKit**
+
+Wrap the AllToolsMenu in a UIHostingController, e.g.:
+
+```swift
+let vc = UIHostingController(rootView: AllToolsMenu(ditto: ditto))
+navigationController?.pushViewController(vc, animated: true)
 ```
   
 
