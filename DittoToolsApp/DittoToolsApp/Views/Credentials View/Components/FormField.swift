@@ -122,6 +122,7 @@ struct FormField: View {
     @ViewBuilder
     private func clearableTextField(subtype: FormFieldType.TextSubtype) -> some View {
         HStack {
+            #if !os(macOS)
             TextField(
                 placeholder ?? placeholderText(for: type) ?? "",
                 text: $stringValue,
@@ -129,16 +130,22 @@ struct FormField: View {
                     isTextFieldFocused = isEditing
                 }
             )
-            #if !os(macOS)
             .keyboardType(type.keyboardType)
-            #endif
-            .autocorrectionDisabled()
-            #if !os(macOS)
             .autocapitalization(subtype == .uuid ? .allCharacters : .none)
             .font(.system(.body, design: .monospaced))
-            #endif
+            .autocorrectionDisabled()
             .multilineTextAlignment(textAlignment)
-
+            #else
+            TextField(
+                text: $stringValue,
+                prompt: Text(placeholder ?? placeholderText(for: type) ?? "")
+            ) {
+                Text("")
+            }
+            .autocorrectionDisabled()
+            .multilineTextAlignment(textAlignment)
+            #endif
+            
             #if !os(tvOS)
             Image(systemName: "xmark.circle.fill")
             #if !os(macOS)

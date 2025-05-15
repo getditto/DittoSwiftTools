@@ -41,6 +41,7 @@ struct CredentialsView: View {
         }
         .onAppear { disableInteractiveDismissal() }
         #if os(macOS)
+        .onDisappear { enableInteractiveDismissal() }
         .alert("Cannot Apply Credentials", isPresented: $isShowingValidationErrorAlert) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -54,7 +55,7 @@ struct CredentialsView: View {
         } message: {
             Text("This will permanently delete your saved credentials.")
         }
-        #else
+        #elseif os(iOS)
         .actionSheet(isPresented: $isShowingConfirmClearCredentials) {
             clearCredentialsActionSheet
         }
@@ -92,6 +93,8 @@ struct CredentialsView: View {
             }
         #elseif os(macOS)
             formView
+            .frame(minWidth: 500, minHeight: 300)
+            .padding(20)
         #else
             formView
                 .navigationBarTitleDisplayMode(.inline)
@@ -210,6 +213,15 @@ struct CredentialsView: View {
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let rootVC = scene.windows.first?.rootViewController?.presentedViewController {
             rootVC.isModalInPresentation = true
+        }
+        #endif
+    }
+    
+    private func enableInteractiveDismissal() {
+        #if os(macOS)
+        if let window = NSApplication.shared.windows.first {
+            window.isMovable = true
+            window.styleMask.insert(.closable) // Enables the close button
         }
         #endif
     }
