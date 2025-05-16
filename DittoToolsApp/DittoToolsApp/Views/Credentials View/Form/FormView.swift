@@ -73,23 +73,30 @@ struct FormView<ApplyButton: View, CancelButton: View, ClearButton: View>: View 
     }
 
     // MARK: - Identity Type Picker Section
+    
+    /// MacOS and iOS handle Picker title placement differently, conditionally displaying for uniformity across platforms
+    private var pickerLabel: String {
+        #if os(macOS)
+        return ""
+        #else
+        return "Identity Type"
+        #endif
+    }
 
     /// A section displaying the identity type picker, allowing users to choose the type of credentials to configure.
     private var identityTypePickerSection: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Section(header: Text("Identity Type")) {
-                Picker("Type", selection: $viewModel.formState.identityType) {
-                    ForEach(DittoIdentity.identityTypes, id: \.self) { type in
-                        Text(type.rawValue)
-                    }
+        VStack(alignment: .leading) {
+            #if os(macOS)
+            Text("Identity Type")
+            #endif
+            Picker(pickerLabel, selection: $viewModel.formState.identityType) {
+                ForEach(DittoIdentity.identityTypes, id: \.self) { type in
+                    Text(type.rawValue)
                 }
             }
-            #if os(macOS)
-            .padding(.bottom, 15)
-            #endif
         }
         #if os(macOS)
-        .padding(.top, 25)
+        .padding()
         #endif
     }
 
@@ -101,7 +108,6 @@ struct FormView<ApplyButton: View, CancelButton: View, ClearButton: View>: View 
     @ViewBuilder
     private var identityDetailsSection: some View {
         Section(
-            header: Text("Identity Details"),
             footer: Text("Applying these credentials will restart the Ditto sync engine.")
                 .font(.subheadline)
                 .frame(maxWidth: .infinity)
