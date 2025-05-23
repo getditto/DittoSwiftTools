@@ -12,15 +12,19 @@ import Combine
 
 class PresenceDegradationVM: ObservableObject {
         
-    @Published var expectedPeers: Int = 0
+    @Published var expectedPeers: String = ""
     @Published var apiEnabled: Bool = false
     @Published var sessionStartTime: String?
-    @Published var isSheetPresented = true
+    @Published var isNewSessionView = true
     @Published var localPeer: Peer?
     @Published var remotePeers: [String:Peer]?
     @Published var settings: Settings?
     var ditto: Ditto
     var peersObserver: DittoObserver?
+    
+    var expectedPeersInt: Int? {
+        Int(expectedPeers)
+    }
 
     init(ditto: Ditto) {
         self.ditto = ditto
@@ -97,12 +101,12 @@ class PresenceDegradationVM: ObservableObject {
     func updateSettings() {
         var hasSeenExpectedPeers = false
         
-        if(self.remotePeers?.count ?? 0 >= self.expectedPeers) {
+        if(self.remotePeers?.count ?? 0 >= expectedPeersInt ?? 0) {
             hasSeenExpectedPeers = true
         }
         
         self.settings = Settings(
-            expectedPeers: self.expectedPeers,
+            expectedPeers: self.expectedPeersInt ?? 0,
             reportApiEnabled: self.apiEnabled,
             hasSeenExpectedPeers: hasSeenExpectedPeers,
             sessionStartedAt: self.sessionStartTime ?? ""

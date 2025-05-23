@@ -14,8 +14,6 @@ struct PresenceDegradationViewer: View {
     var ditto: Ditto
     
     var body: some View {
-#if !os(macOS)
-
         PresenceDegradationView(ditto: ditto) { expectedPeers, remotePeers, settings in
             print("expected Peers: \(expectedPeers)")
             
@@ -27,7 +25,6 @@ struct PresenceDegradationViewer: View {
             }
 
         }
-        #endif
     }
 }
 
