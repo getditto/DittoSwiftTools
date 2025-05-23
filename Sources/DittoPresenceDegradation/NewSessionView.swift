@@ -8,7 +8,7 @@
 import SwiftUI
 #if os(tvOS)
 import UIKit
-import ReusableComponents
+import Utils
 #endif
 
 public struct NewSessionView: View {

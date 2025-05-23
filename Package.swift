@@ -54,8 +54,8 @@ let package = Package(
             name: "DittoAllToolsMenu",
             targets: ["DittoAllToolsMenu"]),
         .library(
-            name: "ReusableComponents",
-            targets: ["ReusableComponents"]),
+            name: "Utils",
+            targets: ["Utils"]),
     ],
     dependencies: [
         .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.9.1"),
@@ -108,7 +108,7 @@ let package = Package(
             name: "DittoPresenceDegradation",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
-                "ReusableComponents"
+                "Utils"
             ]
         ),
         .target(
@@ -141,7 +141,7 @@ let package = Package(
             ]
         ),
         .target(
-            name: "ReusableComponents"
+            name: "Utils"
         )
     ]
 )
