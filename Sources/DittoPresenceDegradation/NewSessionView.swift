@@ -6,6 +6,10 @@
 //
 
 import SwiftUI
+#if os(tvOS)
+import UIKit
+import ReusableComponents
+#endif
 
 public struct NewSessionView: View {
     
@@ -15,6 +19,7 @@ public struct NewSessionView: View {
     @Binding var sessionStartTime: String?
     @State private var tempExpectedPeers: String = ""
     @State private var showAlert = false
+    @State private var isEditing = false
 
     var onDismiss: () -> Void
     
@@ -33,6 +38,7 @@ public struct NewSessionView: View {
     }
     
     public var body: some View {
+        
         Group {
             #if os(macOS)
             ScrollView {
@@ -48,9 +54,6 @@ public struct NewSessionView: View {
                 expectedPeersSection
                 apiToggleSection
             }
-            #if os(iOS)
-            .padding(.top, -16)
-            #endif
             #endif
         }
         .navigationTitle("New Session")
@@ -77,32 +80,48 @@ public struct NewSessionView: View {
     // MARK: - Subviews
 
     private var expectedPeersSection: some View {
+        #if os(iOS)
         Section {
-            Group {
-                #if os(macOS)
-                VStack(alignment: .leading) {
-                    Text("Expected Peer Count")
-                        .font(.headline)
-                    TextField("Enter number", text: $tempExpectedPeers)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(maxWidth: 200)
-                }
-                #else
-                HStack {
-                    Text("Expected Peer Count")
-                    Spacer()
-                    TextField("", text: $tempExpectedPeers)
-                        .modifier(ExpectedPeerFieldModifier())
-                }
-                #endif
+            TextField("Enter Number", text: $tempExpectedPeers)
+                .keyboardType(.numberPad)
+        } header: {
+            Text("Expected Peer Count")
+        } footer: {
+            Text("Define the minimum number of required peers to be connected. Must be at least 1.")
+                .font(.footnote)
+        }
+        #elseif os(macOS)
+        Section {
+            VStack(alignment: .leading) {
+                Text("Expected Peer Count")
+                    .font(.headline)
+                TextField("Enter number", text: $tempExpectedPeers)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(maxWidth: 200)
             }
         } footer: {
             Text("Define the minimum number of required peers to be connected. Must be at least 1.")
                 .font(.footnote)
-                #if os(macOS)
                 .padding(.top, -16)
-                #endif
         }
+        #else
+        Section {
+            Button(action: {
+                isEditing = true
+            }) {
+                HStack {
+                    Text("Expected Peer Count")
+                    Spacer()
+                    Text(tempExpectedPeers)
+                    Image(systemName: "chevron.right")
+                }
+            }
+            .background(KeyboardOverlay(text: $tempExpectedPeers, isPresented: $isEditing, keyboardType: .numberPad))
+        } footer: {
+            Text("Define the minimum number of required peers to be connected. Must be at least 1.")
+                .font(.footnote)
+        }
+        #endif
     }
 
     private var apiToggleSection: some View {
@@ -146,26 +165,6 @@ public struct NewSessionView: View {
         sessionStartTime = getStartTime()
         isPresented = false
         onDismiss()
-    }
-}
-
-// MARK: - ViewModifier for Field Styling
-
-private struct ExpectedPeerFieldModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        #if os(macOS)
-        return content
-        #elseif os(tvOS)
-        return content
-            .keyboardType(.numberPad)
-            .frame(width: 200)
-        #elseif os(iOS)
-        return content
-            .keyboardType(.numberPad)
-            .multilineTextAlignment(.trailing)
-            .textFieldStyle(RoundedBorderTextFieldStyle())
-            .frame(width: 60)
-        #endif
     }
 }
 

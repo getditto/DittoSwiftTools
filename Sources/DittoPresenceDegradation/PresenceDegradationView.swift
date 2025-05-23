@@ -41,6 +41,7 @@ public struct PresenceDegradationView: View {
 
     struct Content: View {
         @ObservedObject var vm: PresenceDegradationVM
+        @State private var isHovered = false
 
         var body: some View {
             ScrollView {
@@ -76,20 +77,22 @@ public struct PresenceDegradationView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    #if os(macOS)
                     Button(action: { vm.isNewSessionView = true }) {
                         Text("New Session")
+                            #if os(macOS)
                             .bold()
                             .padding(.horizontal, 16)
                             .padding(.vertical, 6)
                             .foregroundColor(Color.primary)
+                            #endif
                     }
-                    .background(Color.blue.opacity(0.5))
+                    #if os(macOS)
+                    .background(Color.blue.opacity(isHovered ? 1 : 0.9))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
-                    #else
-                    Button(action: { vm.isNewSessionView = true }) {
-                        Text("New Session")
+                    .onHover { hovering in
+                        isHovered = hovering
                     }
+                    .animation(.easeInOut(duration: 0.1), value: isHovered)
                     #endif
                 }
             }
