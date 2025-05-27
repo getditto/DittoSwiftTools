@@ -43,9 +43,6 @@ public struct DataBrowser: View {
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
-            .onDisappear(perform: {
-                viewModel.closeLiveQuery()
-            })
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     // Hides startPauseButton so it doesn't interfere with modal on tvOS
@@ -162,7 +159,6 @@ public struct DataBrowser: View {
             #if os(iOS)
             Image(systemName: self.startSubscriptions ? "pause.circle" : "play.circle")
                 .font(.system(size: 24))
-                .animation(.none)
             #else
             Text(self.startSubscriptions ? "Pause Subscriptions" : "Start Subscriptions")
                 #if os(macOS)
