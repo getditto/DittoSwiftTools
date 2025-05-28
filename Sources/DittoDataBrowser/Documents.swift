@@ -24,7 +24,7 @@ struct Documents: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                searchBar
+                queryBar
                 documentDropDown
                 detailsView
             }
@@ -60,7 +60,7 @@ struct Documents: View {
         #endif
     }
     
-    private var searchBar: some View {
+    private var queryBar: some View {
         HStack {
             #if os(tvOS)
             Button(action: {
@@ -75,8 +75,15 @@ struct Documents: View {
             }
             .background(KeyboardOverlay(text: $querySearch, isPresented: $isEditing, keyboardType: .default))
             #else
-            TextField("Query Documents", text: $querySearch, onCommit: {viewModel.filterDocs(queryString: querySearch)})
-                .textFieldStyle(.roundedBorder)
+            VStack(alignment: .leading) {
+                Text("Query Documents")
+                    .font(.headline)
+                TextField("SELECT * FROM locations LIMIT 100 OFFSET 0", text: $querySearch, onCommit: {viewModel.filterDocs(queryString: querySearch)})
+                    .textFieldStyle(.roundedBorder)
+                Link("Learn how to write DQL queries",
+                     destination: URL(string: "https://docs.ditto.live/dql/dql")!)
+                .font(.caption)
+            }
             #endif
             #if os(macOS) || os(tvOS)
             Button {
