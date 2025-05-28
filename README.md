@@ -79,7 +79,7 @@ You can use the Presence Viewer in SiwftUI or UIKit
 
 Use `PresenceView(ditto: Ditto)` and pass in your Ditto instance to display the mesh graph.  
 
-```
+```swift
 import DittoPresenceViewer
 
 struct PresenceViewer: View{
@@ -96,7 +96,7 @@ Call [present](https://developer.apple.com/documentation/uikit/uiviewcontroller/
 and pass `DittoPresenceView(ditto: DittoManager.shared.ditto).viewController` as a parameter. 
 Set `animated` to `true`.  
 
-```
+```swift
 func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     present(DittoPresenceView(ditto: DittoManager.shared.ditto).viewController, animated: true) {
         if let selected = tableView.indexPathForSelectedRow {
@@ -118,7 +118,7 @@ You can use the Peers List in SiwftUI or UIKit
 
 Use `PeersListView(ditto: Ditto)`, passing in your Ditto instance to display the peers list.  
 
-```
+```swift
 import DittoSwift
 
 struct PeersListViewer: View {
@@ -134,7 +134,7 @@ struct PeersListViewer: View {
 Pass `PeersListView(ditto: Ditto)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
 which will return a view controller you can use to present.  
 
-```
+```swift
 let vc = UIHostingController(rootView: PeersListView(ditto: DittoManager.shared.ditto))
 
 present(vc, animated: true)
@@ -152,7 +152,7 @@ to import the Disk Usage.
 
 Use `DittoDiskUsageView(ditto: Ditto)` and pass in your Ditto instance.  
 
-```
+```swift
 import DittoDiskUsage
 
 struct DiskUsageViewer: View {
@@ -167,7 +167,7 @@ struct DiskUsageViewer: View {
 Pass `DittoDiskUsageView(ditto: Ditto)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
 which will return a view controller you can use to present.  
 
-```
+```swift
 let vc = UIHostingController(rootView: DittoDiskUsageView(ditto: DittoManager.shared.ditto))
 
 present(vc, animated: true)
@@ -195,7 +195,7 @@ to import the Data Browser.
 
 Use `DataBrowser(ditto: Ditto)` and pass in your Ditto instance to display the Data Browser.  
 
-```
+```swift
 import DittoDataBrowser
 
 struct DataBrowserView: View {
@@ -210,7 +210,7 @@ struct DataBrowserView: View {
 Pass `DataBrowser(ditto: Ditto)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
 which will return a view controller you can use to present.   
 
-```
+```swift
 let vc = UIHostingController(rootView: DataBrowser(ditto: DittoManager.shared.ditto))
 
 present(vc, animated: true)
@@ -228,7 +228,7 @@ The LoggingDetailsView allows you to choose the Ditto logging level at runtime a
 
 To integrate the LoggingDetailsView into your app, simply pass your Ditto instance to the view. The picker will display the available log levels, and the toggle will allow enabling or disabling logging.
 
-```
+```swift
 import DittoExportLogs
 import DittoSwift
 import SwiftUI
@@ -242,7 +242,7 @@ struct LoggingDetailsViewer: View {
 
 You can embed the LoggingDetailsView into your app’s navigation hierarchy or display it as a modal view. For example:
 
-```
+```swift
 NavigationView {
     VStack {
         LoggingDetailsView()
@@ -253,7 +253,7 @@ NavigationView {
 
 Or present it as a sheet:
 
-```
+```swift
 .sheet(isPresented: $isPresented) {
     LoggingDetailsView()
 }
@@ -271,7 +271,7 @@ to import the Export Logs.
 
 Use `ExportLogs()` to export the logs. It is recommended to call `ExportLogs` from within a [sheet](https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:)).  
 
-```
+```swift
 .sheet(isPresented: $isPresented) {
     ExportLogs()
 }
@@ -282,7 +282,7 @@ Use `ExportLogs()` to export the logs. It is recommended to call `ExportLogs` fr
 Pass `ExportLogs()` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
 which will return a view controller you can use to present.  
 
-```
+```swift
 let vc = UIHostingController(rootView: ExportLogs())
 
 present(vc, animated: true)
@@ -325,7 +325,7 @@ Tracks the status of your mesh, allowing to define the minimum of required peers
 You can use the Presence Degradation Reporter in SiwftUI or UIKit
 
 data provided in callback
-```
+```swift
 settings: Settings
 struct Settings {
     let expectedPeers: Int
@@ -339,7 +339,7 @@ struct Settings {
 
 Use `PresenceDegradationView(ditto: DittoManager.shared.ditto!) { expectedPeers, remotePeers, settings in //handle data}`, passing in your Ditto instance to display the peers list.  
 
-```
+```swift
 import DittoPresenceDegradation
 
 struct PresenceDegradationViewer: View {
@@ -357,7 +357,7 @@ struct PresenceDegradationViewer: View {
 Pass `PresenceDegradationView(ditto: <ditto>)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
 which will return a view controller you can use to present.  
 
-```
+```swift
 let vc = UIHostingController(rootView: PresenceDegradationView(ditto: <diito>))
 
 present(vc, animated: true)
@@ -373,7 +373,7 @@ Example: Wi-Fi, Bluetooth, Missing Permissions.
 
 **SwiftUI**
 
-```
+```swift
 import DittoPermissionsHealth
 
 struct PermissionsHealthViewer: View {
@@ -486,17 +486,8 @@ struct HeartbeatViewer: View {
 Pass `HeartbeatView(ditto: <ditto>, config: <heartbeatConfig>)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) 
 which will return a view controller you can use to present.  
 
-```
-let vc = UIHostingController(rootView: HeartbeatView(ditto: <ditto>, config: <heartbeatConfig>))
-
-**Read data only:**
-
-Create a `HeartbeatVM(ditto: <ditto>` object and then call `startHeartbeat(config: DittoHeartbeatConfig, callback: @escaping HeartbeatCallback)`. You can access the data in the callback of `startHeartbeat`
 ```swift
-var heartBeatVm = HeartbeatVM(ditto: DittoManager.shared.ditto!)
-heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(secondsInterval: Int, metadata: metadata: [String:Any]? )) { heartbeatInfo in
-        //use data
-} 
+let vc = UIHostingController(rootView: HeartbeatView(ditto: <ditto>, config: <heartbeatConfig>))
 ```
 
 **Read data only:**
