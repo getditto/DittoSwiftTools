@@ -39,60 +39,71 @@ struct Documents: View {
     
     private var detailsView: some View {
         VStack(alignment: .leading) {
-            ForEach(viewModel.docProperties ?? [], id: \.self) { property in
-                HStack {
-                    Text(property + ":")
-                    if let temp = viewModel.docsList[viewModel.selectedDoc].value[property], let val = temp {
-                        Text(String.init(describing: val))
+            if viewModel.docsList.indices.contains(viewModel.selectedDoc) {
+                ForEach(viewModel.docProperties ?? [], id: \.self) { property in
+                    HStack {
+                        if let temp = viewModel.docsList[viewModel.selectedDoc].value[property], let val = temp {
+                            Text(property + ":")
+                            Text(String(describing: val))
+                        }
                     }
+                    #if os(tvOS)
+                    .focusable(true)
+                    #endif
                 }
-                #if os(tvOS)
-                .focusable(true)
-                #endif
+            } else {
+                Text("No document selected or query returned no results.")
+                    .foregroundColor(.secondary)
+                    .italic()
             }
         }
         #if os(iOS)
         .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(UIColor.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         #elseif os(tvOS)
         .padding()
         #endif
     }
+
     
     private var queryBar: some View {
-        HStack {
-            #if os(tvOS)
-            Button(action: {
-                isEditing = true
-            }) {
-                HStack {
-                    Text("Query Documents")
-                    Spacer()
-                    Text(querySearch)
-                    Image(systemName: "chevron.right")
+        VStack(alignment: .leading) {
+            Text("Query Documents")
+                .font(.headline)
+            HStack {
+                #if os(tvOS)
+                Button(action: {
+                    isEditing = true
+                }) {
+                    HStack {
+                        Text("Query Documents")
+                        Spacer()
+                        Text(querySearch)
+                        Image(systemName: "chevron.right")
+                    }
                 }
-            }
-            .background(KeyboardOverlay(text: $querySearch, isPresented: $isEditing, keyboardType: .default))
-            #else
-            VStack(alignment: .leading) {
-                Text("Query Documents")
-                    .font(.headline)
-                TextField("SELECT * FROM locations LIMIT 100 OFFSET 0", text: $querySearch, onCommit: {viewModel.filterDocs(queryString: querySearch)})
+                .background(KeyboardOverlay(text: $querySearch, isPresented: $isEditing, keyboardType: .default))
+                #else
+                TextField("name == \"Ham's Burgers\"", text: $querySearch, onCommit: {viewModel.filterDocs(queryString: querySearch)})
                     .textFieldStyle(.roundedBorder)
-                Link("Learn how to write DQL queries",
-                     destination: URL(string: "https://docs.ditto.live/dql/dql")!)
+                #endif
+                #if os(macOS) || os(tvOS)
+                Button {
+                    viewModel.filterDocs(queryString: querySearch)
+                } label: {
+                    Text("Enter")
+                }
+                #endif
+            }
+            Text("This is a filter mechanism for DQL queries. It's as if you already have the 'SELECT * FROM " + viewModel.collectionName + " WHERE' applied, so you add the filtering criteria. Ex: name == \"Ham's Burgers\"")
                 .font(.caption)
-            }
-            #endif
-            #if os(macOS) || os(tvOS)
-            Button {
-                viewModel.filterDocs(queryString: querySearch)
-            } label: {
-                Text("Enter")
-            }
-            #endif
+            Link("Learn how to write DQL queries",
+                 destination: URL(string: "https://docs.ditto.live/dql/dql")!)
+                .font(.caption)
         }
+        .padding(.bottom)
         .onDisappear(perform: {
             viewModel.closeLiveQuery()
         })
