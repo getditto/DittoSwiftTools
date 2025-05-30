@@ -102,7 +102,7 @@ public struct PresenceDegradationView: View {
         }
 
         var isHealthyMesh: Bool {
-            (vm.remotePeers?.filter { $0.value.connected }.count ?? 0) >= (Int(vm.expectedPeers) ?? 0)
+            connectedPeerCount >= vm.expectedPeersInt
         }
 
         var connectedPeerCount: Int {

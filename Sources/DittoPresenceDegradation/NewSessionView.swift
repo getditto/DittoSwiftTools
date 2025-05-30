@@ -8,7 +8,7 @@
 import SwiftUI
 #if os(tvOS)
 import UIKit
-import Utils
+import DittoTvOSTextFieldComponent
 #endif
 
 public struct NewSessionView: View {

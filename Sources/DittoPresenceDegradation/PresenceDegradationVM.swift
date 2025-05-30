@@ -22,8 +22,8 @@ class PresenceDegradationVM: ObservableObject {
     var ditto: Ditto
     var peersObserver: DittoObserver?
     
-    var expectedPeersInt: Int? {
-        Int(expectedPeers)
+    var expectedPeersInt: Int {
+        Int(expectedPeers) ?? 0
     }
 
     init(ditto: Ditto) {
@@ -101,12 +101,12 @@ class PresenceDegradationVM: ObservableObject {
     func updateSettings() {
         var hasSeenExpectedPeers = false
         
-        if(self.remotePeers?.count ?? 0 >= expectedPeersInt ?? 0) {
+        if(self.remotePeers?.count ?? 0 >= expectedPeersInt) {
             hasSeenExpectedPeers = true
         }
         
         self.settings = Settings(
-            expectedPeers: self.expectedPeersInt ?? 0,
+            expectedPeers: self.expectedPeersInt,
             reportApiEnabled: self.apiEnabled,
             hasSeenExpectedPeers: hasSeenExpectedPeers,
             sessionStartedAt: self.sessionStartTime ?? ""
