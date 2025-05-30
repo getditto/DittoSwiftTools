@@ -103,7 +103,7 @@ struct Documents: View {
             }
             Text("This is a filter mechanism for DQL queries. It's as if you already have the 'SELECT * FROM " + viewModel.collectionName + " WHERE' applied, so you add the filtering criteria. Ex: name == \"Ham's Burgers\"")
                 .font(.caption)
-            #if os(tvOS)
+            #if os(iOS) || os(macOS)
             Link("Learn how to write DQL queries",
                  destination: URL(string: "https://docs.ditto.live/dql/dql")!)
                 .font(.caption)
