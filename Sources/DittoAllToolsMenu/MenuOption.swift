@@ -125,12 +125,10 @@ enum MenuOption: String, CaseIterable {
                 PermissionsHealthViewer()
             case .heartbeat:
                 HeartBeatViewer(ditto: ditto)
-#if !os(macOS)
             case .dataBrowser:
                 DataBrowserView(ditto: ditto)
             case .logging:
                 LoggingDetailsViewer(ditto: ditto)
-#endif
             default:
                 EmptyView()
             }
