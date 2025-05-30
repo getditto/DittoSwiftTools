@@ -53,6 +53,9 @@ let package = Package(
         .library(
             name: "DittoAllToolsMenu",
             targets: ["DittoAllToolsMenu"]),
+        .library(
+            name: "DittoTvOSTextFieldComponent",
+            targets: ["DittoTvOSTextFieldComponent"]),
     ],
     dependencies: [
         .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.9.1"),
@@ -104,7 +107,8 @@ let package = Package(
         .target(
             name: "DittoPresenceDegradation",
             dependencies: [
-                .product(name: "DittoSwift", package: "DittoSwiftPackage")
+                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
+                "DittoTvOSTextFieldComponent"
             ]
         ),
         .target(
@@ -135,6 +139,9 @@ let package = Package(
                 "DittoHeartbeat",
                 "DittoPermissionsHealth"
             ]
+        ),
+        .target(
+            name: "DittoTvOSTextFieldComponent"
         )
     ]
 )

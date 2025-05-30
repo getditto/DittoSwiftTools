@@ -5,20 +5,31 @@
 //  Created by Walker Erekson on 2/13/24.
 //
 
-#if !os(macOS)
-
 import SwiftUI
+#if os(tvOS)
+import UIKit
+import DittoTvOSTextFieldComponent
+#endif
 
 public struct NewSessionView: View {
     
-    @Binding private var expectedPeers: Int
+    @Binding private var expectedPeers: String
     @Binding private var apiEnabled: Bool
     @Binding var isPresented: Bool
     @Binding var sessionStartTime: String?
+    @State private var tempExpectedPeers: String = ""
     @State private var showAlert = false
+    @State private var isEditing = false
+
     var onDismiss: () -> Void
     
-    public init(expectedPeers: Binding<Int>, apiEnabled: Binding<Bool>, isPresented: Binding<Bool>, sessionStartTime: Binding<String?>, onDismiss: @escaping () -> Void) {
+    public init(
+        expectedPeers: Binding<String>,
+        apiEnabled: Binding<Bool>,
+        isPresented: Binding<Bool>,
+        sessionStartTime: Binding<String?>,
+        onDismiss: @escaping () -> Void
+    ) {
         self._expectedPeers = expectedPeers
         self._apiEnabled = apiEnabled
         self._isPresented = isPresented
@@ -27,51 +38,138 @@ public struct NewSessionView: View {
     }
     
     public var body: some View {
-        VStack(alignment: .leading) {
-            HStack() {
-                Text("Expected peer count in the mesh:")
-                TextField("0", value: $expectedPeers, formatter: NumberFormatter())
-                    .keyboardType(.numberPad)
-                    .frame(maxWidth: 50)
-
-            }
-            .padding()
-            HStack() {
-                Toggle(isOn: $apiEnabled, label: {
-                    Text("Enable Report API")
-                })
-            }
-            .padding()
-            
-            Button{
-                if self.expectedPeers > 0 {
-                    self.sessionStartTime = getStartTime()
-                    self.isPresented = false
-                    self.onDismiss()
-                } else {
-                    self.showAlert.toggle()
+        
+        Group {
+            #if os(macOS)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    expectedPeersSection
+                    apiToggleSection
                 }
-            } label: {
-                Text("Save")
-                    .padding(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.blue, lineWidth: 2)
-                    )
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .padding()
             }
-            .padding()
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("Alert"), message: Text("Expected peer count must be a number greater than 0"), dismissButton: .default(Text("OK")))
+            #else
+            Form {
+                expectedPeersSection
+                apiToggleSection
+            }
+            #endif
+        }
+        .navigationTitle("New Session")
+
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
+
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                saveButton
             }
         }
+
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Invalid Input"),
+                message: Text("Expected peer count must be greater than 0."),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+    }
+    
+    // MARK: - Subviews
+
+    private var expectedPeersSection: some View {
+        #if os(iOS)
+        Section {
+            TextField("Enter Number", text: $tempExpectedPeers)
+                .keyboardType(.numberPad)
+        } header: {
+            Text("Expected Peer Count")
+        } footer: {
+            Text("Define the minimum number of required peers to be connected. Must be at least 1.")
+                .font(.footnote)
+        }
+        #elseif os(macOS)
+        Section {
+            VStack(alignment: .leading) {
+                Text("Expected Peer Count")
+                    .font(.headline)
+                TextField("Enter number", text: $tempExpectedPeers)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(maxWidth: 200)
+            }
+        } footer: {
+            Text("Define the minimum number of required peers to be connected. Must be at least 1.")
+                .font(.footnote)
+                .padding(.top, -16)
+        }
+        #else
+        Section {
+            Button(action: {
+                isEditing = true
+            }) {
+                HStack {
+                    Text("Expected Peer Count")
+                    Spacer()
+                    Text(tempExpectedPeers)
+                    Image(systemName: "chevron.right")
+                }
+            }
+            .background(KeyboardOverlay(text: $tempExpectedPeers, isPresented: $isEditing, keyboardType: .numberPad))
+        } footer: {
+            Text("Define the minimum number of required peers to be connected. Must be at least 1.")
+                .font(.footnote)
+        }
+        #endif
+    }
+
+    private var apiToggleSection: some View {
+        Section {
+            Toggle("Enable Report API", isOn: $apiEnabled)
+        } footer: {
+            Text("Allows the session to receive updates and report mesh presence status via a callback.")
+                .font(.footnote)
+                #if os(macOS)
+                .padding(.top, -16)
+                #endif
+        }
+    }
+    
+    private var saveButton: some View {
+        #if os(macOS)
+        Button(action: saveSession) {
+            Text("Save")
+                .bold()
+                .padding(.horizontal, 16)
+                .padding(.vertical, 6)
+                .foregroundColor(Color.primary)
+        }
+        .background(Color.blue)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        #else
+        Button(action: saveSession) {
+            Text("Save").bold()
+        }
+        #endif
+    }
+
+    // MARK: - Logic
+
+    private func saveSession() {
+        guard Int(tempExpectedPeers) ?? 0 > 0 else {
+            showAlert = true
+            return
+        }
+        expectedPeers = tempExpectedPeers
+        sessionStartTime = getStartTime()
+        isPresented = false
+        onDismiss()
     }
 }
 
-func getStartTime() -> String {
-    return DateFormatter.isoDate.string(from: Date())
-}
+// MARK: - Utility
 
-#endif
+private func getStartTime() -> String {
+    DateFormatter.isoDate.string(from: Date())
+}

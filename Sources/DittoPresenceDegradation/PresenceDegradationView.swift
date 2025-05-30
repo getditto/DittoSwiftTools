@@ -5,13 +5,10 @@
 //  Created by Walker Erekson on 2/13/24.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 import DittoSwift
 
 public struct PresenceDegradationView: View {
-    
     @StateObject var vm: PresenceDegradationVM
     var callback: ((Int, [String: Peer]?, Settings?) -> Void)?
 
@@ -21,106 +18,185 @@ public struct PresenceDegradationView: View {
     }
 
     public var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                bannerColor
-                    .frame(height: 25, alignment: .top)
-                    .overlay(
-                        Text(vm.remotePeers?.filter { $0.value.connected } == nil ? "" : ((vm.remotePeers?.filter { $0.value.connected }.count) ?? 0 < vm.expectedPeers) ? "Unhealthy Mesh" : "Healthy Mesh")
-                    )
-                    .cornerRadius(10)
-                Text("Expected Minimum Peers: \(vm.expectedPeers )")
-                Text("Report API: \(vm.apiEnabled ? "Enabled" : "Disabled")")
-                Text("Session started at: \(vm.sessionStartTime ?? "")")
-
-                Button {
-                    vm.isSheetPresented = true
-                } label: {
-                    Text("New Session")
-// tvOS already has its work border system and these just cloud that.
-#if !os(tvOS)
-                        .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
-                        .cornerRadius(8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 3)
-                                .stroke(Color.blue, lineWidth: 2)
-                        )
-#endif
+        Group {
+            if vm.isNewSessionView {
+                NewSessionView(
+                    expectedPeers: $vm.expectedPeers,
+                    apiEnabled: $vm.apiEnabled,
+                    isPresented: $vm.isNewSessionView,
+                    sessionStartTime: $vm.sessionStartTime
+                ) {
+                    vm.startNewSession()
                 }
-                Divider()
-
-                Text("Local Device")
-                VStack(alignment: .leading) {
-                    Text("device name: \(vm.localPeer?.name ?? "")")
-                    Text("\(vm.localPeer?.key  ?? "")")
-                    Text("last Seen \(vm.localPeer?.lastSeenFormatted ?? "")")
-                    Divider()
-                    HStack {
-                        connectionText(connectionType: "BT", connectionCount: vm.localPeer?.transportInfo.bluetoothConnections)
-                        connectionText(connectionType: "LAN", connectionCount: vm.localPeer?.transportInfo.lanConnections)
-                        connectionText(connectionType: "P2P", connectionCount: vm.localPeer?.transportInfo.p2pConnections)
-                        connectionText(connectionType: "Cloud", connectionCount: vm.localPeer?.transportInfo.cloudConnections)
-                    }
-                }
-                .padding()
-                .background(Color(UIColor.systemGreen))
-                .cornerRadius(10)
-                Divider()
-
-                Text("Remote Devices (\(vm.remotePeers?.filter { $0.value.connected }.count ?? 0)/\(vm.remotePeers?.count ?? 0))")
-                if let values = vm.remotePeers?.values {
-                    ForEach(Array(values)) { peer in
-                        VStack(alignment: .leading) {
-                            Text("device name \(peer.name)")
-                            Text("pk: \(peer.key)")
-                            Text("last Seen \(peer.lastSeenFormatted)")
-                            Divider()
-                            HStack {
-                                connectionText(connectionType: "BT", connectionCount: peer.transportInfo.bluetoothConnections)
-                                connectionText(connectionType: "LAN", connectionCount: peer.transportInfo.lanConnections)
-                                connectionText(connectionType: "P2P", connectionCount: peer.transportInfo.p2pConnections)
-                                connectionText(connectionType: "Cloud", connectionCount: peer.transportInfo.cloudConnections)
-                            }
-                        }
-                        .padding()
-                        .background(peer.connected ? Color.green : Color.red)
-                        .cornerRadius(10)
-                    }
-#if os(tvOS)
-                    .focusable(true)
-#endif
-                }
-            }
-            .padding(.horizontal)
-        }
-//        .background(vm.remotePeers?.filter { $0.value.connected } == nil ? Color.white : ((vm.remotePeers?.filter { $0.value.connected }.count) ?? 0 < vm.expectedPeers) ? Color.red : Color.green)
-        .sheet(isPresented: $vm.isSheetPresented) {
-            NewSessionView(expectedPeers: $vm.expectedPeers, apiEnabled: $vm.apiEnabled, isPresented: $vm.isSheetPresented, sessionStartTime: $vm.sessionStartTime) {
-                vm.startNewSession()
+            } else {
+                Content(vm: vm)
             }
         }
         .onReceive(vm.$expectedPeers.combineLatest(vm.$remotePeers, vm.$settings, vm.$apiEnabled)) { expectedPeers, remotePeers, settings, apiEnabled in
-            // Call the update callback when any of the published properties change
             if apiEnabled {
-                if let callback = self.callback {
-                    callback(expectedPeers, remotePeers, settings)
-                }
+                callback?(Int(expectedPeers) ?? 0, remotePeers, settings)
             }
         }
     }
-    
-    func connectionText(connectionType: String?, connectionCount: Int?) -> Text {
-        if let count = connectionCount {
-            return Text("\(connectionType ?? "--"): \(count)")
-        } else {
-            return Text("\(connectionType ?? "--"): --")
+
+    struct Content: View {
+        @ObservedObject var vm: PresenceDegradationVM
+        @State private var isHovered = false
+
+        var body: some View {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    StatusBanner(isHealthy: isHealthyMesh)
+
+                    Group {
+                        Text("Session Info")
+                            .font(.headline)
+                        Label("Expected Minimum Peers: \(Int(vm.expectedPeers) ?? 0)", systemImage: "person.3.fill")
+                        Label("Report API: \(vm.apiEnabled ? "Enabled" : "Disabled")", systemImage: "externaldrive.badge.checkmark")
+                        Label("Session Started: \(vm.sessionStartTime ?? "--")", systemImage: "clock")
+                    }
+
+                    Divider()
+
+                    Text("Local Device")
+                        .font(.title3.bold())
+                    if let localPeer = vm.localPeer {
+                        DeviceCard(peer: localPeer, isLocal: true)
+                    }
+
+                    Divider()
+
+                    Text("Remote Devices (\(connectedPeerCount)/\(vm.remotePeers?.count ?? 0))")
+                        .font(.title3.bold())
+
+                    ForEach(vm.remotePeers?.values.sorted(by: { $0.name < $1.name }) ?? []) { peer in
+                        DeviceCard(peer: peer, isLocal: false)
+                    }
+                }
+                .padding()
+            }
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: { vm.isNewSessionView = true }) {
+                        Text("New Session")
+                            #if os(macOS)
+                            .bold()
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 6)
+                            .foregroundColor(Color.primary)
+                            #endif
+                    }
+                    #if os(macOS)
+                    .background(Color.blue.opacity(isHovered ? 1 : 0.9))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .onHover { hovering in
+                        isHovered = hovering
+                    }
+                    .animation(.easeInOut(duration: 0.1), value: isHovered)
+                    #endif
+                }
+            }
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+        }
+
+        var isHealthyMesh: Bool {
+            connectedPeerCount >= vm.expectedPeersInt
+        }
+
+        var connectedPeerCount: Int {
+            vm.remotePeers?.filter { $0.value.connected }.count ?? 0
         }
     }
-    
-    var bannerColor: some View {
-        Rectangle()
-            .foregroundColor(vm.remotePeers?.filter { $0.value.connected } == nil ? Color.white : ((vm.remotePeers?.filter { $0.value.connected }.count) ?? 0 < vm.expectedPeers) ? Color.red : Color.green)
+
+    struct StatusBanner: View {
+        let isHealthy: Bool
+
+        var body: some View {
+            HStack {
+                Image(systemName: isHealthy ? "checkmark.seal.fill" : "exclamationmark.triangle.fill")
+                Text(isHealthy ? "Healthy Mesh" : "Unhealthy Mesh")
+                    .fontWeight(.semibold)
+            }
+            .foregroundColor(.white)
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(isHealthy ? Color.green : Color.red)
+            .cornerRadius(12)
+        }
+    }
+
+    struct DeviceCard: View {
+        let peer: Peer
+        var isLocal: Bool
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(peer.name)
+                        .font(.headline)
+                    if peer.connected {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.green)
+                    } else {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.red)
+                    }
+                    Spacer()
+                }
+
+                if isLocal {
+                    Label("Local Device", systemImage: "iphone")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Text(peer.key)
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                Text("Last seen: \(peer.lastSeenFormatted)")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
+
+                ConnectionRow(peer: peer)
+            }
+            .padding()
+            #if os(iOS)
+            .background(Color(UIColor.systemGray6))
+            #elseif os(macOS)
+            .background(Color(NSColor.windowBackgroundColor)) // or NSColor.controlBackgroundColor
+            #else
+            .background(Color.gray.opacity(0.15))
+            .focusable(true)
+            #endif
+            .cornerRadius(12)
+            .shadow(radius: 1)
+            .frame(maxWidth: .infinity)
+        }
+    }
+
+    struct ConnectionRow: View {
+        let peer: Peer
+
+        var body: some View {
+            HStack(spacing: 12) {
+                connectionInfo(label: "BT", value: peer.transportInfo.bluetoothConnections)
+                connectionInfo(label: "LAN", value: peer.transportInfo.lanConnections)
+                connectionInfo(label: "P2P", value: peer.transportInfo.p2pConnections)
+                connectionInfo(label: "Cloud", value: peer.transportInfo.cloudConnections)
+            }
+            .font(.caption)
+        }
+
+        func connectionInfo(label: String, value: Int?) -> some View {
+            VStack {
+                Text(label)
+                    .fontWeight(.semibold)
+                Text("\(value ?? 0)")
+                    .foregroundColor(.primary)
+            }
+            .frame(minWidth: 40)
+        }
     }
 }
-
-#endif

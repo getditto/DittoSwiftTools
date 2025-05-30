@@ -88,6 +88,8 @@ struct FormView<ApplyButton: View, CancelButton: View, ClearButton: View>: View 
         VStack(alignment: .leading) {
             #if os(macOS)
             Text("Identity Type")
+                .font(.system(.subheadline))
+                .fontWeight(.medium)
             #endif
             Picker(pickerLabel, selection: $viewModel.formState.identityType) {
                 ForEach(DittoIdentity.identityTypes, id: \.self) { type in
