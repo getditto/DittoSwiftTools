@@ -7,7 +7,9 @@
 
 import SwiftUI
 import DittoSwift
-import Utils
+#if os(tvOS)
+import DittoTvOSTextFieldComponent
+#endif
 
 struct Documents: View {
     
@@ -70,8 +72,10 @@ struct Documents: View {
     
     private var queryBar: some View {
         VStack(alignment: .leading) {
+            #if os(iOS) || os(macOS)
             Text("Query Documents")
                 .font(.headline)
+            #endif
             HStack {
                 #if os(tvOS)
                 Button(action: {
