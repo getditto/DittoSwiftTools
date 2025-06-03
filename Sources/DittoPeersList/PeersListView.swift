@@ -90,8 +90,8 @@ public struct PeersListView: View {
     @ViewBuilder
     func presenceSnapshotDirectlyConnectedPeersView(_ peer: DittoPeer) -> some View {
         VStack(alignment: .leading) {
-            ForEach(vm.connectionsWithLocalPeer(peer)) { connection in
-                Text("-\(connection.type.rawValue)")
+            ForEach(vm.connectionsWithLocalPeer(peer)) { conx in
+                Text("-\(conx.type.rawValue)")
                     .padding(.leading, 16)
             }
         }
