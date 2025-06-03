@@ -12,10 +12,6 @@ import SwiftUI
 public struct PeersListView: View {
     @StateObject var vm: PeersObserverVM
     private let dividerColor: Color
-    
-    static var footerText: String {
-        "BLE approximate distance is inaccurate."
-    }
         
     public init(ditto: Ditto) {
         self._vm = StateObject(wrappedValue: PeersObserverVM(ditto: ditto))
@@ -25,13 +21,10 @@ public struct PeersListView: View {
     public var body: some View {
         List {
             Section {
-                peerView(vm.localPeer, showBLEDistance: true)
+                peerView(vm.localPeer)
             } header: {
                 Text("Local (Self) Peer")
                     .font(Font.subheadline.weight(.bold))
-            } footer: {
-                Text(Self.footerText)
-                    .font(.footnote)
             }
 
             Section {
@@ -42,9 +35,6 @@ public struct PeersListView: View {
             } header: {
                 Text("Remote Peers")
                     .font(Font.subheadline.weight(.bold))
-            } footer: {
-                Text(Self.footerText)
-                    .font(.footnote)
             }
         }
 #if os(tvOS)
@@ -70,7 +60,7 @@ public struct PeersListView: View {
     }
     
     @ViewBuilder
-    func peerView(_ peer: DittoPeer, showBLEDistance: Bool = false) -> some View {
+    func peerView(_ peer: DittoPeer) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             
             // Device name + siteID
@@ -85,7 +75,7 @@ public struct PeersListView: View {
                         Text("peer: \(conPeer.peerKeyString)")
                             .lineLimit(1)
 
-                        presenceSnapshotDirectlyConnectedPeersView(conPeer, showBLEDistance: showBLEDistance)
+                        presenceSnapshotDirectlyConnectedPeersView(conPeer)
                     }
                     .padding(12)
                 }
@@ -98,21 +88,11 @@ public struct PeersListView: View {
     }
     
     @ViewBuilder
-    func presenceSnapshotDirectlyConnectedPeersView(_ peer: DittoPeer, showBLEDistance: Bool = false) -> some View {
+    func presenceSnapshotDirectlyConnectedPeersView(_ peer: DittoPeer) -> some View {
         VStack(alignment: .leading) {
-            ForEach(vm.connectionsWithLocalPeer(peer)) { conx in
-                HStack {
-                    Text("-\(conx.type.rawValue)")
-                        .padding(.leading, 16)
-
-                    Spacer()
-
-                    if showBLEDistance && conx.type == DittoConnectionType.bluetooth {
-                        Text("\(vm.formattedDistanceString(conx.approximateDistanceInMeters))m")
-                    } else {
-                        Text("-")
-                    }
-                }
+            ForEach(vm.connectionsWithLocalPeer(peer)) { connection in
+                Text("-\(connection.type.rawValue)")
+                    .padding(.leading, 16)
             }
         }
     }
