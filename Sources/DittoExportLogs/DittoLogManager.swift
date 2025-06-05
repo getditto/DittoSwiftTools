@@ -1,12 +1,6 @@
 //
 //  Copyright © 2021 DittoLive Incorporated. All rights reserved.
 //
-#if !os(macOS)
-import Foundation
-#if canImport(MessageUI)
-import MessageUI
-#endif
-import UIKit
 import DittoSwift
 
 private struct Config {
@@ -54,4 +48,3 @@ struct LogManager {
         return Config.zippedLogsURL
     }
 }
-#endif
