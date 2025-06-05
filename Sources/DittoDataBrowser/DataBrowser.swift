@@ -14,14 +14,6 @@ public struct DataBrowser: View {
     @State var startSubscriptions: Bool = false
     @State var isStandAlone: Bool = false
     @State var isShowingAlert: Bool = false
-
-    #if os(tvOS)
-    @FocusState private var focusedButton: ButtonFocus?
-    
-    enum ButtonFocus: Hashable {
-        case cancel, start
-    }
-    #endif
     @State private var isHovered = false
     
     public init(ditto: Ditto) {
@@ -59,7 +51,6 @@ public struct DataBrowser: View {
                 secondaryButton: .cancel(Text("Cancel"))
             )
         }
-        .animation(.easeInOut, value: self.isShowingAlert)
     }
     
     private var listView: some View {
