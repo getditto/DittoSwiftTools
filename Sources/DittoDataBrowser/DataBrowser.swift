@@ -13,7 +13,8 @@ public struct DataBrowser: View {
     @StateObject var viewModel: DataBrowserViewModel
     @State var startSubscriptions: Bool = false
     @State var isStandAlone: Bool = false
-    @State var isShowingModal: Bool = false
+    @State var isShowingAlert: Bool = false
+
     #if os(tvOS)
     @FocusState private var focusedButton: ButtonFocus?
     
@@ -28,53 +29,37 @@ public struct DataBrowser: View {
     }
     
     public var body: some View {
-        ZStack {
-            VStack(alignment: .leading) {
-                // macOS requires a NavigationView for Lists to work
-                #if os(macOS)
-                NavigationView {
-                    listView
-                }
-                #else
-                listView
-                #endif
-            }
-            .navigationTitle("Collections")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    // Hides startPauseButton so it doesn't interfere with modal on tvOS
-                    #if os(tvOS)
-                    if !isShowingModal {
-                        startPauseButton
-                    }
-                    #else
-                    startPauseButton
-                    #endif
-                }
-            }
-            .disabled(self.isShowingModal)
-            // Sheet works best on macOS for popup (for current versions). ZStack works best on iOS and tvOS for popups (for current versions).
+        VStack(alignment: .leading) {
             #if os(macOS)
-            .sheet(isPresented: $isShowingModal) {
-                modalView
+            NavigationView {
+                listView
             }
-            #endif
-            #if os(iOS) || os(tvOS)
-            if self.isShowingModal {
-                Color.black.opacity(0.4)
-                    .ignoresSafeArea()
-                    .transition(.opacity)
-
-                modalView
-                    .transition(.scale)
-                    .zIndex(1)
-            }
+            #else
+            listView
             #endif
         }
-        .animation(.easeInOut, value: self.isShowingModal)
+        .navigationTitle("Collections")
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                startPauseButton
+            }
+        }
+        .disabled(isShowingAlert)
+        .alert(isPresented: $isShowingAlert) {
+            Alert(
+                title: Text("Standalone App?"),
+                message: Text("Only start subscriptions if using the Data Browser in a standalone app."),
+                primaryButton: .default(
+                    Text("Start"),
+                    action: start
+                ),
+                secondaryButton: .cancel(Text("Cancel"))
+            )
+        }
+        .animation(.easeInOut, value: self.isShowingAlert)
     }
     
     private var listView: some View {
@@ -94,66 +79,13 @@ public struct DataBrowser: View {
         #endif
     }
     
-    private var spacingInteger: CGFloat {
-        #if os(iOS) || os(macOS)
-        return 20
-        #else
-        return 40
-        #endif
-    }
-    
-    private var modalView: some View {
-        VStack(spacing: spacingInteger / 2) {
-            Text("Standalone App?")
-                .font(.title2)
-                .fontWeight(.semibold)
-                .multilineTextAlignment(.center)
-                .padding(.top, 8)
-
-            Text("Only start subscriptions if using the Data Browser in a standalone app.")
-                .font(.body)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-
-            HStack(spacing: spacingInteger) {
-                cancelButton
-                startButton
-            }
-            .padding(.top, 8)
-        }
-        .padding()
-        #if os(iOS)
-        .frame(maxWidth: 400)
-        .background(Color(UIColor.systemGray6))
-        #elseif os(macOS)
-        .frame(maxWidth: 300)
-        .background(Color.clear)
-        #else
-        .padding()
-        .frame(maxWidth: 800)
-        .background(Color.gray.opacity(0.3))
-        .onAppear {
-            DispatchQueue.main.async {
-                focusedButton = .cancel
-            }
-        }
-        #endif
-        #if !os(macOS)
-        .cornerRadius(24)
-        .shadow(radius: 20)
-        #endif
-        #if os(iOS)
-        .padding()
-        #endif
-    }
-    
     private var startPauseButton: some View {
         Button {
             if self.startSubscriptions {
                 self.startSubscriptions = false
                 viewModel.closeLiveQuery()
             } else {
-                self.isShowingModal = true
+                self.isShowingAlert = true
             }
         } label: {
             #if os(iOS)
@@ -178,46 +110,10 @@ public struct DataBrowser: View {
         #endif
     }
 
-    
-    private var startButton: some View {
-        Button(action: start) {
-            Text("Start")
-                .frame(maxWidth: .infinity)
-                #if os(iOS)
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(10)
-                #elseif os(tvOS)
-                .focusable(true)
-                .focused($focusedButton, equals: .start)
-                #endif
-        }
-    }
-
-    private var cancelButton: some View {
-        Button {
-            self.isShowingModal = false
-        } label: {
-            Text("Cancel")
-                .frame(maxWidth: .infinity)
-                #if os(iOS)
-                .padding()
-                .background(Color(UIColor.systemGray5))
-                .foregroundColor(.blue)
-                .cornerRadius(10)
-                #elseif os(tvOS)
-                .focusable(true)
-                .focused($focusedButton, equals: .cancel)
-                #endif
-        }
-    }
-    
     private func start() {
         self.startSubscriptions = true
         viewModel.startSubscription()
         self.isStandAlone = true
-        self.isShowingModal = false
+        self.isShowingAlert = false
     }
 }
-
