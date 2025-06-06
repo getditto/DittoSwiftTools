@@ -20,10 +20,6 @@ public struct LoggingDetailsView: View {
     @State private var exportedLogURL: URL?
     @State private var urlToSave: URL?
     
-#if os(iOS) || os(macOS)
-    //@State private var activityViewController: UIActivityViewController?
-#endif
-    
     private let ditto: Ditto
     
     public init(ditto: Ditto) {
