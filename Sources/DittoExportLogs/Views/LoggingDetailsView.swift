@@ -3,25 +3,22 @@
 //
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
-#if !os(macOS)
-import Combine
 import DittoSwift
 import SwiftUI
+#if os(iOS)
 import UIKit
-
+#endif
+#if os(macOS)
+import AppKit
+#endif
 
 public struct LoggingDetailsView: View {
     
     @State var selectedLogLevel = DittoLogger.minimumLogLevel
-    
     @State var isLoggingEnabled = DittoLogger.enabled
-    
-    @State private var presentExportLogsShare: Bool = false
     @State private var presentExportLogsAlert: Bool = false
-    
-#if !os(tvOS)
-    @State private var activityViewController: UIActivityViewController?
-#endif
+    @State private var exportedLogURL: URL?
+    @State private var urlToSave: URL?
     
     private let ditto: Ditto
     
@@ -30,80 +27,151 @@ public struct LoggingDetailsView: View {
     }
     
     public var body: some View {
+        #if os(iOS) || os(tvOS)
         List {
-            Section(header: Text("Settings"),
-                    footer: Text("Changes will be applied immediately.")
-            ) {
-                Picker("Log Level", selection: $selectedLogLevel) {
-                    ForEach(DittoLogLevel.displayableCases, id: \.self) { level in
-                        Text(level.displayName).tag(level)
-                    }
-                }
-                .onChange(of: selectedLogLevel) { newValue in
-                    DittoLogger.minimumLogLevel = newValue
-                    DittoLogger.minimumLogLevel.saveToStorage()
-                }
-                Toggle("Enable Logging", isOn: $isLoggingEnabled)
-                    .onChange(of: isLoggingEnabled) { newValue in
-                        DittoLogger.enabled = newValue
-                    }
-            }
-#if !os(tvOS)
             Section {
-                // Export Logs
-                Button {
-                    presentExportLogsAlert.toggle()
-                } label: {
-                    Text("Export Logs…")
-                }
-                .sheet(isPresented: $presentExportLogsShare) {
-                    if let activityVC = activityViewController {
-                        // Use a wrapper UIViewController to present the activity controller
-                        ActivityViewControllerWrapper(activityViewController: activityVC)
-                    } else {
-                        // Pass the binding for the `UIActivityViewController?`
-                        ExportLogs(activityViewController: $activityViewController)
-                    }
-                }
+                settingsBody()
+            } footer: {
+                Text("Changes will be applied immediately.")
+                    .font(.caption)
             }
-            .alert(isPresented: $presentExportLogsAlert) {
-                Alert(title: Text("Export Logs"),
-                      message: Text("Compressing the logs may take a few seconds."),
-                      primaryButton: .default(
-                        Text("Export"),
-                        action: {
-                            presentExportLogsShare = true
-                        }),
-                      secondaryButton: .cancel()
-                )
+            #if os(iOS)
+            Section {
+                exportLogsButton()
             }
-#endif
+            #endif
         }
-        #if os(tvOS)
-        .listStyle(GroupedListStyle())
-        #else
+        #if os(iOS)
+        .padding(.top, -16)
         .listStyle(InsetGroupedListStyle())
         .navigationBarTitleDisplayMode(.inline)
+        #else
+        .listStyle(GroupedListStyle())
         #endif
-
-        .navigationTitle("Logging")
-    }
-}
-
-@available(tvOS, unavailable)
-struct ActivityViewControllerWrapper: UIViewControllerRepresentable {
-    let activityViewController: UIActivityViewController
-    
-    func makeUIViewController(context: Context) -> UIViewController {
-        let viewController = UIViewController()
-        DispatchQueue.main.async {
-            viewController.present(activityViewController, animated: true)
+        
+        #else
+        ScrollView {
+            VStack(alignment: .leading, spacing: 10) {
+                settingsBody()
+                exportLogsButton()
+                    .padding(.top, 20)
+            }
+            .padding()
         }
-        return viewController
+        #endif
     }
     
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        // No need to update the view controller here
+    #if os(iOS) || os(macOS)
+    private func exportLogsButton() -> some View {
+        Button {
+            presentExportLogsAlert.toggle()
+        } label: {
+            Text("Export Logs…")
+        }
+        .alert(isPresented: $presentExportLogsAlert) {
+            Alert(title: Text("Export Logs"),
+                  message: Text("This may take a few seconds..."),
+                  primaryButton: .default(
+                    Text("Export"),
+                    action: {
+                        Task {
+                            if let url = await getZippedLogs() {
+                                presentShareSheet(for: url)
+                            }
+                        }
+                    }),
+                  secondaryButton: .cancel()
+            )
+        }
+    }
+    #endif
+    
+    private func pickerText() -> String {
+        #if os(iOS) || os(tvOS)
+        return "Log Level"
+        #else
+        return "Log Level:"
+        #endif
+    }
+    
+    private func settingsBody() -> some View {
+        Group {
+            Picker(pickerText(), selection: $selectedLogLevel) {
+                ForEach(DittoLogLevel.displayableCases, id: \.self) { level in
+                    Text(level.displayName).tag(level)
+                }
+            }
+            .onChange(of: selectedLogLevel) { newValue in
+                DittoLogger.minimumLogLevel = newValue
+                DittoLogger.minimumLogLevel.saveToStorage()
+            }
+            Toggle("Enable Logging", isOn: $isLoggingEnabled)
+                .onChange(of: isLoggingEnabled) { newValue in
+                    DittoLogger.enabled = newValue
+                }
+        }
+    }
+    
+    #if os(iOS)
+    func presentShareSheet(for url: URL) {
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let root = scene.windows.first?.rootViewController else {
+            return
+        }
+        let avc = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        root.present(avc, animated: true)
+    }
+    #endif
+    
+    #if os(macOS)
+    func presentShareSheet(for url: URL) {
+        guard let keyWindow = NSApp.keyWindow,
+              let contentView = keyWindow.contentView else {
+            return
+        }
+
+        // Prompt user to save the file first
+        let panel = NSSavePanel()
+        panel.title = "Save Exported Logs"
+        panel.allowedFileTypes = ["gz"]
+        panel.nameFieldStringValue = "ditto.jsonl.gz"
+
+        panel.beginSheetModal(for: keyWindow) { response in
+            if response == .OK, let destination = panel.url {
+                do {
+                    try FileManager.default.copyItem(at: url, to: destination)
+                } catch {
+                    print("Error saving file: \(error)")
+                }
+            }
+
+            // After that, offer to share it
+            let picker = NSSharingServicePicker(items: [url])
+            picker.show(relativeTo: .zero, of: contentView, preferredEdge: .minY)
+        }
+    }
+    #endif
+    
+    func getZippedLogs() async -> URL? {
+        return try? await LogManager.shared.exportLogs()
     }
 }
+
+#if os(iOS)
+struct ActivityView: UIViewControllerRepresentable {
+    let activityItems: [Any]
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = UIViewController()
+        controller.view.backgroundColor = .clear
+        return controller
+    }
+
+    func updateUIViewController(_ controller: UIViewController, context: Context) {
+        guard controller.presentedViewController == nil else { return }
+        let avc = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        controller.present(avc, animated: true)
+    }
+}
+
 #endif
