@@ -81,7 +81,7 @@ public class HeartbeatVM: ObservableObject {
             .sink {[weak self] date in
                 guard let self = self else { return }
                 updateHealthMetrics()
-                hbInfo?.lastUpdated = DateFormatter.isoDate.string(from: Date())
+                hbInfo?.lastUpdated = HeartbeatDateFormatter.isoDate.string(from: Date())
                 updateCollection()
                 emit()
             }
@@ -174,9 +174,8 @@ private extension DittoPeer {
     }
 }
 
-public extension DateFormatter {
-    static var isoDate: ISO8601DateFormatter {
-        let f = ISO8601DateFormatter()
-        return f
+public struct HeartbeatDateFormatter {
+    public static var isoDate: ISO8601DateFormatter {
+        ISO8601DateFormatter()
     }
 }

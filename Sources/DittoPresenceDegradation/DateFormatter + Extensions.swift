@@ -7,9 +7,8 @@
 
 import Foundation
 
-extension DateFormatter {
+internal extension DateFormatter {
     static var isoDate: ISO8601DateFormatter {
-        let f = ISO8601DateFormatter()
-        return f
+        ISO8601DateFormatter()
     }
 }

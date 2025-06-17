@@ -50,7 +50,7 @@ public struct DittoHeartbeatInfo: Identifiable {
         schema: String,
         peerKey: String,
         secondsInterval: Int = Int.max,
-        lastUpdated: String = DateFormatter.isoDate.string(from: Date()),
+        lastUpdated: String = HeartbeatDateFormatter.isoDate.string(from: Date()),
         sdk: String = "",
         presenceSnapshotDirectlyConnectedPeersCount: Int = 0,
         presenceSnapshotDirectlyConnectedPeers: [DittoPeerConnection] = [],

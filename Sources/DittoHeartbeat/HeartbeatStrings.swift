@@ -8,7 +8,8 @@
 
 import Foundation
 
-public extension String {
+// TODO: Should take a larger look at making this a struct instead of extending String
+internal extension String {
     static var bt = "bt"
     static var bluetooth = "bluetooth"
     static var deviceName = "deviceName"
