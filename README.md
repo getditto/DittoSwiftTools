@@ -1,7 +1,7 @@
  # DittoSwiftTools
- 
-DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers in a graphic viewer and 
-in a list view, export Ditto data directory and debug logs, browse collections/documents, and see 
+
+DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers in a graphic viewer and
+in a list view, export Ditto data directory and debug logs (locally or to Ditto Portal), browse collections/documents, and see
 Ditto's disk usage.
 
 For support, please contact Ditto Support (<support@ditto.live>).
@@ -287,7 +287,63 @@ let vc = UIHostingController(rootView: ExportLogs())
 
 present(vc, animated: true)
 ```
-                                                         
+
+#### Export Logs to Portal
+
+Export Logs to Portal allows you to request that logs from your application be uploaded to the Ditto Portal associated with your app ID. This is useful for remote diagnostics and support.
+
+When you trigger an export to Portal, the tool updates a special Ditto collection that signals the Ditto cloud service to collect logs from your device. The logs will be available in the Ditto Portal for your app.
+
+First, make sure the "DittoExportLogs" is added to your Target. Then, use `import DittoExportLogs` to import the Export Logs to Portal functionality.
+
+**SwiftUI**
+
+Use `ExportLogsToPortalView(ditto:onDismiss:)` to request log upload. Pass your Ditto instance and a dismiss callback. It is recommended to present this from within a [sheet](https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:)).
+
+```swift
+import DittoExportLogs
+import DittoSwift
+
+.sheet(isPresented: $showExportToPortal) {
+    ExportLogsToPortalView(ditto: ditto) {
+        showExportToPortal = false
+    }
+}
+```
+
+**Programmatic API**
+
+You can also trigger log upload programmatically from anywhere in your app using the public API:
+
+```swift
+import DittoExportLogs
+import DittoSwift
+
+Task {
+    do {
+        try await DittoTools.uploadLogsToPortal(ditto: ditto)
+        print("Log upload requested successfully")
+    } catch {
+        print("Failed to request log upload: \(error)")
+    }
+}
+```
+
+**UIKit**
+
+Pass `ExportLogsToPortalView(ditto:onDismiss:)` to a [UIHostingController](https://sarunw.com/posts/swiftui-in-uikit/) which will return a view controller you can use to present.
+
+```swift
+let vc = UIHostingController(
+    rootView: ExportLogsToPortalView(ditto: ditto) {
+        // Dismiss logic
+        self.dismiss(animated: true)
+    }
+)
+
+present(vc, animated: true)
+```
+
 
 ### Export Data Directory
 

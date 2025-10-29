@@ -18,6 +18,7 @@ enum MenuOption: String, CaseIterable {
     case heartbeat = "Heartbeat"
     case dataBrowser = "Data Browser"
     case logging = "Logging"
+    case exportLogsToPortal = "Export Logs to Portal"
 
     // MARK: - Section
     
@@ -42,7 +43,7 @@ enum MenuOption: String, CaseIterable {
             case .systemAndPerformanceTools:
                 return [.permissionsHealth, .diskUsage]
             case .diagnosticsAndDebuggingTools:
-                return [.dataBrowser, .logging]
+                return [.dataBrowser, .logging, .exportLogsToPortal]
             }
         }
     }
@@ -69,6 +70,8 @@ enum MenuOption: String, CaseIterable {
             return "folder"
         case .logging:
             return "list.bullet.rectangle"
+        case .exportLogsToPortal:
+            return "arrow.up.doc.on.clipboard"
         }
     }
 
@@ -94,6 +97,8 @@ enum MenuOption: String, CaseIterable {
             return .orange
         case .logging:
             return .gray
+        case .exportLogsToPortal:
+            return .blue
         }
     }
 
@@ -129,6 +134,8 @@ enum MenuOption: String, CaseIterable {
                 DataBrowserView(ditto: ditto)
             case .logging:
                 LoggingDetailsViewer(ditto: ditto)
+            case .exportLogsToPortal:
+                ExportLogsToPortalViewer(ditto: ditto)
             }
         } else {
             EmptyView()  // Return an empty view when ditto is nil
