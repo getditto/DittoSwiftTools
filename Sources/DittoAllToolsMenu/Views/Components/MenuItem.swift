@@ -16,34 +16,17 @@ struct MenuItem: View {
     let option: MenuOption
     var ditto: Ditto?
 
-    @State private var showSheet = false
-
     var body: some View {
         if let ditto, ditto.activated {
-            menuItemContent(ditto: ditto)
+            NavigationLink(destination: option.destinationView(ditto: ditto)) {
+                toolListItem
+            }
         } else {
             disabledMenuItem
         }
     }
 
     // MARK: - Private Views
-
-    @ViewBuilder
-    private func menuItemContent(ditto: Ditto) -> some View {
-        switch option.presentationStyle {
-        case .sheet:
-            Button(action: { showSheet = true }) {
-                toolListItem
-            }
-            .sheet(isPresented: $showSheet) {
-                option.destinationView(ditto: ditto)
-            }
-        case .navigation:
-            NavigationLink(destination: option.destinationView(ditto: ditto)) {
-                toolListItem
-            }
-        }
-    }
 
     private var toolListItem: some View {
         ToolListItem(title: option.rawValue, systemImageName: option.icon, color: option.color)

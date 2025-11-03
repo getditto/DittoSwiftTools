@@ -19,22 +19,6 @@ enum MenuOption: String, CaseIterable, Equatable {
     case dataBrowser = "Data Browser"
     case logging = "Logging"
 
-    // MARK: - Presentation Style
-
-    /// Defines how this menu option should be presented when tapped.
-    enum PresentationStyle {
-        /// Navigates to a new screen using NavigationLink
-        case navigation
-        /// Presents as a modal sheet
-        case sheet
-    }
-
-    /// Returns the presentation style for this menu option.
-    /// All options use navigation.
-    var presentationStyle: PresentationStyle {
-        return .navigation
-    }
-
     // MARK: - Section
     
     /// `Section` enum is used to group related `MenuOption`s.
