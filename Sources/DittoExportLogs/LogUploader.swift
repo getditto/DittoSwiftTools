@@ -11,12 +11,13 @@ import DittoSwift
 /// Public utilities for uploading logs to Ditto Portal
 public enum LogUploader {
 
-    /// ISO-8601 date formatter with timezone offset for log upload timestamps.
-    /// Format: yyyy-MM-dd'T'HH:mm:ss±HH:mm (e.g., "2025-11-03T15:32:35-07:00")
+    /// ISO-8601 date formatter in UTC for log upload timestamps.
+    /// Format: yyyy-MM-dd'T'HH:mm:ss+00:00 (e.g., "2025-11-03T22:32:35+00:00")
     /// Reused across calls for performance optimization.
     private static let iso8601Formatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withColonSeparatorInTimeZone]
+        formatter.timeZone = TimeZone(secondsFromGMT: 0) // Force UTC
         return formatter
     }()
 
