@@ -35,9 +35,10 @@ public enum DittoTools {
     public static func uploadLogsToPortal(ditto: Ditto) async throws {
         let peerKey = ditto.presence.graph.localPeer.peerKeyString
 
-        // Format current time as ISO-8601 with timezone offset
+        // Format current time as ISO-8601 with timezone offset (matching Kotlin format)
+        // Format: yyyy-MM-dd'T'HH:mm:ss±HH:mm (e.g., "2025-11-03T15:32:35-07:00")
         let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        formatter.formatOptions = [.withInternetDateTime, .withColonSeparatorInTimeZone]
         let currentTime = formatter.string(from: Date())
 
         let query = """
