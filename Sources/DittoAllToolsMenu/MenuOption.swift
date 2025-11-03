@@ -18,7 +18,6 @@ enum MenuOption: String, CaseIterable, Equatable {
     case heartbeat = "Heartbeat"
     case dataBrowser = "Data Browser"
     case logging = "Logging"
-    case exportLogsToPortal = "Export Logs to Portal"
 
     // MARK: - Presentation Style
 
@@ -31,14 +30,9 @@ enum MenuOption: String, CaseIterable, Equatable {
     }
 
     /// Returns the presentation style for this menu option.
-    /// Most options use navigation, but some (like export operations) use sheets for better UX.
+    /// All options use navigation.
     var presentationStyle: PresentationStyle {
-        switch self {
-        case .exportLogsToPortal:
-            return .sheet
-        default:
-            return .navigation
-        }
+        return .navigation
     }
 
     // MARK: - Section
@@ -64,7 +58,7 @@ enum MenuOption: String, CaseIterable, Equatable {
             case .systemAndPerformanceTools:
                 return [.permissionsHealth, .diskUsage]
             case .diagnosticsAndDebuggingTools:
-                return [.dataBrowser, .logging, .exportLogsToPortal]
+                return [.dataBrowser, .logging]
             }
         }
     }
@@ -91,8 +85,6 @@ enum MenuOption: String, CaseIterable, Equatable {
             return "folder"
         case .logging:
             return "list.bullet.rectangle"
-        case .exportLogsToPortal:
-            return "arrow.up.doc.on.clipboard"
         }
     }
 
@@ -118,8 +110,6 @@ enum MenuOption: String, CaseIterable, Equatable {
             return .orange
         case .logging:
             return .gray
-        case .exportLogsToPortal:
-            return .blue
         }
     }
 
@@ -155,8 +145,6 @@ enum MenuOption: String, CaseIterable, Equatable {
                 DataBrowserView(ditto: ditto)
             case .logging:
                 LoggingDetailsViewer(ditto: ditto)
-            case .exportLogsToPortal:
-                ExportLogsToPortalViewer(ditto: ditto)
             }
         } else {
             EmptyView()  // Return an empty view when ditto is nil
