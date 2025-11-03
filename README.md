@@ -323,7 +323,7 @@ import DittoSwift
 
 Task {
     do {
-        try await DittoTools.uploadLogsToPortal(ditto: ditto)
+        try await LogUploader.uploadLogsToPortal(ditto: ditto)
         print("Log upload requested successfully")
     } catch {
         print("Failed to request log upload: \(error)")

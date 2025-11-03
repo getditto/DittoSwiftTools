@@ -1,5 +1,5 @@
 //
-//  DittoTools.swift
+//  LogUploader.swift
 //  DittoSwiftTools
 //
 //  Copyright © 2025 DittoLive Incorporated. All rights reserved.
@@ -8,8 +8,8 @@
 import Foundation
 import DittoSwift
 
-/// Public utilities for Ditto diagnostic tools
-public enum DittoTools {
+/// Public utilities for uploading logs to Ditto Portal
+public enum LogUploader {
 
     /// ISO-8601 date formatter with timezone offset for log upload timestamps.
     /// Format: yyyy-MM-dd'T'HH:mm:ss±HH:mm (e.g., "2025-11-03T15:32:35-07:00")
@@ -35,7 +35,7 @@ public enum DittoTools {
     /// # Example
     /// ```swift
     /// do {
-    ///     try await DittoTools.uploadLogsToPortal(ditto: ditto)
+    ///     try await LogUploader.uploadLogsToPortal(ditto: ditto)
     ///     print("Log upload request sent successfully")
     /// } catch {
     ///     print("Failed to request log upload: \(error)")

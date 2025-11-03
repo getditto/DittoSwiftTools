@@ -118,7 +118,7 @@ class ExportLogsToPortalViewModel: ObservableObject {
 
         Task {
             do {
-                try await DittoTools.uploadLogsToPortal(ditto: ditto)
+                try await LogUploader.uploadLogsToPortal(ditto: ditto)
                 state = .success
             } catch {
                 state = .error("Log export failed: \(error.localizedDescription)")
