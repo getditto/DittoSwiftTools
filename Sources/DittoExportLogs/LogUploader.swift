@@ -12,11 +12,11 @@ import DittoSwift
 public enum LogUploader {
 
     /// ISO-8601 date formatter in UTC for log upload timestamps.
-    /// Format: yyyy-MM-dd'T'HH:mm:ss+00:00 (e.g., "2025-11-03T22:32:35+00:00")
+    /// Format: yyyy-MM-dd'T'HH:mm:ssZ (e.g., "2025-11-03T22:32:35Z")
     /// Reused across calls for performance optimization.
     private static let iso8601Formatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withColonSeparatorInTimeZone]
+        formatter.formatOptions = [.withInternetDateTime]
         formatter.timeZone = TimeZone(secondsFromGMT: 0) // Force UTC
         return formatter
     }()
