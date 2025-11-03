@@ -11,6 +11,15 @@ import DittoSwift
 /// Public utilities for Ditto diagnostic tools
 public enum DittoTools {
 
+    /// ISO-8601 date formatter with timezone offset for log upload timestamps.
+    /// Format: yyyy-MM-dd'T'HH:mm:ss±HH:mm (e.g., "2025-11-03T15:32:35-07:00")
+    /// Reused across calls for performance optimization.
+    private static let iso8601Formatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withColonSeparatorInTimeZone]
+        return formatter
+    }()
+
     /// Triggers a request for the local device to export its logs to the Ditto Portal.
     ///
     /// This function updates the small peer info document in the local store, which is observed
@@ -34,12 +43,7 @@ public enum DittoTools {
     /// ```
     public static func uploadLogsToPortal(ditto: Ditto) async throws {
         let peerKey = ditto.presence.graph.localPeer.peerKeyString
-
-        // Format current time as ISO-8601 with timezone offset (matching Kotlin format)
-        // Format: yyyy-MM-dd'T'HH:mm:ss±HH:mm (e.g., "2025-11-03T15:32:35-07:00")
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withColonSeparatorInTimeZone]
-        let currentTime = formatter.string(from: Date())
+        let currentTime = iso8601Formatter.string(from: Date())
 
         let query = """
             UPDATE __small_peer_info

@@ -119,19 +119,11 @@ class ExportLogsToPortalViewModel: ObservableObject {
         Task {
             do {
                 try await DittoTools.uploadLogsToPortal(ditto: ditto)
-                await MainActor.run {
-                    state = .success
-                }
+                state = .success
             } catch {
-                await MainActor.run {
-                    state = .error("Log export failed: \(error.localizedDescription)")
-                }
+                state = .error("Log export failed: \(error.localizedDescription)")
             }
         }
-    }
-
-    func resetState() {
-        state = .idle
     }
 }
 
