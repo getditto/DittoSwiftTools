@@ -290,6 +290,8 @@ present(vc, animated: true)
 
 #### Export Logs to Portal
 
+ <img src="/Img/addLogsToPortal.png" alt="Export Logs Image" width="300">  
+
 Export Logs to Portal allows you to request that logs from your application be uploaded to the Ditto Portal associated with your app ID. This is useful for remote diagnostics and support.
 
 When you trigger an export to Portal, the tool updates a special Ditto collection that signals the Ditto cloud service to collect logs from your device. The logs will be available in the Ditto Portal for your app.
