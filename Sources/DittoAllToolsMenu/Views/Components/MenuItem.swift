@@ -16,10 +16,24 @@ struct MenuItem: View {
     let option: MenuOption
     var ditto: Ditto?
 
+    @State private var showExportLogsSheet = false
+
     var body: some View {
         if let ditto, ditto.activated {
-            NavigationLink(destination: option.destinationView(ditto: ditto)) {
-                ToolListItem(title: option.rawValue, systemImageName: option.icon, color: option.color)
+            // Special handling for Export Logs to Portal - show sheet instead of navigation
+            if option == .exportLogsToPortal {
+                Button(action: {
+                    showExportLogsSheet = true
+                }) {
+                    ToolListItem(title: option.rawValue, systemImageName: option.icon, color: option.color)
+                }
+                .sheet(isPresented: $showExportLogsSheet) {
+                    option.destinationView(ditto: ditto)
+                }
+            } else {
+                NavigationLink(destination: option.destinationView(ditto: ditto)) {
+                    ToolListItem(title: option.rawValue, systemImageName: option.icon, color: option.color)
+                }
             }
         } else {
             ToolListItem(title: option.rawValue, systemImageName: option.icon, color: .secondary)
