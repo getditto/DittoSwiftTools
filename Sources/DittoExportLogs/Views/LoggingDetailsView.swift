@@ -57,6 +57,7 @@ public struct LoggingDetailsView: View {
                 settingsBody()
                 exportLogsButton()
                     .padding(.top, 20)
+                exportLogsToPortalButton()
             }
             .padding()
         }
