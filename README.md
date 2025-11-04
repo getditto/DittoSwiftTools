@@ -296,7 +296,7 @@ Export Logs to Portal allows you to request that logs from your application be u
 
 When you trigger an export to Portal, the tool updates a special Ditto collection that signals the Ditto cloud service to collect logs from your device. The logs will be available in the Ditto Portal for your app.
 
-> **Note:** This feature requires Ditto SDK version 4.11.0 or later. For this feature to work, `DQL_STRICT_MODE` must be set to `false`. The SDK automatically sets this to `false` by default starting in version 4.11.0. For more information about DQL strict mode, see the [DQL Strict Mode documentation](https://docs.ditto.live/dql/strict-mode).
+> **Note:** For this feature to work, `DQL_STRICT_MODE` must be set to `false`. For more information about DQL strict mode, see the [DQL Strict Mode documentation](https://docs.ditto.live/dql/strict-mode).
 
 First, make sure the "DittoExportLogs" is added to your Target. Then, use `import DittoExportLogs` to import the Export Logs to Portal functionality.
 
