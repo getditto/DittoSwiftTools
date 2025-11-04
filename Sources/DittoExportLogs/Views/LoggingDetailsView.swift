@@ -13,13 +13,14 @@ import AppKit
 #endif
 
 public struct LoggingDetailsView: View {
-    
+
     @State var selectedLogLevel = DittoLogger.minimumLogLevel
     @State var isLoggingEnabled = DittoLogger.enabled
     @State private var presentExportLogsAlert: Bool = false
+    @State private var showExportToPortal: Bool = false
     @State private var exportedLogURL: URL?
     @State private var urlToSave: URL?
-    
+
     private let ditto: Ditto
     
     public init(ditto: Ditto) {
@@ -38,6 +39,7 @@ public struct LoggingDetailsView: View {
             #if os(iOS)
             Section {
                 exportLogsButton()
+                exportLogsToPortalButton()
             }
             #endif
         }
@@ -66,7 +68,7 @@ public struct LoggingDetailsView: View {
         Button {
             presentExportLogsAlert.toggle()
         } label: {
-            Text("Export Logs…")
+            Text("Export Logs to Device")
         }
         .alert(isPresented: $presentExportLogsAlert) {
             Alert(title: Text("Export Logs"),
@@ -82,6 +84,19 @@ public struct LoggingDetailsView: View {
                     }),
                   secondaryButton: .cancel()
             )
+        }
+    }
+
+    private func exportLogsToPortalButton() -> some View {
+        Button {
+            showExportToPortal = true
+        } label: {
+            Text("Export Logs to Portal")
+        }
+        .sheet(isPresented: $showExportToPortal) {
+            ExportLogsToPortalView(ditto: ditto) {
+                showExportToPortal = false
+            }
         }
     }
     #endif

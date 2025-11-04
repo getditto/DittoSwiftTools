@@ -19,13 +19,23 @@ struct MenuItem: View {
     var body: some View {
         if let ditto, ditto.activated {
             NavigationLink(destination: option.destinationView(ditto: ditto)) {
-                ToolListItem(title: option.rawValue, systemImageName: option.icon, color: option.color)
+                toolListItem
             }
         } else {
-            ToolListItem(title: option.rawValue, systemImageName: option.icon, color: .secondary)
-                .foregroundColor(.secondary)
-                .disabled(true)
+            disabledMenuItem
         }
+    }
+
+    // MARK: - Private Views
+
+    private var toolListItem: some View {
+        ToolListItem(title: option.rawValue, systemImageName: option.icon, color: option.color)
+    }
+
+    private var disabledMenuItem: some View {
+        ToolListItem(title: option.rawValue, systemImageName: option.icon, color: .secondary)
+            .foregroundColor(.secondary)
+            .disabled(true)
     }
 }
 

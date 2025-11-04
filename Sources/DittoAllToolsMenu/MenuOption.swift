@@ -9,7 +9,7 @@ import DittoSwift
 
 /// `MenuOption` enum defines various menu options in the tools app.
 /// Each case represents a specific feature or tool that can be selected by the user.
-enum MenuOption: String, CaseIterable {
+enum MenuOption: String, CaseIterable, Equatable {
     case presenceViewer = "Presence Viewer"
     case peersList = "Peers List"
     case presenceDegradation = "Presence Degradation"
