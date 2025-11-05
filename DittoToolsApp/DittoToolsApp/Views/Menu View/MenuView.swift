@@ -72,12 +72,7 @@ struct MenuView: View {
                 #endif
             }) {
                 HStack {
-                    if let ditto = dittoService.ditto {
-                        Text("SDK Version: \(ditto.sdkVersion)")
-                    } else {
-                        Text("SDK Version: \(Ditto.version)")
-                    }
-
+                    Text("SDK Version: \(Ditto.version)")
                     Image(systemName: "doc.on.doc")
                         .font(.system(size: 10))
                 }

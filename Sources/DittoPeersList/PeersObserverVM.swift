@@ -51,17 +51,6 @@ import Foundation
     func cleanup() {
         peersObserver?.stop()
     }
-    
-//    deinit {
-//        print("PeersObserverVM -- deinit -- ")
-//    }
-}
-
-// For sorting addresses of remote peers in func remotePeerAddresses() above
-extension DittoAddress: @retroactive Comparable {
-    public static func < (lhs: DittoSwift.DittoAddress, rhs: DittoSwift.DittoAddress) -> Bool {
-        lhs.hashValue < rhs.hashValue
-    }
 }
 
 extension Double {

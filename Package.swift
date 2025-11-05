@@ -58,7 +58,7 @@ let package = Package(
             targets: ["DittoTvOSTextFieldComponent"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.11.6"),
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.12.4"),
         .package(url: "https://github.com/getditto/DittoPresenceViewerCore.git", from: "2.1.2"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
     ],

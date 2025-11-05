@@ -107,7 +107,7 @@ public struct ExportData_macOS {
 
         var nsError: NSError?
 
-        NSFileCoordinator().coordinate(readingItemAt: self.ditto.persistenceDirectory,
+        NSFileCoordinator().coordinate(readingItemAt: self.ditto.absolutePersistenceDirectory,
                                        options: [.forUploading], error: &nsError) { tempURL in
             do {
                 try FileManager().moveItem(at: tempURL, to: destinationURL)
