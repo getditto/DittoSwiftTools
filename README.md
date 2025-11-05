@@ -140,7 +140,7 @@ let vc = UIHostingController(rootView: PeersListView(ditto: DittoManager.shared.
 present(vc, animated: true)
 ```
 
-### 3. Disk Usage  
+### Disk Usage  
 Disk Usage allows you to see Ditto's file space usage. In addition to viewing it you can also export the shown data.
 
  <img src="/Img/diskUsage.png" alt="Disk Usage Image" width="300">  
@@ -259,7 +259,7 @@ Or present it as a sheet:
 }
 ```
         
-#### Export Logs  
+#### Export Logs to Device
 Allows you to export a file of the logs from your applcation as a zip file.  
 
  <img src="/Img/exportLogs.png" alt="Export Logs Image" width="300">  
