@@ -15,7 +15,7 @@ import AppKit
 public struct LoggingDetailsView: View {
 
     @State var selectedLogLevel = DittoLogger.minimumLogLevel
-    @State var isLoggingEnabled = DittoLogger.enabled
+    @State var isLoggingEnabled = DittoLogger.isEnabled
     @State private var presentExportLogsAlert: Bool = false
     @State private var showExportToPortal: Bool = false
     @State private var exportedLogURL: URL?
@@ -123,7 +123,7 @@ public struct LoggingDetailsView: View {
             }
             Toggle("Enable Logging", isOn: $isLoggingEnabled)
                 .onChange(of: isLoggingEnabled) { newValue in
-                    DittoLogger.enabled = newValue
+                    DittoLogger.isEnabled = newValue
                 }
         }
     }

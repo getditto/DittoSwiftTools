@@ -168,9 +168,9 @@ public class HeartbeatVM: ObservableObject {
 //MARK: Extensions
 private extension DittoPeer {
     var platformSDK: String {
-        let platform = self.os ?? String.osNA
+        let platform = self.osV2 ?? .unknown(os: String.osNA)
         let sdk = self.dittoSDKVersion ?? String.sdkVersionNA
-        return "\(platform) v\(sdk)"
+        return "\(platform.stringValue) v\(sdk)"
     }
 }
 

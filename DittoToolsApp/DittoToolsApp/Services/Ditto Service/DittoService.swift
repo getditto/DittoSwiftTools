@@ -58,7 +58,7 @@ public class DittoService: ObservableObject {
 
         // Configure Ditto logging
         DittoLogger.minimumLogLevel = DittoLogLevel.restoreFromStorage()
-        DittoLogger.enabled = true
+        DittoLogger.isEnabled = true
 
         // Attempt to initialize Ditto using the active credentials
         if let activeCredentials = CredentialsService.shared.activeCredentials {
@@ -176,7 +176,7 @@ public class DittoService: ObservableObject {
         ditto.delegate = self
 
         do {
-            try ditto.startSync()
+            try ditto.sync.start()
             print("Ditto sync engine started successfully.")
         } catch {
             throw DittoServiceError.syncFailed(error.localizedDescription)
@@ -187,11 +187,11 @@ public class DittoService: ObservableObject {
     func stopSyncEngine() {
         guard let ditto = ditto else { return }
 
-        if !ditto.isSyncActive {
+        if !ditto.sync.isActive {
             return
         }
 
-        ditto.stopSync()
+        ditto.sync.stop()
         print("Ditto sync engine stopped successfully.")
     }
 

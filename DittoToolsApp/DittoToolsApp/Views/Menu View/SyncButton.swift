@@ -17,19 +17,19 @@ struct SyncButton: View {
     var body: some View {
         Button(action: {
             if let dittoService, let ditto = dittoService.ditto {
-                if ditto.isSyncActive {
+                if ditto.sync.isActive {
                     dittoService.stopSyncEngine()
                     isAnimating = false
                     rotationAngle = 0
                 } else {
-                    try? ditto.startSync()
+                    try? ditto.sync.start()
                     isAnimating = true
                 }
             }
         }) {
             if let ditto = dittoService?.ditto, ditto.activated {
                 HStack(spacing: 12) {
-                    Text(ditto.isSyncActive ? "Ditto is active." : "Ditto is not running.")
+                    Text(ditto.sync.isActive ? "Ditto is active." : "Ditto is not running.")
                         .font(.subheadline)
                     
                     #if !os(tvOS)
@@ -45,7 +45,7 @@ struct SyncButton: View {
         }
         .onAppear {
             if let ditto = dittoService?.ditto {
-                isAnimating = ditto.isSyncActive
+                isAnimating = ditto.sync.isActive
             }
         }
         .onChange(of: isAnimating) { rotating in
