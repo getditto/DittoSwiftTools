@@ -6,10 +6,6 @@ Ditto's disk usage.
 
 For support, please contact Ditto Support (<support@ditto.live>).
 
-## Requirements
-* iOS 14.0+ or tvOS 15.0+ or macOS 11.0+
-* Swift 5.0+
-
 ## Installation
 
 The recommended approach to use DittoSwiftTools in your project is using the Swift Package Manager.  
@@ -20,10 +16,6 @@ The recommended approach to use DittoSwiftTools in your project is using the Swi
 
 2. Select "Add Package"
 3. Select which DittoSwiftTools products you would like, then select "Add Package"
-
-*If you are looking for compatibility with Ditto v3, please target the 
-[3.0.0 release](https://github.com/getditto/DittoSwiftTools/releases/tag/3.0.0) 
-in the Swift Package Manager.*  
 
 
 ## Usage
