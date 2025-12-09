@@ -37,13 +37,14 @@ extension Settings {
     }
 }
 
-extension DittoDocument {
+extension DittoQueryResultItem {
     func toSettings() -> Settings {
         return Settings(
-            expectedPeers: Int(self["expectedPeers"].stringValue)!,
-            reportApiEnabled: Bool(self["reportApiEnabled"].stringValue)!,
-            hasSeenExpectedPeers: Bool(self["hasSeenExpectedPeers"].stringValue)!,
-            sessionStartedAt: self["sessionStartedAt"].stringValue
+            expectedPeers: Int(self.value["expectedPeers"] as? String ?? "0")!,
+            reportApiEnabled: Bool(self.value["reportApiEnabled"] as? String ?? "false")!,
+            hasSeenExpectedPeers: Bool(self.value["hasSeenExpectedPeers"] as? String ?? "false")!,
+            sessionStartedAt: self.value["sessionStartedAt"] as? String ?? ""
         )
     }
 }
+
