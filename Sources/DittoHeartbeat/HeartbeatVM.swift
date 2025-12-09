@@ -119,14 +119,16 @@ public class HeartbeatVM: ObservableObject {
             return
         }
         
-        do {
-            let _ = try ditto.store.collection(String.collectionName).upsert(doc)
-        } catch {
-            print(
-                "HeartbeatVM.\(#function) - ERROR updating collection: " +
-                "\(String.collectionName)\n" +
-                "error: \(error.localizedDescription)"
-            )
+        Task {
+            do {
+                let _ = try await ditto.store.execute(query: "INSERT INTO \(String.collectionName) DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE", arguments: ["doc": doc])
+            } catch {
+                print(
+                    "HeartbeatVM.\(#function) - ERROR updating collection: " +
+                    "\(String.collectionName)\n" +
+                    "error: \(error.localizedDescription)"
+                )
+            }
         }
     }
     
