@@ -17,4 +17,5 @@ struct DittoDiskUsageConstants {
     static let error = "error"
     static let dittoStorePath = "ditto_store"
     static let dittoReplicationPath = "ditto_replication"
+    static let dittoAttachmentsPath = "ditto_attachments"
 }
