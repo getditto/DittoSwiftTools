@@ -2,15 +2,11 @@
 //  DiskUsageVisuals.swift
 //  DittoSwiftTools/DittoDiskUsage
 //
-//  Custom chart shapes and visual components for the Disk Usage Inspector.
-//  Built with Path/Shape to support iOS 14+ / macOS 11+ (no Charts framework).
-//
 
 import SwiftUI
 
 // MARK: - Donut Chart
 
-/// A single slice of the donut chart.
 struct DonutSlice: Identifiable {
     let id = UUID()
     let label: String
@@ -18,7 +14,6 @@ struct DonutSlice: Identifiable {
     let color: Color
 }
 
-/// A donut (ring) chart drawn with `Path` arcs. Compatible with iOS 14+ / macOS 11+.
 struct DonutChartView: View {
     let slices: [DonutSlice]
     let lineWidth: CGFloat
@@ -41,12 +36,10 @@ struct DonutChartView: View {
                         .animation(.easeInOut(duration: 0.6), value: total)
                 }
             } else {
-                // Empty state ring
                 Circle()
                     .stroke(Color.gray.opacity(0.2), lineWidth: lineWidth)
             }
 
-            // Center label
             VStack(spacing: 2) {
                 Text(StorageBreakdown.formatBytes(total))
                     .font(.system(.title3, design: .rounded).bold())
@@ -72,7 +65,6 @@ struct DonutChartView: View {
     }
 }
 
-/// An arc shape used as a donut segment.
 private struct DonutArc: Shape {
     var startAngle: Angle
     var endAngle: Angle
@@ -97,7 +89,6 @@ private struct DonutArc: Shape {
     }
 }
 
-/// Legend row for the donut chart.
 struct DonutLegendView: View {
     let slices: [DonutSlice]
 
@@ -131,8 +122,6 @@ struct DonutLegendView: View {
 
 // MARK: - Health Gauge
 
-/// A horizontal gauge bar showing disk usage relative to the health threshold.
-/// Green when healthy, yellow approaching threshold, red when exceeded.
 struct HealthGaugeView: View {
     let currentBytes: Int
     let thresholdBytes: Int
@@ -169,12 +158,10 @@ struct HealthGaugeView: View {
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    // Background track
                     RoundedRectangle(cornerRadius: 6)
                         .fill(Color.gray.opacity(0.15))
                         .frame(height: 12)
 
-                    // Filled portion
                     RoundedRectangle(cornerRadius: 6)
                         .fill(gaugeColor)
                         .frame(width: max(0, geo.size.width * CGFloat(displayFraction)), height: 12)
@@ -199,7 +186,6 @@ struct HealthGaugeView: View {
 
 // MARK: - Health Traffic Light
 
-/// A traffic-light style indicator: green / yellow / red circle with label.
 struct HealthIndicatorView: View {
     let currentBytes: Int
     let thresholdBytes: Int
@@ -249,7 +235,6 @@ struct HealthIndicatorView: View {
 
 // MARK: - Sparkline (Trend)
 
-/// A mini line chart showing disk usage trend over a session.
 struct SparklineView: View {
     let dataPoints: [Int]
     let color: Color
@@ -282,7 +267,6 @@ struct SparklineView: View {
                         .stroke(color, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                         .animation(.easeInOut(duration: 0.4), value: dataPoints.count)
 
-                    // Gradient fill beneath the line
                     sparklinePath(in: geo.size, closed: true)
                         .fill(
                             LinearGradient(
@@ -311,8 +295,6 @@ struct SparklineView: View {
         }
     }
 
-    /// - Parameter closed: When `true`, closes the path to the bottom edge for area fills.
-    ///   When `false`, returns an open line path suitable for `.stroke()`.
     private func sparklinePath(in size: CGSize, closed: Bool = true) -> Path {
         guard dataPoints.count >= 2 else { return Path() }
 
@@ -334,8 +316,6 @@ struct SparklineView: View {
             }
         }
 
-        // Only close the path for the fill variant — the stroke variant should
-        // remain an open line so it doesn't draw bottom/left polygon edges.
         if closed {
             path.addLine(to: CGPoint(x: CGFloat(dataPoints.count - 1) * stepX, y: size.height))
             path.addLine(to: CGPoint(x: 0, y: size.height))
@@ -348,7 +328,6 @@ struct SparklineView: View {
 
 // MARK: - Horizontal Bar Chart (Collection Ranking)
 
-/// A horizontal bar chart showing ranked items by size.
 struct HorizontalBarChartView: View {
     let items: [(label: String, bytes: Int)]
     let barColor: Color
@@ -401,7 +380,6 @@ struct HorizontalBarChartView: View {
 
 // MARK: - Histogram (Document Size Distribution)
 
-/// A vertical bar histogram for document size buckets.
 struct HistogramView: View {
     let buckets: [DocSizeBucket]
     let barColor: Color
@@ -426,19 +404,16 @@ struct HistogramView: View {
             .padding(.vertical, 4)
         } else {
             VStack(spacing: 8) {
-                // Bars
                 GeometryReader { geo in
                     HStack(alignment: .bottom, spacing: 4) {
                         ForEach(buckets) { bucket in
                             VStack(spacing: 2) {
-                                // Count label above bar
                                 if bucket.count > 0 {
                                     Text("\(bucket.count)")
                                         .font(.system(.caption2, design: .rounded).bold())
                                         .foregroundColor(barColor)
                                 }
 
-                                // Bar
                                 RoundedRectangle(cornerRadius: 3)
                                     .fill(barColor)
                                     .frame(height: barHeight(for: bucket.count, in: geo.size.height - 20))
@@ -450,7 +425,6 @@ struct HistogramView: View {
                 }
                 .frame(height: 80)
 
-                // Labels
                 HStack(spacing: 4) {
                     ForEach(buckets) { bucket in
                         Text(bucket.label)
@@ -473,7 +447,6 @@ struct HistogramView: View {
 
 // MARK: - Stacked Bar (Replication vs Store)
 
-/// A stacked horizontal bar comparing two values side by side.
 struct StackedComparisonView: View {
     let leftLabel: String
     let leftBytes: Int
@@ -486,7 +459,6 @@ struct StackedComparisonView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // Stacked bar
             GeometryReader { geo in
                 HStack(spacing: 0) {
                     if total > 0 {
@@ -507,7 +479,6 @@ struct StackedComparisonView: View {
             }
             .frame(height: 16)
 
-            // Legend
             HStack(spacing: 16) {
                 HStack(spacing: 4) {
                     Circle().fill(leftColor).frame(width: 8, height: 8)
@@ -545,7 +516,6 @@ struct StackedComparisonView: View {
 
 // MARK: - Growth Rate Display
 
-/// Displays the computed disk growth rate with directional arrow.
 struct GrowthRateView: View {
     let bytesPerSecond: Double?
 
@@ -601,7 +571,6 @@ struct GrowthRateView: View {
 
 // MARK: - Glossary Item
 
-/// A single term definition row for the glossary.
 struct GlossaryRow: View {
     let term: String
     let definition: String
@@ -621,8 +590,6 @@ struct GlossaryRow: View {
 
 // MARK: - Animated Counter
 
-/// A text view that animates number changes by counting up/down.
-/// Uses a timer-based approach compatible with iOS 14+ / macOS 11+.
 struct AnimatedByteCounterView: View {
     let targetBytes: Int
     let font: Font
@@ -642,9 +609,6 @@ struct AnimatedByteCounterView: View {
                 timer?.invalidate()
                 timer = nil
             }
-            // Uses the iOS 14+ onChange signature. On iOS 17+ this triggers a
-            // deprecation warning, but the new two-parameter form isn't available
-            // on older deployment targets. Safe to ignore until min target is raised.
             .onChange(of: targetBytes) { newValue in
                 animateTo(newValue)
             }
@@ -666,7 +630,6 @@ struct AnimatedByteCounterView: View {
                 t.invalidate()
                 displayedBytes = target
             } else {
-                // Ease-out curve
                 let progress = Double(currentStep) / Double(totalSteps)
                 let eased = 1.0 - pow(1.0 - progress, 3)
                 displayedBytes = start + Int(Double(diff) * eased)

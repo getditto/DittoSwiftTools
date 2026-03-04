@@ -2,44 +2,21 @@
 //  StorageBreakdown.swift
 //  DittoSwiftTools/DittoDiskUsage
 //
-//  Categorized storage breakdown model and computation.
-//  Adapted from DittoStore_Calculator by Chad James.
-//
 
 import Foundation
 import DittoSwift
 import Combine
 
-// MARK: - Storage Breakdown Model
-
-/// Categorized breakdown of Ditto on-disk storage.
-///
-/// Properties prefixed with "collection" (`collectionPayloadBytes`, `documentCount`)
-/// reflect the **currently selected** collection only — not the full set of
-/// collections.  For totals across all collections, see
-/// `DiskUsageInspectorViewModel.totalPayloadBytes` / `.totalDocumentCount`.
 public struct StorageBreakdown: Equatable {
-    /// JSON-serialized payload size for the **selected** collection (bytes).
-    /// For the total across all collections, use `DiskUsageInspectorViewModel.totalPayloadBytes`.
     public var collectionPayloadBytes: Int = 0
-    /// SQLite WAL and SHM file sizes (bytes).
     public var walShmBytes: Int = 0
-    /// Log file sizes (bytes).
     public var logsBytes: Int = 0
-    /// Metadata and other overhead (bytes). Computed as total minus known categories.
     public var metadataOverheadBytes: Int = 0
-    /// Total on-disk size for all Ditto files (bytes).
     public var totalOnDiskBytes: Int = 0
-    /// Number of documents in the **selected** collection.
-    /// For the total across all collections, use `DiskUsageInspectorViewModel.totalDocumentCount`.
     public var documentCount: Int = 0
-    /// Total size of attachments on disk (bytes).
     public var attachmentBytes: Int = 0
-    /// Number of attachment files on disk.
     public var attachmentFileCount: Int = 0
 }
-
-// MARK: - Formatting
 
 extension StorageBreakdown {
     private static let byteCountFormatter: ByteCountFormatter = {
@@ -48,17 +25,11 @@ extension StorageBreakdown {
         return formatter
     }()
 
-    /// Human-readable string for a byte count.
     public static func formatBytes(_ bytes: Int) -> String {
         byteCountFormatter.string(for: bytes) ?? "\(bytes) bytes"
     }
 }
 
-// MARK: - View Model
-
-/// Observes a Ditto instance and computes a categorized storage breakdown
-/// by walking the disk usage tree and optionally observing a collection for
-/// document count and payload size.
 public class StorageBreakdownViewModel: ObservableObject {
 
     @Published public var breakdown = StorageBreakdown()

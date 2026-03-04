@@ -2,21 +2,10 @@
 //  StorageBreakdownView.swift
 //  DittoSwiftTools/DittoDiskUsage
 //
-//  A categorized view showing where Ditto storage is allocated on disk.
-//  Adapted from DittoStore_Calculator by Chad James.
-//
 
 import SwiftUI
 import DittoSwift
 
-/// A SwiftUI view that displays a categorized breakdown of Ditto on-disk storage,
-/// including per-collection document count, JSON payload size, WAL/SHM, logs,
-/// and metadata overhead.
-///
-/// Usage:
-/// ```swift
-/// DittoStorageBreakdownView(ditto: myDittoInstance)
-/// ```
 public struct DittoStorageBreakdownView: View {
     @StateObject private var viewModel: StorageBreakdownViewModel
 
@@ -26,7 +15,6 @@ public struct DittoStorageBreakdownView: View {
 
     public var body: some View {
         List {
-            // Collection picker
             Section(header: Text("Collection")) {
                 if viewModel.isLoading {
                     HStack {
@@ -58,7 +46,6 @@ public struct DittoStorageBreakdownView: View {
                 }
             }
 
-            // Document count
             Section(header: Text("Documents")) {
                 HStack {
                     Text("Documents in collection")
@@ -71,7 +58,6 @@ public struct DittoStorageBreakdownView: View {
                 #endif
             }
 
-            // Storage breakdown
             Section(header: Text("Storage Breakdown")) {
                 breakdownRow(
                     label: "Collection payload (JSON)",

@@ -2,51 +2,25 @@
 //  DiskUsageInspectorView.swift
 //  DittoSwiftTools/DittoDiskUsage
 //
-//  A unified disk report combining the flat file listing from the existing
-//  Disk Usage tool with the categorized storage breakdown from the Storage
-//  Breakdown tool, powered by a single shared diskUsagePublisher subscription.
-//
 
 import SwiftUI
 import DittoSwift
 import DittoExportData
 
-/// A unified view that combines:
-/// - **Categorized breakdown**: document data, write-ahead cache, logs, system overhead
-/// - **Per-collection stats**: document count, payload, size distribution
-/// - **Collection ranking**: per-collection size comparison
-/// - **Sync & replication**: replication vs store ratio, growth rate
-/// - **File listing**: flat directory/file sizes from the existing Disk Usage tool
-/// - **Export**: data directory export
-///
-/// Uses a single `DiskUsageInspectorViewModel` so there is only one
-/// `diskUsagePublisher` subscription feeding both views.
-///
-/// Usage:
-/// ```swift
-/// DiskUsageInspectorView(ditto: myDittoInstance)
-/// DiskUsageInspectorView(ditto: myDittoInstance, healthThresholdBytes: 200_000_000)
-/// ```
 public struct DiskUsageInspectorView: View {
     @StateObject private var viewModel: DiskUsageInspectorViewModel
     @State private var presentExportDataAlert = false
     @State private var presentExportDataShare = false
 
-    /// - Parameters:
-    ///   - ditto: A configured Ditto instance.
-    ///   - healthThresholdBytes: Byte count above which disk usage is unhealthy.
-    ///     Defaults to 500 MB. Can also be adjusted at runtime in the Health section.
     public init(ditto: Ditto, healthThresholdBytes: Int = 500_000_000) {
         _viewModel = StateObject(wrappedValue: DiskUsageInspectorViewModel(ditto: ditto, healthThresholdBytes: healthThresholdBytes))
     }
 
     public var body: some View {
         List {
-            // ── OVERVIEW ──
             overviewSection
             parseValidatorSection
 
-            // ── STORAGE ──
             groupHeader(title: "Storage", subtitle: "Where is space going?", icon: "internaldrive", color: .blue)
             storageBreakdownSection
             donutChartSection
@@ -55,19 +29,16 @@ public struct DiskUsageInspectorView: View {
             attachmentsSection
             attachmentGCSection
 
-            // ── HEALTH ──
             groupHeader(title: "Health", subtitle: "Is usage okay & trending?", icon: "heart.text.square", color: .green)
             healthSection
             growthRateSection
             growthPredictionSection
 
-            // ── COLLECTIONS ──
             groupHeader(title: "Collections", subtitle: "Per-collection detail", icon: "tray.full", color: .orange)
             collectionPickerSection
             collectionRankingSection
             docSizeDistributionSection
 
-            // ── REFERENCE ──
             groupHeader(title: "Reference", subtitle: "Raw data & help", icon: "book", color: .secondary)
             fileListingSection
             glossarySection
@@ -124,7 +95,6 @@ public struct DiskUsageInspectorView: View {
     @ViewBuilder
     private var overviewSection: some View {
         Section {
-            // Row 1: Total on disk (hero stat)
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Total on Disk")
@@ -137,7 +107,6 @@ public struct DiskUsageInspectorView: View {
                     )
                 }
                 Spacer()
-                // Health badge
                 HStack(spacing: 4) {
                     Image(systemName: healthBadge.icon)
                         .foregroundColor(healthBadge.color)
@@ -155,7 +124,6 @@ public struct DiskUsageInspectorView: View {
             .focusable(true)
             #endif
 
-            // Row 2: Three quick stats
             HStack {
                 VStack(spacing: 2) {
                     Text("\(viewModel.collections.count)")
@@ -255,8 +223,6 @@ public struct DiskUsageInspectorView: View {
 
     private var breakdownSlices: [DonutSlice] {
         [
-            // Use total payload across ALL collections (not just the selected one)
-            // so the donut proportions reflect actual disk composition.
             DonutSlice(label: "Document Data", bytes: viewModel.totalPayloadBytes, color: .blue),
             DonutSlice(label: "Write-Ahead Cache", bytes: viewModel.breakdown.walShmBytes, color: .orange),
             DonutSlice(label: "Logs", bytes: viewModel.breakdown.logsBytes, color: .green),
@@ -296,7 +262,6 @@ public struct DiskUsageInspectorView: View {
                 thresholdBytes: viewModel.unhealthySizeInBytes
             )
 
-            // Configurable threshold
             HStack {
                 Text("Threshold")
                 Spacer()
@@ -367,7 +332,6 @@ public struct DiskUsageInspectorView: View {
         Section {
             if let seconds = viewModel.estimatedSecondsToThreshold {
                 if seconds <= 0 {
-                    // Already exceeded threshold
                     HStack(spacing: 8) {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .foregroundColor(.red)
@@ -386,7 +350,6 @@ public struct DiskUsageInspectorView: View {
                     .focusable(true)
                     #endif
                 } else {
-                    // Time remaining
                     HStack(spacing: 8) {
                         Image(systemName: predictionIcon)
                             .foregroundColor(predictionColor)
@@ -429,7 +392,6 @@ public struct DiskUsageInspectorView: View {
                 .focusable(true)
                 #endif
             } else {
-                // Growth rate is 0 or negative → stable / shrinking
                 HStack(spacing: 8) {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.green)
@@ -586,7 +548,6 @@ public struct DiskUsageInspectorView: View {
     @ViewBuilder
     private var dbSqlMonitorSection: some View {
         Section {
-            // Row 1: db.sql size + % of total
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Main Database (db.sql)")
@@ -613,7 +574,6 @@ public struct DiskUsageInspectorView: View {
             .focusable(true)
             #endif
 
-            // Bloat ratio row
             HStack {
                 Text("Bloat Ratio")
                     .font(.body)
@@ -650,7 +610,6 @@ public struct DiskUsageInspectorView: View {
     @ViewBuilder
     private var attachmentsSection: some View {
         Section {
-            // Stats row: file count + total size
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Attachment Files")
@@ -676,7 +635,6 @@ public struct DiskUsageInspectorView: View {
             .focusable(true)
             #endif
 
-            // % of total disk
             HStack {
                 Text("% of Total Disk")
                 Spacer()
@@ -700,7 +658,6 @@ public struct DiskUsageInspectorView: View {
     @ViewBuilder
     private var attachmentGCSection: some View {
         Section {
-            // GC stats: events detected + bytes reclaimed
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("GC Events Detected")
@@ -730,7 +687,6 @@ public struct DiskUsageInspectorView: View {
             .focusable(true)
             #endif
 
-            // File count sparkline (drops indicate GC)
             if viewModel.attachmentCountHistory.count >= 2 {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Attachment File Count Over Time")
@@ -765,11 +721,6 @@ public struct DiskUsageInspectorView: View {
 
     private var gcStatusLabel: some View {
         let count = viewModel.attachmentCountHistory
-        // Check if count is growing unchecked (last 5+ samples all increasing).
-        // Note: This can false-positive when sync adds attachments faster than
-        // GC removes them. We soften the label to "Growing" rather than
-        // implying GC is broken, since we can't distinguish "no GC" from
-        // "GC running but masked by additions" without a native GC callback.
         let recentGrowth = count.suffix(5)
         let isGrowing = recentGrowth.count >= 5
             && zip(recentGrowth, recentGrowth.dropFirst()).allSatisfy { $0 < $1 }
