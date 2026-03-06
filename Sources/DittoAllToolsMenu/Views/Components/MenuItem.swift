@@ -6,6 +6,7 @@
 
 import SwiftUI
 import DittoSwift
+import DittoDiskUsage
 
 /// A view that represents a single menu option in the tools list.
 ///
@@ -15,10 +16,11 @@ import DittoSwift
 struct MenuItem: View {
     let option: MenuOption
     var ditto: Ditto?
+    var diskUsageInspectorViewModel: DiskUsageInspectorViewModel?
 
     var body: some View {
         if let ditto, ditto.activated {
-            NavigationLink(destination: option.destinationView(ditto: ditto)) {
+            NavigationLink(destination: option.destinationView(ditto: ditto, diskUsageInspectorViewModel: diskUsageInspectorViewModel)) {
                 toolListItem
             }
         } else {

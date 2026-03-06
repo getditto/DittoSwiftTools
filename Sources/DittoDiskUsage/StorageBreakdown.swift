@@ -126,9 +126,8 @@ public class StorageBreakdownViewModel: ObservableObject {
                 let docs = result.items
                 var payloadBytes = 0
                 for item in docs {
-                    if let data = try? JSONSerialization.data(withJSONObject: item.value, options: []) {
-                        payloadBytes += data.count
-                    }
+                    payloadBytes += item.jsonData().count
+                    item.dematerialize()
                 }
                 Task { @MainActor in
                     self.breakdown.documentCount = docs.count

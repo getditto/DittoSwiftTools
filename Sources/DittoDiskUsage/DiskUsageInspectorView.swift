@@ -8,12 +8,21 @@ import DittoSwift
 import DittoExportData
 
 public struct DiskUsageInspectorView: View {
-    @StateObject private var viewModel: DiskUsageInspectorViewModel
+    @ObservedObject private var viewModel: DiskUsageInspectorViewModel
     @State private var presentExportDataAlert = false
     @State private var presentExportDataShare = false
 
+    /// Create a Disk Usage Inspector backed by a **pre-existing** view model.
+    /// Use this when you want the view model to survive across open/close cycles
+    /// (e.g., hold it on your app's DittoManager singleton so charts keep history).
+    public init(viewModel: DiskUsageInspectorViewModel) {
+        self.viewModel = viewModel
+    }
+
+    /// Convenience initializer that creates a **new** view model.
+    /// History resets each time the view is recreated.
     public init(ditto: Ditto, healthThresholdBytes: Int = 500_000_000) {
-        _viewModel = StateObject(wrappedValue: DiskUsageInspectorViewModel(ditto: ditto, healthThresholdBytes: healthThresholdBytes))
+        self.viewModel = DiskUsageInspectorViewModel(ditto: ditto, healthThresholdBytes: healthThresholdBytes)
     }
 
     public var body: some View {
@@ -172,7 +181,7 @@ public struct DiskUsageInspectorView: View {
         Section {
             breakdownRow(
                 label: "Document Data",
-                bytes: viewModel.breakdown.collectionPayloadBytes,
+                bytes: viewModel.totalPayloadBytes > 0 ? viewModel.totalPayloadBytes : viewModel.breakdown.collectionPayloadBytes,
                 icon: "doc.fill"
             )
             breakdownRow(
@@ -288,6 +297,26 @@ public struct DiskUsageInspectorView: View {
     private var growthRateSection: some View {
         Section {
             GrowthRateView(bytesPerSecond: viewModel.growthRatePerSecond)
+
+            if viewModel.diskUsageHistory.count >= 2 {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text("Total Disk Size Over Time")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        if let latest = viewModel.diskUsageHistory.last {
+                            Text(StorageBreakdown.formatBytes(latest))
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    SparklineView(
+                        dataPoints: viewModel.diskUsageHistory,
+                        color: .blue
+                    )
+                }
+            }
         } header: {
             Text("Disk Growth")
         } footer: {
@@ -541,7 +570,8 @@ public struct DiskUsageInspectorView: View {
     private var dbSqlBloatColor: Color {
         guard let ratio = dbSqlBloatRatio else { return .secondary }
         if ratio > 5.0 { return .red }
-        if ratio > 2.0 { return .orange }
+        if ratio > 3.0 { return .orange }
+        if ratio > 1.5 { return .yellow }
         return .green
     }
 
@@ -594,7 +624,7 @@ public struct DiskUsageInspectorView: View {
         } header: {
             Text("Database File (db.sql)")
         } footer: {
-            Text("The main SQLite database. A bloat ratio above 2x means the database file is much larger than the actual document data, which may indicate it needs vacuuming.")
+            Text("The main SQLite database. A ratio under 1.5x is healthy. 1.5–3x is normal — CRDT metadata, indexes, and SQLite page overhead add up, especially after bulk imports. Above 3x, monitor; above 5x, investigate. Ditto does not expose a VACUUM API — SQLite reclaims free pages over time.")
         }
     }
 
@@ -687,13 +717,21 @@ public struct DiskUsageInspectorView: View {
             .focusable(true)
             #endif
 
-            if viewModel.attachmentCountHistory.count >= 2 {
+            if viewModel.attachmentBytesHistory.count >= 2 {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Attachment File Count Over Time")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    HStack {
+                        Text("Attachment Size Over Time")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        if let latest = viewModel.attachmentBytesHistory.last {
+                            Text(StorageBreakdown.formatBytes(latest))
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
                     SparklineView(
-                        dataPoints: viewModel.attachmentCountHistory,
+                        dataPoints: viewModel.attachmentBytesHistory,
                         color: .green
                     )
                 }
@@ -712,16 +750,26 @@ public struct DiskUsageInspectorView: View {
             #if os(tvOS)
             .focusable(true)
             #endif
+
+            // Last GC event timestamp
+            if let gcDate = viewModel.lastGCEventDate {
+                HStack {
+                    Text("Last GC Event")
+                    Spacer()
+                    Text(DiskUsageInspectorViewModel.dateFormatter.string(from: gcDate))
+                        .foregroundColor(.secondary)
+                }
+            }
         } header: {
             Text("Garbage Collection")
         } footer: {
-            Text("Ditto automatically removes attachment files no longer referenced by any document. Drops in the file count chart indicate successful cleanup cycles.")
+            Text("Ditto automatically removes attachment files no longer referenced by any document. Drops in the chart indicate successful cleanup cycles.")
         }
     }
 
     private var gcStatusLabel: some View {
-        let count = viewModel.attachmentCountHistory
-        let recentGrowth = count.suffix(5)
+        let bytesHistory = viewModel.attachmentBytesHistory
+        let recentGrowth = bytesHistory.suffix(5)
         let isGrowing = recentGrowth.count >= 5
             && zip(recentGrowth, recentGrowth.dropFirst()).allSatisfy { $0 < $1 }
 
@@ -729,11 +777,8 @@ public struct DiskUsageInspectorView: View {
         let text: String
         let color: Color
 
-        if count.count < 3 {
-            icon = "clock"
-            text = "Monitoring"
-            color = .secondary
-        } else if viewModel.gcEventsDetected > 0 {
+        if viewModel.gcEventsDetected > 0 {
+            // GC has run at least once — show "Active"
             icon = "checkmark.seal.fill"
             text = "Active"
             color = .green
@@ -741,10 +786,16 @@ public struct DiskUsageInspectorView: View {
             icon = "arrow.up.circle.fill"
             text = "Growing"
             color = .orange
+        } else if bytesHistory.count >= 3 {
+            // Enough samples collected but no GC yet
+            icon = "clock"
+            text = "GC not run yet"
+            color = .secondary
         } else {
-            icon = "checkmark.circle"
-            text = "Normal"
-            color = .blue
+            // Still collecting initial samples
+            icon = "clock"
+            text = "GC not run yet"
+            color = .secondary
         }
 
         return HStack(spacing: 4) {
@@ -845,11 +896,11 @@ public struct DiskUsageInspectorView: View {
             )
             GlossaryRow(
                 term: "db.sql (Main Database)",
-                definition: "The primary SQLite database file under ditto_store. Contains document data, indexes, and internal state. If its size grows much larger than your actual data (high bloat ratio), the database may benefit from vacuuming."
+                definition: "The primary SQLite database file under ditto_store. Contains document data, indexes, CRDT metadata, and internal state."
             )
             GlossaryRow(
                 term: "Bloat Ratio",
-                definition: "The ratio of the db.sql file size to the actual document data size. A ratio above 2x suggests significant internal fragmentation; above 5x indicates a potential vacuuming issue."
+                definition: "The ratio of the db.sql file size to actual document data. Under 1.5x is healthy. 1.5–3x is normal (CRDT metadata + indexes). Above 3x warrants monitoring; above 5x warrants investigation. Ditto does not expose a VACUUM API."
             )
             GlossaryRow(
                 term: "Growth Prediction",

@@ -43,8 +43,11 @@ public class DiskUsageInspectorViewModel: ObservableObject {
     /// Noisy session-level indicator; sensitive to GC drops and bulk imports.
     @Published public var growthRatePerSecond: Double? = nil
     @Published public var attachmentCountHistory: [Int] = []
+    @Published public var attachmentBytesHistory: [Int] = []
     /// Lower-bound estimate — concurrent sync additions can mask GC deletions.
     @Published public var gcEventsDetected: Int = 0
+    /// Timestamp of the most recent GC event detected.
+    @Published public var lastGCEventDate: Date? = nil
     /// Lower-bound net bytes — concurrent additions reduce the observed delta.
     @Published public var gcBytesReclaimed: Int = 0
     @Published public var dbSqlBytes: Int = 0
@@ -176,7 +179,9 @@ public class DiskUsageInspectorViewModel: ObservableObject {
                 store = child.sizeInBytes
             } else if shortPath.hasSuffix(DittoDiskUsageConstants.dittoAttachmentsPath) {
                 attachBytes = child.sizeInBytes
-                attachFileCount = Self.countLeafFiles(child)
+                attachFileCount = Self.countAttachmentEntries(child)
+                let leafFiles = Self.countLeafFiles(child)
+                print("[GC-Debug] 📁 Found ditto_attachments: \(attachFileCount) attachment dirs, \(leafFiles) leaf files, \(attachBytes) bytes")
             }
         }
 
@@ -194,15 +199,34 @@ public class DiskUsageInspectorViewModel: ObservableObject {
         storeBytes = store
 
         // GC detection: snapshot-based — concurrent sync additions can mask deletions.
-        if let prevCount = attachmentCountHistory.last, attachFileCount < prevCount {
+        //
+        // Two independent signals:
+        //   1. Attachment entry count drops   → gcEventsDetected (drives GC Status badge)
+        //   2. Attachment bytes drop by >10KB → gcBytesReclaimed (drives Space Reclaimed)
+        //      The 10 KB threshold filters out normal SQLite WAL fluctuations.
+        let prevCount = attachmentCountHistory.last
+        print("[GC-Debug] 📊 Sample: attachEntries=\(attachFileCount) prevEntries=\(prevCount ?? -1) attachBytes=\(attachBytes) prevBytes=\(prevAttachmentBytes)")
+
+        // Signal 1: directory count drop (attachment stubs removed by janitor)
+        let entryCountDropped = prevCount != nil && attachFileCount < prevCount!
+        if entryCountDropped {
             gcEventsDetected += 1
+            lastGCEventDate = Date()
+            print("[GC-Debug] ✅ GC EVENT: Entry count dropped \(prevCount!) → \(attachFileCount)")
         }
-        if prevAttachmentBytes > 0 && attachBytes < prevAttachmentBytes {
-            gcBytesReclaimed += (prevAttachmentBytes - attachBytes)
+
+        // Signal 2: significant byte drop (blob data reclaimed from db.sql)
+        let bytesDelta = prevAttachmentBytes - attachBytes
+        if prevAttachmentBytes > 0 && bytesDelta > 10_240 {  // >10 KB to filter WAL noise
+            gcBytesReclaimed += bytesDelta
+            lastGCEventDate = Date()
+            if !entryCountDropped { gcEventsDetected += 1 }  // count as event if entry drop didn't already
+            print("[GC-Debug] ✅ SPACE RECLAIMED: \(bytesDelta) bytes (\(prevAttachmentBytes) → \(attachBytes))")
         }
         prevAttachmentBytes = attachBytes
 
         appendToHistory(attachFileCount, array: &attachmentCountHistory)
+        appendToHistory(attachBytes, array: &attachmentBytesHistory)
         appendToHistory(total, array: &diskUsageHistory)
 
         let now = Date()
@@ -271,6 +295,7 @@ public class DiskUsageInspectorViewModel: ObservableObject {
                 if let name = item.value["name"] as? String {
                     names.insert(name)
                 }
+                item.dematerialize()
             }
         } catch {
             print("[DittoDiskUsage] system:collections query failed: \(error)")
@@ -307,9 +332,8 @@ public class DiskUsageInspectorViewModel: ObservableObject {
                 totalDocs += result.items.count
                 var totalPayload = 0
                 for item in result.items {
-                    if let data = try? JSONSerialization.data(withJSONObject: item.value, options: []) {
-                        totalPayload += data.count
-                    }
+                    totalPayload += item.jsonData().count
+                    item.dematerialize()
                 }
                 sizes.append((name: name, bytes: totalPayload))
             } catch {
@@ -319,6 +343,7 @@ public class DiskUsageInspectorViewModel: ObservableObject {
         collectionSizes = sizes.sorted { $0.bytes > $1.bytes }
         totalDocumentCount = totalDocs
         totalPayloadBytes = sizes.reduce(0) { $0 + $1.bytes }
+        recalculateMetadata()
     }
 
     @MainActor
@@ -368,22 +393,21 @@ public class DiskUsageInspectorViewModel: ObservableObject {
                 var payloadBytes = 0
                 var buckets = DocSizeBucket.emptyBuckets
                 for item in docs {
-                    if let data = try? JSONSerialization.data(withJSONObject: item.value, options: []) {
-                        let size = data.count
-                        payloadBytes += size
-                        switch size {
-                        case ..<1_024:
-                            buckets[0].count += 1
-                        case 1_024..<10_240:
-                            buckets[1].count += 1
-                        case 10_240..<102_400:
-                            buckets[2].count += 1
-                        case 102_400..<1_048_576:
-                            buckets[3].count += 1
-                        default:
-                            buckets[4].count += 1
-                        }
+                    let size = item.jsonData().count
+                    payloadBytes += size
+                    switch size {
+                    case ..<1_024:
+                        buckets[0].count += 1
+                    case 1_024..<10_240:
+                        buckets[1].count += 1
+                    case 10_240..<102_400:
+                        buckets[2].count += 1
+                    case 102_400..<1_048_576:
+                        buckets[3].count += 1
+                    default:
+                        buckets[4].count += 1
                     }
+                    item.dematerialize()
                 }
                 Task { @MainActor in
                     let oldPayload = self.breakdown.collectionPayloadBytes
@@ -428,6 +452,20 @@ public class DiskUsageInspectorViewModel: ObservableObject {
             return item.sizeInBytes > 0 ? 1 : 0
         }
         return item.childItems.reduce(0) { $0 + countLeafFiles($1) }
+    }
+
+    /// Counts attachment entries inside the ditto_attachments directory.
+    /// Ditto stores each attachment as a hash-named directory (empty stub).
+    /// The actual blob data lives in db.sql inside the same directory.
+    /// This counts only the hash-named directories (not db.sql, .wal, .shm, lock files),
+    /// matching the approach used by the attachment-gc-repro tool.
+    private static func countAttachmentEntries(_ attachmentsDir: DiskUsageItem) -> Int {
+        let internalFiles: Set<String> = ["db.sql", "db.sql-wal", "db.sql-shm",
+                                          "__ditto_store_lock_file"]
+        return attachmentsDir.childItems.filter { child in
+            let name = (child.path as NSString).lastPathComponent
+            return !internalFiles.contains(name)
+        }.count
     }
 
     // MARK: - Health Metrics

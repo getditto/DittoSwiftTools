@@ -9,6 +9,7 @@
 
 import SwiftUI
 import DittoSwift
+import DittoDiskUsage
 import DittoExportData
 
 
@@ -21,19 +22,27 @@ import DittoExportData
 /// - Note: On platforms other than tvOS, an additional section is included for exporting data,
 ///   which presents an alert to confirm the action.
 public struct AllToolsMenu: View {
-    
+
     var ditto: Ditto?
-    
-    public init(ditto: Ditto?) {
+    var diskUsageInspectorViewModel: DiskUsageInspectorViewModel?
+
+    /// Creates the All Tools Menu.
+    /// - Parameters:
+    ///   - ditto: The Ditto instance.
+    ///   - diskUsageInspectorViewModel: Optional pre-created view model for the Disk Usage Inspector.
+    ///     When provided, the inspector retains its chart history, GC events, and growth data
+    ///     across open/close cycles. When `nil`, a new view model is created each time the tool is opened.
+    public init(ditto: Ditto?, diskUsageInspectorViewModel: DiskUsageInspectorViewModel? = nil) {
         self.ditto = ditto
+        self.diskUsageInspectorViewModel = diskUsageInspectorViewModel
     }
-    
+
     public var body: some View {
         List {
             ForEach(MenuOption.Section.allCases, id: \.self) { section in
                 Section(header: Text(section.rawValue)) {
                     ForEach(section.options, id: \.self) { option in
-                        MenuItem(option: option, ditto: ditto)
+                        MenuItem(option: option, ditto: ditto, diskUsageInspectorViewModel: diskUsageInspectorViewModel)
                     }
                 }
             }

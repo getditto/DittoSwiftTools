@@ -6,6 +6,7 @@
 
 import SwiftUI
 import DittoSwift
+import DittoDiskUsage
 
 /// `MenuOption` enum defines various menu options in the tools app.
 /// Each case represents a specific feature or tool that can be selected by the user.
@@ -111,7 +112,7 @@ enum MenuOption: String, CaseIterable, Equatable {
     /// - Parameter ditto: The `Ditto` instance, which powers many of the views.
     /// - Returns: A SwiftUI `View` that represents the destination for the selected menu option.
     @ViewBuilder
-    func destinationView(ditto: Ditto?) -> some View {
+    func destinationView(ditto: Ditto?, diskUsageInspectorViewModel: DiskUsageInspectorViewModel? = nil) -> some View {
         if let ditto = ditto {
             switch self {
             case .presenceViewer:
@@ -127,7 +128,7 @@ enum MenuOption: String, CaseIterable, Equatable {
             case .diskUsage:
                 DiskUsageViewer(ditto: ditto)
             case .diskUsageInspector:
-                DiskUsageInspectorViewer(ditto: ditto)
+                DiskUsageInspectorViewer(ditto: ditto, viewModel: diskUsageInspectorViewModel)
             case .permissionsHealth:
                 PermissionsHealthViewer()
             case .heartbeat:
