@@ -33,8 +33,7 @@ public struct DiskUsageInspectorView: View {
             groupHeader(title: "Storage", subtitle: "Where is space going?", icon: "internaldrive", color: .blue)
             storageBreakdownSection
             donutChartSection
-            dbSqlMonitorSection
-            userDataVsOverheadSection
+            contentVsInfrastructureSection
             attachmentsSection
             attachmentGCSection
 
@@ -43,10 +42,14 @@ public struct DiskUsageInspectorView: View {
             growthRateSection
             growthPredictionSection
 
-            groupHeader(title: "Collections", subtitle: "Per-collection detail", icon: "tray.full", color: .orange)
-            collectionPickerSection
-            collectionRankingSection
-            docSizeDistributionSection
+            groupHeader(title: "Collections", subtitle: "Opt-in per-collection scan", icon: "tray.full", color: .orange)
+            collectionScanSection
+            if !viewModel.collectionCounts.isEmpty {
+                collectionRankingSection
+            }
+            if !viewModel.selectedCollection.isEmpty {
+                docSizeDistributionSection
+            }
 
             groupHeader(title: "Reference", subtitle: "Raw data & help", icon: "book", color: .secondary)
             fileListingSection
@@ -135,9 +138,9 @@ public struct DiskUsageInspectorView: View {
 
             HStack {
                 VStack(spacing: 2) {
-                    Text("\(viewModel.collections.count)")
+                    Text(StorageBreakdown.formatBytes(viewModel.breakdown.storeBytes))
                         .font(.system(.title3, design: .rounded).bold())
-                    Text("Collections")
+                    Text("Store")
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
@@ -146,20 +149,20 @@ public struct DiskUsageInspectorView: View {
                 Divider().frame(height: 30)
 
                 VStack(spacing: 2) {
-                    Text("\(viewModel.totalDocumentCount)")
-                        .font(.system(.title3, design: .rounded).bold())
-                    Text("Documents")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-                .frame(maxWidth: .infinity)
-
-                Divider().frame(height: 30)
-
-                VStack(spacing: 2) {
-                    Text("\(viewModel.breakdown.attachmentFileCount)")
+                    Text(StorageBreakdown.formatBytes(viewModel.breakdown.attachmentBytes))
                         .font(.system(.title3, design: .rounded).bold())
                     Text("Attachments")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+
+                Divider().frame(height: 30)
+
+                VStack(spacing: 2) {
+                    Text(StorageBreakdown.formatBytes(viewModel.breakdown.logsBytes))
+                        .font(.system(.title3, design: .rounded).bold())
+                    Text("Logs")
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
@@ -180,19 +183,9 @@ public struct DiskUsageInspectorView: View {
     private var storageBreakdownSection: some View {
         Section {
             breakdownRow(
-                label: "Document Data",
-                bytes: viewModel.totalPayloadBytes > 0 ? viewModel.totalPayloadBytes : viewModel.breakdown.collectionPayloadBytes,
-                icon: "doc.fill"
-            )
-            breakdownRow(
-                label: "Write-Ahead Cache",
-                bytes: viewModel.breakdown.walShmBytes,
-                icon: "cylinder.split.1x2"
-            )
-            breakdownRow(
-                label: "Logs",
-                bytes: viewModel.breakdown.logsBytes,
-                icon: "text.alignleft"
+                label: "Store",
+                bytes: viewModel.breakdown.storeBytes,
+                icon: "cylinder"
             )
             breakdownRow(
                 label: "Attachments",
@@ -200,14 +193,19 @@ public struct DiskUsageInspectorView: View {
                 icon: "paperclip"
             )
             breakdownRow(
-                label: "System Overhead",
-                bytes: viewModel.breakdown.metadataOverheadBytes,
-                icon: "gearshape"
+                label: "Logs",
+                bytes: viewModel.breakdown.logsBytes,
+                icon: "text.alignleft"
+            )
+            breakdownRow(
+                label: "Replication",
+                bytes: viewModel.breakdown.replicationBytes,
+                icon: "arrow.triangle.2.circlepath"
             )
         } header: {
             Text("Storage Breakdown")
         } footer: {
-            Text("Categorized from the Ditto data directory. See Glossary below for term definitions.")
+            Text("Top-level categories from the Ditto data directory. See Glossary below for term definitions.")
         }
     }
 
@@ -232,11 +230,10 @@ public struct DiskUsageInspectorView: View {
 
     private var breakdownSlices: [DonutSlice] {
         [
-            DonutSlice(label: "Document Data", bytes: viewModel.totalPayloadBytes, color: .blue),
-            DonutSlice(label: "Write-Ahead Cache", bytes: viewModel.breakdown.walShmBytes, color: .orange),
-            DonutSlice(label: "Logs", bytes: viewModel.breakdown.logsBytes, color: .green),
+            DonutSlice(label: "Store", bytes: viewModel.breakdown.storeBytes, color: .blue),
             DonutSlice(label: "Attachments", bytes: viewModel.breakdown.attachmentBytes, color: .pink),
-            DonutSlice(label: "System Overhead", bytes: viewModel.breakdown.metadataOverheadBytes, color: .purple),
+            DonutSlice(label: "Logs", bytes: viewModel.breakdown.logsBytes, color: .green),
+            DonutSlice(label: "Replication", bytes: viewModel.breakdown.replicationBytes, color: .orange),
         ]
     }
 
@@ -446,24 +443,58 @@ public struct DiskUsageInspectorView: View {
         }
     }
 
-    // MARK: - Collection Picker
+    // MARK: - Content vs Infrastructure
+    //
+    // Groups the four top-level categories from `diskUsagePublisher()` into a
+    // coarse "user-facing content" vs "Ditto infrastructure" split. Uses only
+    // top-level bytes — no file walk, no collection observer. Note that Store
+    // contains both user documents and CRDT metadata, so this is directional.
 
     @ViewBuilder
-    private var collectionPickerSection: some View {
+    private var contentVsInfrastructureSection: some View {
         Section {
-            if viewModel.isLoading {
-                HStack(spacing: 8) {
-                    ProgressView()
-                    Text("Loading collections...")
-                        .foregroundColor(.secondary)
+            StackedComparisonView(
+                leftLabel: "Content",
+                leftBytes: viewModel.breakdown.storeBytes + viewModel.breakdown.attachmentBytes,
+                leftColor: .blue,
+                rightLabel: "Infrastructure",
+                rightBytes: viewModel.breakdown.logsBytes + viewModel.breakdown.replicationBytes,
+                rightColor: .orange
+            )
+        } header: {
+            Text("Content vs Infrastructure")
+        } footer: {
+            Text("Store + Attachments (documents and binaries) versus Logs + Replication (diagnostics and sync state). Note: Store also contains CRDT metadata, so the left side slightly overestimates user content.")
+        }
+    }
+
+    // MARK: - Collection Scan (opt-in)
+
+    @ViewBuilder
+    private var collectionScanSection: some View {
+        Section {
+            Button {
+                Task { await viewModel.scanCollections() }
+            } label: {
+                HStack {
+                    if viewModel.isScanningCollections {
+                        ProgressView()
+                        Text("Scanning…")
+                    } else {
+                        Label("Scan Collections", systemImage: "magnifyingglass")
+                    }
                 }
-            } else if viewModel.collections.isEmpty {
-                Text("No collections found")
+            }
+            .disabled(viewModel.isScanningCollections)
+
+            if viewModel.collections.isEmpty {
+                Text("Tap to discover collections and count documents. Runs a single COUNT(*) per collection — no subscriptions, no document payload loaded.")
+                    .font(.caption)
                     .foregroundColor(.secondary)
             } else {
                 Picker("Collection", selection: Binding(
                     get: { viewModel.selectedCollection },
-                    set: { viewModel.changeCollection(to: $0) }
+                    set: { viewModel.selectCollection($0) }
                 )) {
                     ForEach(viewModel.collections, id: \.self) { name in
                         Text(name).tag(name)
@@ -472,47 +503,150 @@ public struct DiskUsageInspectorView: View {
                 #if os(iOS)
                 .pickerStyle(.menu)
                 #endif
-            }
 
-            Button {
-                viewModel.refreshCollections()
-            } label: {
-                Label("Refresh Collections", systemImage: "arrow.clockwise")
+                Button {
+                    Task { await viewModel.sampleSelectedCollection() }
+                } label: {
+                    HStack {
+                        if viewModel.isSamplingCollection {
+                            ProgressView()
+                            Text("Sampling…")
+                        } else {
+                            Label(
+                                "Sample \(Self.truncateForButton(viewModel.selectedCollection)) (≤ \(DiskUsageInspectorViewModel.sampleLimit) docs)",
+                                systemImage: "chart.bar.doc.horizontal"
+                            )
+                        }
+                    }
+                }
+                .disabled(
+                    viewModel.isSamplingCollection
+                    || viewModel.isScanningCollections
+                    || viewModel.selectedCollection.isEmpty
+                )
+
+                if let date = viewModel.lastCollectionScanDate {
+                    HStack {
+                        Text("Last Scan")
+                            .font(.caption)
+                        Spacer()
+                        Text(DiskUsageInspectorViewModel.dateFormatter.string(from: date))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
             }
         } header: {
-            Text("Select Collection")
+            Text("Collection Scan")
+        } footer: {
+            Text("All collection insights below are opt-in. Sampling is capped at \(DiskUsageInspectorViewModel.sampleLimit) documents per collection and uses one-shot queries — no live observers, no sync subscriptions.")
         }
     }
 
-    // MARK: - Collection Ranking
+    // MARK: - Collection Ranking (count-based, from opt-in scan)
 
     @ViewBuilder
     private var collectionRankingSection: some View {
         Section {
             HorizontalBarChartView(
-                items: viewModel.collectionSizes.map { (label: $0.name, bytes: $0.bytes) },
-                barColor: .blue
+                items: viewModel.collections
+                    .compactMap { name -> (label: String, bytes: Int)? in
+                        guard let count = viewModel.collectionCounts[name] else { return nil }
+                        return (label: name, bytes: count)
+                    }
+                    .sorted { $0.bytes > $1.bytes },
+                barColor: .orange,
+                valueFormatter: { count in
+                    count == 1 ? "1 doc" : "\(count) docs"
+                }
             )
+
+            if !viewModel.collectionsWithFailedCount.isEmpty {
+                HStack(spacing: 6) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.orange)
+                    Text("Count unavailable for \(viewModel.collectionsWithFailedCount.count) collection\(viewModel.collectionsWithFailedCount.count == 1 ? "" : "s")")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
         } header: {
-            Text("Collection Size Ranking")
+            Text("Collection Size Ranking (by document count)")
         } footer: {
-            if viewModel.collectionSizes.count > 10 {
-                Text("Showing top 10 of \(viewModel.collectionSizes.count) collections. The selected collection updates live; others reflect sizes at launch. Tap Refresh to re-scan.")
+            if viewModel.collections.count > 10 {
+                Text("Showing top 10 of \(viewModel.collections.count) collections. Counts are from a COUNT(*) snapshot — re-run Scan Collections to refresh.")
             } else {
-                Text("The selected collection updates live; others reflect sizes at launch. Tap Refresh to re-scan.")
+                Text("Counts are from a COUNT(*) snapshot — re-run Scan Collections to refresh.")
             }
         }
     }
 
-    // MARK: - Document Size Distribution
+    // MARK: - Collection Section Helpers
+
+    /// Clips overly long collection names inside the sample button label so
+    /// the row doesn't wrap awkwardly on iPhone widths.
+    private static func truncateForButton(_ name: String, max: Int = 24) -> String {
+        guard name.count > max else { return name }
+        return name.prefix(max - 1) + "…"
+    }
+
+    /// Formats the "Sampled X of Y docs" row without fabricating a denominator
+    /// when the authoritative count is unknown (e.g. the count query failed).
+    private func sampledLabel(for sample: CollectionSample) -> String {
+        if let total = viewModel.collectionCounts[sample.name] {
+            if sample.wasTruncated {
+                return "\(sample.sampledCount) of \(total) docs"
+            }
+            return "\(sample.sampledCount) docs (all)"
+        }
+        if sample.wasTruncated {
+            return "\(sample.sampledCount) docs (collection larger)"
+        }
+        return "\(sample.sampledCount) docs"
+    }
+
+    // MARK: - Document Size Distribution (from opt-in sample)
 
     @ViewBuilder
     private var docSizeDistributionSection: some View {
         Section {
-            HistogramView(
-                buckets: viewModel.docSizeBuckets,
-                barColor: .orange
-            )
+            if let sample = viewModel.collectionSamples[viewModel.selectedCollection] {
+                HistogramView(
+                    buckets: sample.buckets,
+                    barColor: .orange
+                )
+
+                HStack {
+                    Text("Sampled")
+                        .font(.caption)
+                    Spacer()
+                    Text(sampledLabel(for: sample))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                HStack {
+                    Text("Sample Payload")
+                        .font(.caption)
+                    Spacer()
+                    Text(StorageBreakdown.formatBytes(sample.sampleBytes))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                HStack {
+                    Text("Scanned At")
+                        .font(.caption)
+                    Spacer()
+                    Text(DiskUsageInspectorViewModel.dateFormatter.string(from: sample.scannedAt))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            } else {
+                Text("Tap “Sample …” above to build a size distribution for the selected collection.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         } header: {
             if viewModel.selectedCollection.isEmpty {
                 Text("Document Size Distribution")
@@ -520,111 +654,11 @@ public struct DiskUsageInspectorView: View {
                 Text("Document Sizes: \(viewModel.selectedCollection)")
             }
         } footer: {
-            Text("How documents are distributed across size ranges in the selected collection.")
-        }
-    }
-
-    // MARK: - Your Data vs Ditto Overhead
-
-    @ViewBuilder
-    private var userDataVsOverheadSection: some View {
-        Section {
-            StackedComparisonView(
-                leftLabel: "Your Data",
-                leftBytes: viewModel.totalPayloadBytes
-                    + viewModel.breakdown.attachmentBytes,
-                leftColor: .blue,
-                rightLabel: "Ditto Overhead",
-                rightBytes: viewModel.breakdown.walShmBytes
-                    + viewModel.breakdown.logsBytes
-                    + viewModel.breakdown.metadataOverheadBytes,
-                rightColor: .orange
-            )
-        } header: {
-            Text("Your Data vs Ditto Overhead")
-        } footer: {
-            Text("How much disk space is your data (documents + attachments) versus Ditto's internal files (write-ahead cache, logs, indexes, and sync state).")
-        }
-    }
-
-    // MARK: - db.sql Monitor
-
-    private var dbSqlPercentText: String {
-        let total = viewModel.breakdown.totalOnDiskBytes
-        guard total > 0 else { return "0.0%" }
-        let pct = Double(viewModel.dbSqlBytes) / Double(total) * 100.0
-        return String(format: "%.1f%%", pct)
-    }
-
-    private var dbSqlBloatRatio: Double? {
-        let payload = viewModel.totalPayloadBytes
-        guard payload > 0 else { return nil }
-        return Double(viewModel.dbSqlBytes) / Double(payload)
-    }
-
-    private var dbSqlBloatText: String {
-        guard let ratio = dbSqlBloatRatio else { return "N/A" }
-        return String(format: "%.1fx", ratio)
-    }
-
-    private var dbSqlBloatColor: Color {
-        guard let ratio = dbSqlBloatRatio else { return .secondary }
-        if ratio > 5.0 { return .red }
-        if ratio > 3.0 { return .orange }
-        if ratio > 1.5 { return .yellow }
-        return .green
-    }
-
-    @ViewBuilder
-    private var dbSqlMonitorSection: some View {
-        Section {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Main Database (db.sql)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    AnimatedByteCounterView(
-                        targetBytes: viewModel.dbSqlBytes,
-                        font: .system(.title3, design: .rounded).bold(),
-                        color: .primary
-                    )
-                }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text("% of Total")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text(dbSqlPercentText)
-                        .font(.system(.title3, design: .rounded).bold())
-                        .foregroundColor(.purple)
-                }
+            if let sample = viewModel.collectionSamples[viewModel.selectedCollection], sample.wasTruncated {
+                Text("Sample truncated at \(DiskUsageInspectorViewModel.sampleLimit) docs. Distribution reflects the sampled subset — not the whole collection.")
+            } else {
+                Text("Size buckets across the sampled documents. Each doc is inspected once and released immediately.")
             }
-            .padding(.vertical, 4)
-            #if os(tvOS)
-            .focusable(true)
-            #endif
-
-            HStack {
-                Text("Bloat Ratio")
-                    .font(.body)
-                Spacer()
-                HStack(spacing: 4) {
-                    Circle()
-                        .fill(dbSqlBloatColor)
-                        .frame(width: 8, height: 8)
-                    Text(dbSqlBloatText)
-                        .foregroundColor(dbSqlBloatColor)
-                        .fontWeight(.medium)
-                }
-            }
-            #if os(tvOS)
-            .focusable(true)
-            #endif
-
-        } header: {
-            Text("Database File (db.sql)")
-        } footer: {
-            Text("The main SQLite database. A ratio under 1.5x is healthy. 1.5–3x is normal — CRDT metadata, indexes, and SQLite page overhead add up, especially after bulk imports. Above 3x, monitor; above 5x, investigate. Ditto does not expose a VACUUM API — SQLite reclaims free pages over time.")
         }
     }
 
@@ -642,40 +676,28 @@ public struct DiskUsageInspectorView: View {
         Section {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Attachment Files")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text("\(viewModel.breakdown.attachmentFileCount)")
-                        .font(.system(.title3, design: .rounded).bold())
-                }
-
-                Spacer()
-
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text("Total Size")
+                    Text("Attachment Size")
                         .font(.caption)
                         .foregroundColor(.secondary)
                     Text(StorageBreakdown.formatBytes(viewModel.breakdown.attachmentBytes))
                         .font(.system(.title3, design: .rounded).bold())
                         .foregroundColor(.pink)
                 }
+
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text("% of Total Disk")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text(attachmentPercentText)
+                        .font(.system(.title3, design: .rounded).bold())
+                }
             }
             .padding(.vertical, 4)
             #if os(tvOS)
             .focusable(true)
             #endif
-
-            HStack {
-                Text("% of Total Disk")
-                Spacer()
-                Text(attachmentPercentText)
-                    .foregroundColor(.secondary)
-                    .fontWeight(.medium)
-            }
-            #if os(tvOS)
-            .focusable(true)
-            #endif
-
         } header: {
             Text("Attachments")
         } footer: {
@@ -763,7 +785,7 @@ public struct DiskUsageInspectorView: View {
         } header: {
             Text("Garbage Collection")
         } footer: {
-            Text("Ditto automatically removes attachment files no longer referenced by any document. Drops in the chart indicate successful cleanup cycles.")
+            Text("Ditto automatically removes attachment data no longer referenced by any document. Drops in the chart indicate successful cleanup cycles.")
         }
     }
 
@@ -778,7 +800,6 @@ public struct DiskUsageInspectorView: View {
         let color: Color
 
         if viewModel.gcEventsDetected > 0 {
-            // GC has run at least once — show "Active"
             icon = "checkmark.seal.fill"
             text = "Active"
             color = .green
@@ -787,12 +808,10 @@ public struct DiskUsageInspectorView: View {
             text = "Growing"
             color = .orange
         } else if bytesHistory.count >= 3 {
-            // Enough samples collected but no GC yet
             icon = "clock"
             text = "GC not run yet"
             color = .secondary
         } else {
-            // Still collecting initial samples
             icon = "clock"
             text = "GC not run yet"
             color = .secondary
@@ -863,44 +882,24 @@ public struct DiskUsageInspectorView: View {
     private var glossarySection: some View {
         Section {
             GlossaryRow(
-                term: "Document Data",
-                definition: "The actual content of your synced documents, stored as JSON. This is the primary user data managed by Ditto."
-            )
-            GlossaryRow(
-                term: "Write-Ahead Cache (WAL/SHM)",
-                definition: "Temporary database files that buffer recent writes for performance. These are automatically managed and usually small."
-            )
-            GlossaryRow(
-                term: "Logs",
-                definition: "Diagnostic log files generated by the Ditto SDK, useful for troubleshooting sync or connectivity issues."
-            )
-            GlossaryRow(
-                term: "System Overhead",
-                definition: "Internal indexes, metadata, and database structures that Ditto uses to organize and efficiently query your data."
+                term: "Store",
+                definition: "The main database directory (ditto_store). Contains document data, CRDT metadata, indexes, and internal state managed by the Ditto SDK."
             )
             GlossaryRow(
                 term: "Attachments",
                 definition: "Binary files (images, PDFs, etc.) linked to documents. Stored in a dedicated directory and automatically garbage-collected when no longer referenced."
             )
             GlossaryRow(
+                term: "Logs",
+                definition: "Diagnostic log files generated by the Ditto SDK, useful for troubleshooting sync or connectivity issues."
+            )
+            GlossaryRow(
+                term: "Replication",
+                definition: "Internal state used by Ditto to coordinate peer-to-peer sync, including mesh network metadata and transport bookkeeping."
+            )
+            GlossaryRow(
                 term: "Garbage Collection",
-                definition: "Ditto's automatic process for removing attachment files that are no longer referenced by any document. GC events are detected when the attachment file count decreases between samples. Reported values are estimates — concurrent sync or writes may partially mask the true reclaimed amount."
-            )
-            GlossaryRow(
-                term: "Your Data",
-                definition: "The total size of documents and attachments across your collections. This is the data you create, read, and sync."
-            )
-            GlossaryRow(
-                term: "Ditto Overhead",
-                definition: "Everything Ditto needs beyond your data: write-ahead cache, logs, indexes, sync state, and metadata. Managed automatically."
-            )
-            GlossaryRow(
-                term: "db.sql (Main Database)",
-                definition: "The primary SQLite database file under ditto_store. Contains document data, indexes, CRDT metadata, and internal state."
-            )
-            GlossaryRow(
-                term: "Bloat Ratio",
-                definition: "The ratio of the db.sql file size to actual document data. Under 1.5x is healthy. 1.5–3x is normal (CRDT metadata + indexes). Above 3x warrants monitoring; above 5x warrants investigation. Ditto does not expose a VACUUM API."
+                definition: "Ditto's automatic process for removing attachment data that is no longer referenced by any document. GC events are detected when attachment bytes decrease significantly between samples. Reported values are estimates — concurrent sync or writes may partially mask the true reclaimed amount."
             )
             GlossaryRow(
                 term: "Growth Prediction",
@@ -909,6 +908,18 @@ public struct DiskUsageInspectorView: View {
             GlossaryRow(
                 term: "Parse Warnings",
                 definition: "Diagnostic checks on the disk usage tree. Warnings appear if expected directories are missing or if size totals are inconsistent, which may indicate incomplete disk reporting."
+            )
+            GlossaryRow(
+                term: "Content vs Infrastructure",
+                definition: "A coarse split of top-level directory bytes: Store + Attachments (user-facing content) versus Logs + Replication (diagnostics and sync state). Directional only — Store also contains CRDT metadata."
+            )
+            GlossaryRow(
+                term: "Collection Scan",
+                definition: "An opt-in snapshot triggered by an explicit button. Discovers collections and runs a single COUNT(*) per collection. Uses one-shot queries only — never registers a subscription or observer, so it doesn't pull data from peers or keep documents resident."
+            )
+            GlossaryRow(
+                term: "Collection Sample",
+                definition: "An opt-in sample of up to \(DiskUsageInspectorViewModel.sampleLimit) documents from a single collection, used to build a size distribution. Documents are inspected once and released immediately. If the collection is larger than the cap, the histogram reflects the sampled subset only."
             )
         } header: {
             Text("Glossary")

@@ -331,6 +331,17 @@ struct SparklineView: View {
 struct HorizontalBarChartView: View {
     let items: [(label: String, bytes: Int)]
     let barColor: Color
+    let valueFormatter: (Int) -> String
+
+    init(
+        items: [(label: String, bytes: Int)],
+        barColor: Color,
+        valueFormatter: @escaping (Int) -> String = StorageBreakdown.formatBytes
+    ) {
+        self.items = items
+        self.barColor = barColor
+        self.valueFormatter = valueFormatter
+    }
 
     private var maxBytes: Int {
         items.map(\.bytes).max() ?? 1
@@ -354,7 +365,7 @@ struct HorizontalBarChartView: View {
                                 .font(.caption)
                                 .lineLimit(1)
                             Spacer()
-                            Text(StorageBreakdown.formatBytes(item.bytes))
+                            Text(valueFormatter(item.bytes))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -379,6 +390,18 @@ struct HorizontalBarChartView: View {
 }
 
 // MARK: - Histogram (Document Size Distribution)
+
+public struct DocSizeBucket: Identifiable {
+    public let id: String
+    public let label: String
+    public var count: Int
+
+    public init(id: String, label: String, count: Int) {
+        self.id = id
+        self.label = label
+        self.count = count
+    }
+}
 
 struct HistogramView: View {
     let buckets: [DocSizeBucket]

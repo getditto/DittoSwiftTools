@@ -2,24 +2,36 @@
 //  DiskUsageInspectorViewModel.swift
 //  DittoSwiftTools/DittoDiskUsage
 //
+//  Uses only the public `diskUsagePublisher()` API — no internal file parsing.
+//  Per-collection insights are strictly opt-in, capped, and use one-shot queries
+//  (`store.execute`) — never `registerSubscription`, which would pull data from
+//  peers and hold full docsets resident in memory.
 
 import Foundation
 import Combine
 import DittoSwift
 import DittoHealthMetrics
 
-public struct DocSizeBucket: Identifiable {
-    public let id: String
-    public let label: String
-    public var count: Int
+/// Errors produced by the opt-in collection scan. Surfaced via logs and
+/// `collectionsWithFailedCount`; not thrown across public API boundaries.
+enum DiskUsageScanError: Error {
+    case emptyResult
+    case unexpectedResultFormat
+}
 
-    public static let emptyBuckets: [DocSizeBucket] = [
-        DocSizeBucket(id: "tiny",   label: "< 1 KB",        count: 0),
-        DocSizeBucket(id: "small",  label: "1 – 10 KB",     count: 0),
-        DocSizeBucket(id: "medium", label: "10 – 100 KB",   count: 0),
-        DocSizeBucket(id: "large",  label: "100 KB – 1 MB", count: 0),
-        DocSizeBucket(id: "xlarge", label: "> 1 MB",        count: 0),
-    ]
+/// A snapshot of a single collection produced by an explicit, capped sample.
+/// Never kept live via an observer — re-run via `sampleSelectedCollection()`.
+public struct CollectionSample {
+    public let name: String
+    /// Document count in the sample (`<= sampleLimit`).
+    public let sampledCount: Int
+    /// Aggregate JSON byte size of sampled documents.
+    public let sampleBytes: Int
+    /// Size-bucket histogram over the sample.
+    public let buckets: [DocSizeBucket]
+    /// True when the collection has more docs than were sampled.
+    public let wasTruncated: Bool
+    public let scannedAt: Date
 }
 
 public class DiskUsageInspectorViewModel: ObservableObject {
@@ -28,33 +40,38 @@ public class DiskUsageInspectorViewModel: ObservableObject {
 
     @Published var fileListing: DiskUsageState? = DiskUsageState.defaultState
     @Published public var breakdown = StorageBreakdown()
-    @Published public var collections: [String] = []
-    @Published public var selectedCollection: String = ""
-    @Published public var isLoading: Bool = true
     @Published public var diskUsageHistory: [Int] = []
-    @Published public var docCountHistory: [Int] = []
-    @Published public var collectionSizes: [(name: String, bytes: Int)] = []
-    @Published public var totalDocumentCount: Int = 0
-    /// Kept fresh for the selected collection via incremental deltas; others update on manual refresh.
-    @Published public var totalPayloadBytes: Int = 0
-    @Published public var docSizeBuckets: [DocSizeBucket] = DocSizeBucket.emptyBuckets
-    @Published public var replicationBytes: Int = 0
-    @Published public var storeBytes: Int = 0
+    @Published public var attachmentBytesHistory: [Int] = []
     /// Noisy session-level indicator; sensitive to GC drops and bulk imports.
     @Published public var growthRatePerSecond: Double? = nil
-    @Published public var attachmentCountHistory: [Int] = []
-    @Published public var attachmentBytesHistory: [Int] = []
     /// Lower-bound estimate — concurrent sync additions can mask GC deletions.
     @Published public var gcEventsDetected: Int = 0
     /// Timestamp of the most recent GC event detected.
     @Published public var lastGCEventDate: Date? = nil
     /// Lower-bound net bytes — concurrent additions reduce the observed delta.
     @Published public var gcBytesReclaimed: Int = 0
-    @Published public var dbSqlBytes: Int = 0
     /// Linear extrapolation of growthRatePerSecond; inherits its noise.
     @Published public var estimatedSecondsToThreshold: Double? = nil
     @Published public var parseWarnings: [String] = []
     @Published public var lastParseDate: Date? = nil
+
+    // MARK: - Opt-in Collection Scan State
+
+    @Published public var collections: [String] = []
+    @Published public var selectedCollection: String = ""
+    /// Populated by `scanCollections()`. Only collections whose `COUNT(*)` succeeded
+    /// appear here — missing entries indicate a failed or not-yet-run count.
+    @Published public var collectionCounts: [String: Int] = [:]
+    /// Collections whose count query failed during the most recent scan.
+    @Published public var collectionsWithFailedCount: [String] = []
+    /// Populated by `sampleSelectedCollection()`. Keyed by collection name.
+    @Published public var collectionSamples: [String: CollectionSample] = [:]
+    @Published public var isScanningCollections: Bool = false
+    @Published public var isSamplingCollection: Bool = false
+    @Published public var lastCollectionScanDate: Date? = nil
+
+    /// Hard cap for per-collection sampling. Full enumeration is never performed.
+    public static let sampleLimit: Int = 1000
 
     private let maxHistoryCount = 60
     private var historyTimestamps: [Date] = []
@@ -65,8 +82,6 @@ public class DiskUsageInspectorViewModel: ObservableObject {
     let ditto: Ditto
 
     private var diskUsageCancellable: AnyCancellable?
-    private var storeObserver: DittoStoreObserver?
-    private var subscription: DittoSyncSubscription?
 
     private static let thresholdKey = "com.ditto.diskUsage.healthThresholdBytes"
 
@@ -96,10 +111,6 @@ public class DiskUsageInspectorViewModel: ObservableObject {
         let stored = UserDefaults.standard.integer(forKey: Self.thresholdKey)
         self.unhealthySizeInBytes = stored > 0 ? stored : healthThresholdBytes
         startDiskUsageObservation()
-        Task { @MainActor in
-            await self.loadCollections()
-            self.isLoading = false
-        }
     }
 
     // MARK: - Disk Usage Subscription
@@ -117,7 +128,7 @@ public class DiskUsageInspectorViewModel: ObservableObject {
             }
     }
 
-    // MARK: - Flat File Listing (from existing DiskUsageViewModel logic)
+    // MARK: - Flat File Listing
 
     @MainActor
     private func updateFileListing(from diskUsageItem: DiskUsageItem) {
@@ -141,91 +152,46 @@ public class DiskUsageInspectorViewModel: ObservableObject {
         )
     }
 
-    // MARK: - Categorized Breakdown
+    // MARK: - Categorized Breakdown (top-level children only)
 
     @MainActor
     private func updateBreakdown(from root: DiskUsageItem) {
-        var logs = 0
-        var walShm = 0
-        var repl = 0
         var store = 0
         var attachBytes = 0
-        var attachFileCount = 0
-        var dbSql = 0
-
-        func walk(_ item: DiskUsageItem) {
-            let p = item.path.lowercased()
-            if p.contains("/logs/") || p.hasSuffix(".log") {
-                logs += item.sizeInBytes
-            }
-            if p.hasSuffix(".db-wal") || p.hasSuffix(".db-shm")
-                || p.hasSuffix("-wal") || p.hasSuffix("-shm") {
-                walShm += item.sizeInBytes
-            }
-            if p.contains(DittoDiskUsageConstants.dittoStorePath),
-               (p.hasSuffix(".db") || p.hasSuffix("db.sql") || p.hasSuffix(".sqlite")),
-               !p.hasSuffix(".db-wal"), !p.hasSuffix(".db-shm") {
-                dbSql += item.sizeInBytes
-            }
-            for child in item.childItems { walk(child) }
-        }
-        walk(root)
+        var logs = 0
+        var repl = 0
 
         for child in root.childItems {
-            let shortPath = child.path.lowercased()
-            if shortPath.hasSuffix(DittoDiskUsageConstants.dittoReplicationPath) {
-                repl = child.sizeInBytes
-            } else if shortPath.hasSuffix(DittoDiskUsageConstants.dittoStorePath) {
+            let p = child.path.lowercased()
+            if p.hasSuffix(DittoDiskUsageConstants.dittoStorePath) {
                 store = child.sizeInBytes
-            } else if shortPath.hasSuffix(DittoDiskUsageConstants.dittoAttachmentsPath) {
+            } else if p.hasSuffix(DittoDiskUsageConstants.dittoAttachmentsPath) {
                 attachBytes = child.sizeInBytes
-                attachFileCount = Self.countAttachmentEntries(child)
-                let leafFiles = Self.countLeafFiles(child)
-                print("[GC-Debug] 📁 Found ditto_attachments: \(attachFileCount) attachment dirs, \(leafFiles) leaf files, \(attachBytes) bytes")
+            } else if p.hasSuffix(DittoDiskUsageConstants.dittoLogsPath) {
+                logs = child.sizeInBytes
+            } else if p.hasSuffix(DittoDiskUsageConstants.dittoReplicationPath) {
+                repl = child.sizeInBytes
             }
         }
 
         let total = root.sizeInBytes
-        let payload = totalPayloadBytes > 0 ? totalPayloadBytes : breakdown.collectionPayloadBytes
-        let meta = max(0, total - (payload + logs + walShm + attachBytes))
 
         breakdown.totalOnDiskBytes = total
-        breakdown.logsBytes = logs
-        breakdown.walShmBytes = walShm
-        breakdown.metadataOverheadBytes = meta
+        breakdown.storeBytes = store
         breakdown.attachmentBytes = attachBytes
-        breakdown.attachmentFileCount = attachFileCount
-        replicationBytes = repl
-        storeBytes = store
+        breakdown.logsBytes = logs
+        breakdown.replicationBytes = repl
 
-        // GC detection: snapshot-based — concurrent sync additions can mask deletions.
-        //
-        // Two independent signals:
-        //   1. Attachment entry count drops   → gcEventsDetected (drives GC Status badge)
-        //   2. Attachment bytes drop by >10KB → gcBytesReclaimed (drives Space Reclaimed)
-        //      The 10 KB threshold filters out normal SQLite WAL fluctuations.
-        let prevCount = attachmentCountHistory.last
-        print("[GC-Debug] 📊 Sample: attachEntries=\(attachFileCount) prevEntries=\(prevCount ?? -1) attachBytes=\(attachBytes) prevBytes=\(prevAttachmentBytes)")
-
-        // Signal 1: directory count drop (attachment stubs removed by janitor)
-        let entryCountDropped = prevCount != nil && attachFileCount < prevCount!
-        if entryCountDropped {
-            gcEventsDetected += 1
-            lastGCEventDate = Date()
-            print("[GC-Debug] ✅ GC EVENT: Entry count dropped \(prevCount!) → \(attachFileCount)")
-        }
-
-        // Signal 2: significant byte drop (blob data reclaimed from db.sql)
+        // GC detection: byte-based — concurrent sync additions can mask deletions.
+        // A significant attachment-bytes drop (>10 KB) indicates GC reclaimed space.
         let bytesDelta = prevAttachmentBytes - attachBytes
-        if prevAttachmentBytes > 0 && bytesDelta > 10_240 {  // >10 KB to filter WAL noise
+        if prevAttachmentBytes > 0 && bytesDelta > 10_240 {
+            gcEventsDetected += 1
             gcBytesReclaimed += bytesDelta
             lastGCEventDate = Date()
-            if !entryCountDropped { gcEventsDetected += 1 }  // count as event if entry drop didn't already
-            print("[GC-Debug] ✅ SPACE RECLAIMED: \(bytesDelta) bytes (\(prevAttachmentBytes) → \(attachBytes))")
         }
         prevAttachmentBytes = attachBytes
 
-        appendToHistory(attachFileCount, array: &attachmentCountHistory)
         appendToHistory(attachBytes, array: &attachmentBytesHistory)
         appendToHistory(total, array: &diskUsageHistory)
 
@@ -245,8 +211,6 @@ public class DiskUsageInspectorViewModel: ObservableObject {
                 growthRatePerSecond = Double(lastBytes - firstBytes) / elapsed
             }
         }
-
-        dbSqlBytes = dbSql
 
         if let rate = growthRatePerSecond, rate > 0 {
             let remaining = Double(unhealthySizeInBytes - total)
@@ -281,164 +245,168 @@ public class DiskUsageInspectorViewModel: ObservableObject {
         lastParseDate = Date()
     }
 
-    // MARK: - Collections
+    // MARK: - Opt-in Collection Scanning
+    //
+    // Both methods below use one-shot `store.execute` queries against the local
+    // store. They do NOT register subscriptions or observers, so they don't
+    // trigger sync traffic and don't keep documents resident in memory past
+    // the call. Documents are dematerialized as soon as they're inspected.
 
+    /// Discovers collection names via the public `system:collections` DQL
+    /// surface and runs a cheap `COUNT(*)` against each. Triggered only by
+    /// explicit user action ("Scan Collections" button).
     @MainActor
-    private func loadCollections() async {
-        var names = Set<String>()
+    public func scanCollections() async {
+        guard !isScanningCollections else { return }
+        isScanningCollections = true
+        defer { isScanningCollections = false }
 
+        let sortedNames: [String]
         do {
-            let result = try await ditto.store.execute(
-                query: "SELECT * FROM system:collections"
-            )
-            for item in result.items {
-                if let name = item.value["name"] as? String {
-                    names.insert(name)
-                }
-                item.dematerialize()
-            }
+            sortedNames = try await fetchCollectionNames().sorted()
         } catch {
             print("[DittoDiskUsage] system:collections query failed: \(error)")
+            return
         }
 
-        if names.isEmpty {
-            for name in ditto.store.collectionNames() {
-                names.insert(name)
-            }
-            for col in ditto.store.collections().exec() {
-                names.insert(col.name)
-            }
-        }
-
-        print("[DittoDiskUsage] Discovered \(names.count) collections: \(names.sorted())")
-
-        self.collections = names.sorted()
-        if !collections.isEmpty && !collections.contains(selectedCollection) {
-            selectedCollection = collections.first ?? ""
-            await rewireForCurrentCollection()
-        }
-        await loadCollectionSizes()
-    }
-
-    @MainActor
-    private func loadCollectionSizes() async {
-        var sizes: [(name: String, bytes: Int)] = []
-        var totalDocs = 0
-        for name in collections {
-            let escaped = name.replacingOccurrences(of: "`", with: "``")
-            let dqlName = "`\(escaped)`"
+        var counts: [String: Int] = [:]
+        var failed: [String] = []
+        for name in sortedNames {
             do {
-                let result = try await ditto.store.execute(query: "SELECT * FROM \(dqlName)")
-                totalDocs += result.items.count
-                var totalPayload = 0
-                for item in result.items {
-                    totalPayload += item.jsonData().count
-                    item.dematerialize()
-                }
-                sizes.append((name: name, bytes: totalPayload))
+                counts[name] = try await fetchCount(for: name)
             } catch {
-                sizes.append((name: name, bytes: 0))
+                failed.append(name)
+                print("[DittoDiskUsage] count query failed for \(name): \(error)")
             }
         }
-        collectionSizes = sizes.sorted { $0.bytes > $1.bytes }
-        totalDocumentCount = totalDocs
-        totalPayloadBytes = sizes.reduce(0) { $0 + $1.bytes }
-        recalculateMetadata()
-    }
 
-    @MainActor
-    public func changeCollection(to name: String) {
-        selectedCollection = name
-        Task {
-            await rewireForCurrentCollection()
+        self.collections = sortedNames
+        self.collectionCounts = counts
+        self.collectionsWithFailedCount = failed
+        if !sortedNames.contains(selectedCollection) {
+            self.selectedCollection = sortedNames.first ?? ""
         }
+        self.lastCollectionScanDate = Date()
     }
 
+    /// Samples up to `sampleLimit` documents from the currently selected
+    /// collection and builds a size histogram. Opt-in — invoke explicitly.
     @MainActor
-    public func refreshCollections() {
-        Task {
-            await loadCollections()
-        }
-    }
+    public func sampleSelectedCollection() async {
+        guard !isSamplingCollection else { return }
+        let name = selectedCollection
+        guard !name.isEmpty else { return }
 
-    // MARK: - Collection Observer
-
-    @MainActor
-    private func rewireForCurrentCollection() async {
-        storeObserver?.cancel()
-        storeObserver = nil
-        subscription?.cancel()
-        subscription = nil
-
-        breakdown.documentCount = 0
-        breakdown.collectionPayloadBytes = 0
-        docCountHistory = [0]
-        docSizeBuckets = DocSizeBucket.emptyBuckets
-
-        guard !selectedCollection.isEmpty else { return }
-
-        let escaped = selectedCollection.replacingOccurrences(of: "`", with: "``")
-        let dqlName = "`\(escaped)`"
+        isSamplingCollection = true
+        defer { isSamplingCollection = false }
 
         do {
-            subscription = try ditto.sync.registerSubscription(
-                query: "SELECT * FROM \(dqlName)"
-            )
-
-            storeObserver = try ditto.store.registerObserver(
-                query: "SELECT * FROM \(dqlName)"
-            ) { [weak self] result in
-                guard let self else { return }
-                let docs = result.items
-                var payloadBytes = 0
-                var buckets = DocSizeBucket.emptyBuckets
-                for item in docs {
-                    let size = item.jsonData().count
-                    payloadBytes += size
-                    switch size {
-                    case ..<1_024:
-                        buckets[0].count += 1
-                    case 1_024..<10_240:
-                        buckets[1].count += 1
-                    case 10_240..<102_400:
-                        buckets[2].count += 1
-                    case 102_400..<1_048_576:
-                        buckets[3].count += 1
-                    default:
-                        buckets[4].count += 1
-                    }
-                    item.dematerialize()
-                }
-                Task { @MainActor in
-                    let oldPayload = self.breakdown.collectionPayloadBytes
-                    let delta = payloadBytes - oldPayload
-                    self.totalPayloadBytes = max(0, self.totalPayloadBytes + delta)
-
-                    if let idx = self.collectionSizes.firstIndex(where: { $0.name == self.selectedCollection }) {
-                        self.collectionSizes[idx] = (name: self.selectedCollection, bytes: payloadBytes)
-                        self.collectionSizes.sort { $0.bytes > $1.bytes }
-                    }
-
-                    self.breakdown.documentCount = docs.count
-                    self.breakdown.collectionPayloadBytes = payloadBytes
-                    self.docSizeBuckets = buckets
-                    self.appendToHistory(docs.count, array: &self.docCountHistory)
-                    self.recalculateMetadata()
-                }
-            }
+            let sample = try await buildSample(for: name, limit: Self.sampleLimit)
+            collectionSamples[name] = sample
         } catch {
-            print("[DittoDiskUsage] Failed to observe collection \(selectedCollection): \(error)")
+            print("[DittoDiskUsage] sample query failed for \(name): \(error)")
         }
     }
 
     @MainActor
-    private func recalculateMetadata() {
-        let payload = totalPayloadBytes > 0 ? totalPayloadBytes : breakdown.collectionPayloadBytes
-        breakdown.metadataOverheadBytes = max(0,
-            breakdown.totalOnDiskBytes - (payload + breakdown.logsBytes + breakdown.walShmBytes + breakdown.attachmentBytes))
+    public func selectCollection(_ name: String) {
+        selectedCollection = name
     }
 
-    // MARK: - Helpers
+    // MARK: - Scan Helpers
+
+    /// `system:collections` is the documented DQL virtual collection that
+    /// enumerates user collections — preferred over any internal introspection.
+    private func fetchCollectionNames() async throws -> Set<String> {
+        let result = try await ditto.store.execute(
+            query: "SELECT * FROM system:collections"
+        )
+        var names = Set<String>()
+        for item in result.items {
+            if let name = item.value["name"] as? String {
+                names.insert(name)
+            }
+            item.dematerialize()
+        }
+        return names
+    }
+
+    private func fetchCount(for collection: String) async throws -> Int {
+        let dqlName = Self.escapeIdentifier(collection)
+        let result = try await ditto.store.execute(
+            query: "SELECT COUNT(*) AS total FROM \(dqlName)"
+        )
+        defer { result.items.forEach { $0.dematerialize() } }
+        guard let item = result.items.first else {
+            throw DiskUsageScanError.emptyResult
+        }
+        if let n = item.value["total"] as? Int { return n }
+        if let n = item.value["total"] as? Int64 { return Int(n) }
+        if let n = item.value["total"] as? Double { return Int(n) }
+        throw DiskUsageScanError.unexpectedResultFormat
+    }
+
+    private func buildSample(for collection: String, limit: Int) async throws -> CollectionSample {
+        let dqlName = Self.escapeIdentifier(collection)
+        var buckets: [DocSizeBucket] = Self.emptySizeBuckets()
+        var totalBytes = 0
+        var sampledCount = 0
+
+        let result = try await ditto.store.execute(
+            query: "SELECT * FROM \(dqlName) LIMIT \(limit)"
+        )
+        for item in result.items {
+            let size = item.jsonData().count
+            totalBytes += size
+            let bucketIndex = Self.bucketIndex(forSize: size)
+            buckets[bucketIndex].count += 1
+            item.dematerialize()
+            sampledCount += 1
+        }
+
+        let knownTotal = collectionCounts[collection]
+        let wasTruncated: Bool
+        if let knownTotal = knownTotal {
+            wasTruncated = knownTotal > sampledCount
+        } else {
+            wasTruncated = sampledCount >= limit
+        }
+
+        return CollectionSample(
+            name: collection,
+            sampledCount: sampledCount,
+            sampleBytes: totalBytes,
+            buckets: buckets,
+            wasTruncated: wasTruncated,
+            scannedAt: Date()
+        )
+    }
+
+    private static func escapeIdentifier(_ name: String) -> String {
+        "`\(name.replacingOccurrences(of: "`", with: "``"))`"
+    }
+
+    private static func emptySizeBuckets() -> [DocSizeBucket] {
+        [
+            DocSizeBucket(id: "tiny",   label: "< 1 KB",        count: 0),
+            DocSizeBucket(id: "small",  label: "1 – 10 KB",     count: 0),
+            DocSizeBucket(id: "medium", label: "10 – 100 KB",   count: 0),
+            DocSizeBucket(id: "large",  label: "100 KB – 1 MB", count: 0),
+            DocSizeBucket(id: "xlarge", label: "> 1 MB",        count: 0),
+        ]
+    }
+
+    private static func bucketIndex(forSize size: Int) -> Int {
+        switch size {
+        case ..<1_024:            return 0
+        case 1_024..<10_240:      return 1
+        case 10_240..<102_400:    return 2
+        case 102_400..<1_048_576: return 3
+        default:                  return 4
+        }
+    }
+
+    // MARK: - History Helpers
 
     private func appendToHistory(_ value: Int, array: inout [Int]) {
         array.append(value)
@@ -447,33 +415,10 @@ public class DiskUsageInspectorViewModel: ObservableObject {
         }
     }
 
-    private static func countLeafFiles(_ item: DiskUsageItem) -> Int {
-        if item.childItems.isEmpty {
-            return item.sizeInBytes > 0 ? 1 : 0
-        }
-        return item.childItems.reduce(0) { $0 + countLeafFiles($1) }
-    }
-
-    /// Counts attachment entries inside the ditto_attachments directory.
-    /// Ditto stores each attachment as a hash-named directory (empty stub).
-    /// The actual blob data lives in db.sql inside the same directory.
-    /// This counts only the hash-named directories (not db.sql, .wal, .shm, lock files),
-    /// matching the approach used by the attachment-gc-repro tool.
-    private static func countAttachmentEntries(_ attachmentsDir: DiskUsageItem) -> Int {
-        let internalFiles: Set<String> = ["db.sql", "db.sql-wal", "db.sql-shm",
-                                          "__ditto_store_lock_file"]
-        return attachmentsDir.childItems.filter { child in
-            let name = (child.path as NSString).lastPathComponent
-            return !internalFiles.contains(name)
-        }.count
-    }
-
-    // MARK: - Health Metrics
+    // MARK: - Cleanup
 
     deinit {
         diskUsageCancellable?.cancel()
-        storeObserver?.cancel()
-        subscription?.cancel()
     }
 }
 

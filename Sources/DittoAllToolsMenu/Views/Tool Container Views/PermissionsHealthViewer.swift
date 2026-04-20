@@ -14,8 +14,6 @@ struct PermissionsHealthViewer: View {
     }
 }
 
-#if swift(>=5.9) && canImport(SwiftUI)
 #Preview {
     PermissionsHealthViewer()
 }
-#endif
