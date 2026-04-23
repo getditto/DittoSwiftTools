@@ -12,8 +12,8 @@ import OrderedCollections
 class DocumentsViewModel : ObservableObject {
     
     let collectionName: String
-    var subscription: DittoSubscription?
-    var collectionObserver: DittoLiveQuery?
+    var subscription: DittoSyncSubscription?
+    var collectionObserver: DittoStoreObserver?
     var ditto: Ditto
         
     @Published var docProperties: [String]?
@@ -32,62 +32,102 @@ class DocumentsViewModel : ObservableObject {
         
     func startSubscription(isStandAlone: Bool) {
         if(isStandAlone) {
-            self.subscription = self.ditto.store.collection(collectionName).findAll().limit(1000).subscribe()
+            do {
+                self.subscription = try self.ditto.sync.registerSubscription(query: "SELECT * FROM \(collectionName) LIMIT 1000")
+            } catch {
+                print(
+                    "DocumentsVM.\(#function) - ERROR starting subscription for collection: " +
+                    "\(collectionName)\n" +
+                    "error: \(error.localizedDescription)"
+                )
+            }
         }
     }
     
     func findAll_LiveQuery() {
-        self.collectionObserver = self.ditto.store.collection(collectionName).findAll().observeLocal(eventHandler: {docs, event in
-            self.docsList.removeAll()
-            for doc in docs {
-                self.docProperties = doc.value.keys.map{$0}.sorted()
-                
-                for (key, value) in doc.value {
-                    self.orderedDict[key] = value
+        do {
+            self.collectionObserver = try self.ditto.store.registerObserver(
+                query: "SELECT * FROM \(collectionName)",
+                handler: { queryResult in
+                    self.docsList.removeAll()
+
+                    for item in queryResult.items {
+                        let docValue = item.value
+                        self.docProperties = docValue.keys.map{$0}.sorted()
+
+                        for (key, value) in docValue {
+                            self.orderedDict[key] = value
+                        }
+
+                        let documentId = docValue["_id"] as? String ?? ""
+                        self.docsList.append(Document(id: documentId, value: self.orderedDict))
+                    }
                 }
-                
-                self.docsList.append(Document(id: doc.id.toString(), value: self.orderedDict))
-            }
-        })
+            )
+        } catch {
+            print(
+                "DocumentsVM.\(#function) - ERROR fetching all from collection: " +
+                "\(collectionName)\n" +
+                "error: \(error.localizedDescription)"
+            )
+        }
     }
+
     
     func findWithFilter_LiveQuery(queryString: String) {
         self.selectedDoc = 0
         
-        collectionObserver = self.ditto.store.collection(collectionName).find(queryString).observeLocal(eventHandler: {docs, event in
-            self.docsList.removeAll()
-            
-            for doc in docs {
-                
-                self.docProperties = doc.value.keys.map{$0}.sorted()
-                
-                for (key, value) in doc.value {
-                    self.orderedDict[key] = value
-                }
-                
-                self.docsList.append(Document(id: doc.id.toString(), value: self.orderedDict))
-            }
-            
-        })
+        print("Query String: " + queryString)
 
+        // Convert legacy query string to DQL WHERE clause
+        let dqlQuery = "SELECT * FROM \(collectionName) WHERE \(queryString)"
+
+        do {
+            collectionObserver = try self.ditto.store.registerObserver(
+                query: dqlQuery,
+                handler: { queryResult in
+                    self.docsList.removeAll()
+
+                    for item in queryResult.items {
+                        let docValue = item.value
+                        self.docProperties = docValue.keys.map{$0}.sorted()
+
+                        for (key, value) in docValue {
+                            self.orderedDict[key] = value
+                        }
+
+                        // ID is now accessed via item.value["_id"] as String
+                        let documentId = docValue["_id"] as? String ?? ""
+                        self.docsList.append(Document(id: documentId, value: self.orderedDict))
+                    }
+                }
+            )
+        } catch {
+            print(
+                "DocumentsVM.\(#function) - ERROR fetching \(queryString) from collection: " +
+                "\(collectionName)\n" +
+                "error: \(error.localizedDescription)"
+            )
+        }
     }
+
     
     
     func filterDocs(queryString: String) {
-        collectionObserver?.stop()
+        collectionObserver?.cancel()
         collectionObserver = nil
         
         if(queryString.isEmpty) {
-            collectionObserver?.stop()
+            collectionObserver?.cancel()
             findAll_LiveQuery()
         }
         else {
-            collectionObserver?.stop()
+            collectionObserver?.cancel()
             findWithFilter_LiveQuery(queryString: queryString)
         }
     }
     
     func closeLiveQuery() {
-        collectionObserver?.stop()
+        collectionObserver?.cancel()
     }
 }

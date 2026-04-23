@@ -56,9 +56,9 @@ public struct DataBrowser: View {
     private var listView: some View {
         List {
             Section {
-                ForEach(viewModel.collections ?? [], id: \.name) { collection in
-                    NavigationLink(destination: Documents(collectionName: collection.name, ditto: viewModel.ditto, isStandAlone: self.isStandAlone)) {
-                        Text(collection.name)
+                ForEach(viewModel.collections, id: \.self) { name in
+                    NavigationLink(destination: Documents(collectionName: name, ditto: viewModel.ditto, isStandAlone: self.isStandAlone)) {
+                        Text(name)
                     }
                 }
             }
@@ -108,3 +108,4 @@ public struct DataBrowser: View {
         self.isShowingAlert = false
     }
 }
+

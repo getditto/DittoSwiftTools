@@ -100,6 +100,9 @@ public class DittoService: ObservableObject {
                 throw DittoServiceError.noInstance
             }
 
+            // Disable v3 sync explicitly - required for DQL; fail-fast if unavailable or if it errors
+            try disableSyncWithV3(on: ditto)
+
             print("Ditto instance initialized successfully.")
 
             // Save the credentials as the active credentials
@@ -162,6 +165,15 @@ public class DittoService: ObservableObject {
             try ditto.setOfflineOnlyLicenseToken(offlineLicenseToken)
         } catch {
             throw DittoServiceError.initializationFailed("Could not set offline license token.")
+        }
+    }
+
+    /// Disables sync with Ditto v3 APIs/features. Throws to enforce fail-fast initialization.
+    private func disableSyncWithV3(on ditto: Ditto) throws {
+        do {
+            try ditto.disableSyncWithV3()
+        } catch {
+            throw DittoServiceError.initializationFailed("disableSyncWithV3 failed with error: \(error.localizedDescription)")
         }
     }
 

@@ -33,20 +33,21 @@ func toMap(peer: Peer) -> [String: String] {
     ]
 }
 
-func toPeer(dittoDocument: DittoDocument) -> Peer {
+func toPeer(queryResultItem: DittoQueryResultItem) -> Peer {
     return Peer(
-        name: dittoDocument["_id"].stringValue,
+        name: queryResultItem.value["_id"] as? String ?? "",
         transportInfo: PeerTransportInfo(
-            bluetoothConnections: Int(dittoDocument["bluetoothConnections"].stringValue)!,
-            lanConnections: Int(dittoDocument["lanConnections"].stringValue)!,
-            p2pConnections: Int(dittoDocument["p2pConnections"].stringValue)!,
-            cloudConnections: Int(dittoDocument["cloudConnections"].stringValue)!
+            bluetoothConnections: Int(queryResultItem.value["bluetoothConnections"] as? String ?? "0") ?? 0,
+            lanConnections: Int(queryResultItem.value["lanConnections"] as? String ?? "0") ?? 0,
+            p2pConnections: Int(queryResultItem.value["p2pConnections"] as? String ?? "0") ?? 0,
+            cloudConnections: Int(queryResultItem.value["cloudConnections"] as? String ?? "0") ?? 0
         ),
-        connected: Bool(dittoDocument["connected"].stringValue)!,
-        lastSeen: Int(dittoDocument["lastSeen"].stringValue)!,
-        key: dittoDocument["key"].stringValue
+        connected: Bool(queryResultItem.value["connected"] as? String ?? "false") ?? false,
+        lastSeen: Int(queryResultItem.value["lastSeen"] as? String ?? "0") ?? 0,
+        key: queryResultItem.value["key"] as? String ?? ""
     )
 }
+
 
 func getDateFromTimestamp(_ timestamp: Int) -> String {
     let formatter = DateFormatter()

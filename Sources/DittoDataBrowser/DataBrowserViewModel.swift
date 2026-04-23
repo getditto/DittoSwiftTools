@@ -10,9 +10,9 @@ import DittoSwift
 
 class DataBrowserViewModel: ObservableObject {
     
-    @Published var collections: [DittoCollection]?
-    var subscription: DittoSubscription?
-    var collectionsObserver: DittoLiveQuery?
+    @Published var collections: [String] = []
+    var subscription: DittoSyncSubscription?
+    var collectionsObserver: DittoStoreObserver?
     var ditto: Ditto
     
     init(ditto: Ditto) {
@@ -21,20 +21,38 @@ class DataBrowserViewModel: ObservableObject {
     }
     
     func observeCollections() {
-                                                                                         
-        collectionsObserver = self.ditto.store.collections().observeLocal(eventHandler: { _ in
-            
-            // self.collections = ditto.store.collectionNames()
-            self.collections = self.ditto.store.collections().exec()
-        })
+        do {
+            collectionsObserver = try self.ditto.store.registerObserver(
+                query: "SELECT * FROM system:collections"
+            ) { [weak self] queryResult in
+                // Extract collection names from the system collections query
+                self?.collections = queryResult.items.compactMap { item in
+                    item.value["name"] as? String
+                }
+            }
+        } catch {
+            print(
+                "DataBrowserVM.\(#function) - ERROR observing all collections" +
+                "error: \(error.localizedDescription)"
+            )
+        }
     }
+
     
     func startSubscription() {
-        subscription = ditto.store.collections().subscribe()
+        do {
+            subscription = try ditto.sync.registerSubscription(query: "SELECT * FROM system:collections")
+        } catch {
+            print(
+                "DataBrowserVM.\(#function) - ERROR starting subscription to all collections" +
+                "error: \(error.localizedDescription)"
+            )
+        }
     }
     
     func closeLiveQuery() {
-        collectionsObserver?.stop()
+        collectionsObserver?.cancel()
     }
     
 }
+
