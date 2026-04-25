@@ -4,7 +4,7 @@ DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers in 
 in a list view, export Ditto data directory and debug logs (locally or to Ditto Portal), browse collections/documents, and see
 Ditto's disk usage.
 
-For support, please contact Ditto Support (<support@ditto.live>).
+For support, please contact Ditto Support (<support@ditto.com>).
 
 ## Installation
 
@@ -593,7 +593,7 @@ Solution: Update to the latest version of XCode to get new Swift versions.
 
 ## Contact
 
-Send us an email at support@ditto.live or [submit a form](https://www.ditto.live/about/contact). 
+Send us an email at support@ditto.com.
 
 ## License (MIT)
 Copyright © 2023 DittoLive
