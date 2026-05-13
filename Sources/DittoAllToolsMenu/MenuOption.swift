@@ -14,6 +14,7 @@ enum MenuOption: String, CaseIterable, Equatable {
     case peersList = "Peers List"
     case presenceDegradation = "Presence Degradation"
     case diskUsage = "Disk Usage"
+    case diskUsageInspector = "Disk Usage Inspector"
     case permissionsHealth = "Permissions Health"
     case heartbeat = "Heartbeat"
     case dataBrowser = "Data Browser"
@@ -40,7 +41,7 @@ enum MenuOption: String, CaseIterable, Equatable {
 
 #endif
             case .systemAndPerformanceTools:
-                return [.permissionsHealth, .diskUsage]
+                return [.permissionsHealth, .diskUsage, .diskUsageInspector]
             case .diagnosticsAndDebuggingTools:
                 return [.dataBrowser, .logging]
             }
@@ -61,6 +62,8 @@ enum MenuOption: String, CaseIterable, Equatable {
             return "exclamationmark.triangle"
         case .diskUsage:
             return "opticaldiscdrive"
+        case .diskUsageInspector:
+            return "doc.text.magnifyingglass"
         case .permissionsHealth:
             return "checklist"
         case .heartbeat:
@@ -86,6 +89,9 @@ enum MenuOption: String, CaseIterable, Equatable {
             return .red
         case .diskUsage:
             return .secondary
+        case .diskUsageInspector:
+            // Explicit RGB chosen for iOS 14 compatibility — `.teal` is iOS 15+.
+            return Color(red: 0.29, green: 0.0, blue: 0.51)
         case .permissionsHealth:
             return .purple
         case .heartbeat:
@@ -121,6 +127,8 @@ enum MenuOption: String, CaseIterable, Equatable {
                 PresenceDegradationViewer(ditto: ditto)
             case .diskUsage:
                 DiskUsageViewer(ditto: ditto)
+            case .diskUsageInspector:
+                DiskUsageInspectorViewer(ditto: ditto)
             case .permissionsHealth:
                 PermissionsHealthViewer()
             case .heartbeat:
