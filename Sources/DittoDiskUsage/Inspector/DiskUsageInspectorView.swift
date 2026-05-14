@@ -29,6 +29,16 @@ public struct DiskUsageInspectorView: View {
                 historyTotals: viewModel.historyTotalBytes,
                 growthRatePerSecond: viewModel.growthRatePerSecond
             )
+            CollectionScanSection(
+                discoveredCollections: viewModel.discoveredCollections,
+                scanStates: viewModel.collectionScanStates,
+                selectedCollection: viewModel.selectedCollection,
+                isScanning: viewModel.isScanningCollections,
+                hasScanned: viewModel.hasScannedCollections,
+                scanError: viewModel.scanError,
+                onScanTapped: viewModel.scanCollections,
+                onSelectCollection: viewModel.selectCollection
+            )
             GlossarySection()
         }
         .navigationTitle("Disk Usage Inspector")
