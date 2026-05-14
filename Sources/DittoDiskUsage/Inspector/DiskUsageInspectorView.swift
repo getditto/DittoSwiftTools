@@ -22,6 +22,13 @@ public struct DiskUsageInspectorView: View {
                 totalBytes: viewModel.breakdown.totalOnDiskBytes,
                 hasReceivedFirstSnapshot: viewModel.hasReceivedFirstSnapshot
             )
+            HealthAndTrendSection(
+                currentBytes: viewModel.breakdown.totalOnDiskBytes,
+                thresholdBytes: viewModel.healthThresholdBytes,
+                status: viewModel.healthStatus,
+                historyTotals: viewModel.historyTotalBytes,
+                growthRatePerSecond: viewModel.growthRatePerSecond
+            )
             GlossarySection()
         }
         .navigationTitle("Disk Usage Inspector")
