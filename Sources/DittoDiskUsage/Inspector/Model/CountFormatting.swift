@@ -7,14 +7,8 @@
 
 import Foundation
 
-extension Int {
-    /// Localized, grouped decimal count (e.g. `"12,847"`).
-    var formattedAsCount: String {
-        CountFormatting.string(forCount: self)
-    }
-}
-
-/// Shared decimal `NumberFormatter` for document-count strings.
+/// Shared decimal `NumberFormatter` for document-count strings (e.g.
+/// `"12,847"`).
 enum CountFormatting {
     private static let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -22,7 +16,7 @@ enum CountFormatting {
         return formatter
     }()
 
-    static func string(forCount value: Int) -> String {
+    static func format(_ value: Int) -> String {
         formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 }

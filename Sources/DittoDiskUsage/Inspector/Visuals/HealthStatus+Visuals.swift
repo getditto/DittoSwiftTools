@@ -9,7 +9,7 @@ import SwiftUI
 
 /// Presentation properties for ``HealthStatus``. Kept separate from the model
 /// so the enum itself stays free of icon-name and color choices.
-extension HealthStatus {
+public extension HealthStatus {
     var systemImageName: String {
         switch self {
         case .healthy: return "checkmark.circle.fill"

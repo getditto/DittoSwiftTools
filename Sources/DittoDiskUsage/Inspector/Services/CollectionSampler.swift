@@ -22,6 +22,15 @@ protocol CollectionSampling {
 ///
 /// Thread-safe: no mutable state.
 final class CollectionSampler: CollectionSampling {
+    /// One row in the bucket definition table — paired upper bound (in
+    /// bytes) and the label shown in the histogram. The last entry has
+    /// no upper bound and catches everything large.
+    struct BucketTemplate {
+        let id: String
+        let label: String
+        let upperBoundBytes: Int?
+    }
+
     private let ditto: Ditto
     private let now: () -> Date
 
@@ -30,26 +39,16 @@ final class CollectionSampler: CollectionSampling {
         self.now = now
     }
 
-    /// Bucket upper bounds in bytes (exclusive). Powers of four give a
-    /// log-scale view across the typical Ditto document range. Anything
-    /// at or above the last bound goes in the overflow bucket.
-    static let bucketUpperBounds: [Int] = [
-        1024,
-        4096,
-        16384,
-        65536,
-        262144
-    ]
-
-    /// Labels for each bucket; one entry longer than ``bucketUpperBounds``
-    /// to cover the overflow tier.
-    static let bucketLabels: [(id: String, label: String)] = [
-        ("under-1kb", "< 1 KB"),
-        ("1-4kb", "1 – 4 KB"),
-        ("4-16kb", "4 – 16 KB"),
-        ("16-64kb", "16 – 64 KB"),
-        ("64-256kb", "64 – 256 KB"),
-        ("256kb-plus", "≥ 256 KB")
+    /// Bucket definitions in order, smallest first. Powers of four spread
+    /// the buckets across the typical Ditto document range; the final
+    /// bucket has no upper bound and catches everything ≥ 256 KB.
+    static let bucketTemplates: [BucketTemplate] = [
+        BucketTemplate(id: "under-1kb", label: "< 1 KB", upperBoundBytes: 1024),
+        BucketTemplate(id: "1-4kb", label: "1 – 4 KB", upperBoundBytes: 4096),
+        BucketTemplate(id: "4-16kb", label: "4 – 16 KB", upperBoundBytes: 16384),
+        BucketTemplate(id: "16-64kb", label: "16 – 64 KB", upperBoundBytes: 65536),
+        BucketTemplate(id: "64-256kb", label: "64 – 256 KB", upperBoundBytes: 262144),
+        BucketTemplate(id: "256kb-plus", label: "≥ 256 KB", upperBoundBytes: nil)
     ]
 
     func sample(_ collection: String, limit: Int) async throws -> CollectionSample {
@@ -58,7 +57,7 @@ final class CollectionSampler: CollectionSampling {
             query: "SELECT * FROM \(escaped) LIMIT \(limit)"
         )
 
-        var counts = [Int](repeating: 0, count: Self.bucketLabels.count)
+        var counts = [Int](repeating: 0, count: Self.bucketTemplates.count)
         var sampled = 0
 
         for item in result.items {
@@ -70,7 +69,7 @@ final class CollectionSampler: CollectionSampling {
             item.dematerialize()
         }
 
-        let buckets = zip(Self.bucketLabels, counts).map { template, count in
+        let buckets = zip(Self.bucketTemplates, counts).map { template, count in
             DocSizeBucket(id: template.id, label: template.label, count: count)
         }
 
@@ -85,9 +84,10 @@ final class CollectionSampler: CollectionSampling {
 
     /// Bucket index for a document size in bytes.
     static func bucketIndex(forSizeBytes size: Int) -> Int {
-        for (index, upper) in bucketUpperBounds.enumerated() where size < upper {
-            return index
+        for (index, template) in bucketTemplates.enumerated() {
+            guard let upper = template.upperBoundBytes else { return index }
+            if size < upper { return index }
         }
-        return bucketUpperBounds.count
+        return bucketTemplates.count - 1
     }
 }

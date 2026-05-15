@@ -20,8 +20,14 @@ struct GlossarySection: View {
 private struct GlossaryRow: View {
     let category: StorageCategory
 
+    /// Vertical spacing between the category name and its definition.
+    private static let titleToBodySpacing: CGFloat = 4
+
+    /// Vertical padding so glossary rows don't crowd each other.
+    private static let verticalPadding: CGFloat = 2
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Self.titleToBodySpacing) {
             Text(category.displayName)
                 .font(.headline)
             Text(category.glossary)
@@ -29,7 +35,7 @@ private struct GlossaryRow: View {
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, Self.verticalPadding)
         .accessibilityElement(children: .combine)
     }
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Shared `ByteCountFormatter` for size strings like `"4.2 MB"`.
 enum ByteCountFormatting {
     private static let formatter: ByteCountFormatter = {
         let formatter = ByteCountFormatter()
@@ -14,13 +15,7 @@ enum ByteCountFormatting {
         return formatter
     }()
 
-    static func string(forBytes bytes: Int) -> String {
+    static func format(_ bytes: Int) -> String {
         formatter.string(for: bytes) ?? "\(bytes) bytes"
-    }
-}
-
-extension Int {
-    var formattedByteCount: String {
-        ByteCountFormatting.string(forBytes: self)
     }
 }

@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-/// Minimal line trend of integer values; auto-scales to the value range so the
-/// trend shape is visible even when absolute deltas are small.
+/// Minimal line trend of integer values. Auto-scales to the value range
+/// with a `minVisibleRange` floor so byte-level noise renders flat
+/// instead of looking like a dramatic trend.
 struct SparklineView: View {
     let values: [Int]
     let color: Color
@@ -16,12 +17,20 @@ struct SparklineView: View {
     /// 1 KB floor — smaller variation is treated as noise and renders flat.
     static let minVisibleRange: Int = 1024
 
+    /// Line thickness — thin enough to feel like a sparkline, thick enough
+    /// to remain visible at typical row heights.
+    private static let lineWidth: CGFloat = 1.5
+
+    /// Sparkline strip height — short enough to fit inline in a section
+    /// without dominating, tall enough to show shape.
+    private static let height: CGFloat = 40
+
     var body: some View {
         GeometryReader { geometry in
             sparklinePath(in: geometry.size)
-                .stroke(color, style: StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
+                .stroke(color, style: StrokeStyle(lineWidth: Self.lineWidth, lineCap: .round, lineJoin: .round))
         }
-        .frame(height: 40)
+        .frame(height: Self.height)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Disk usage trend")
         .accessibilityValue(Text(accessibilitySummary))

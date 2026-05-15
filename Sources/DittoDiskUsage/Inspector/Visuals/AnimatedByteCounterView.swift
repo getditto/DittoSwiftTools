@@ -11,18 +11,25 @@ struct AnimatedByteCounterView: View {
     let bytes: Int
     let label: LocalizedStringKey
 
+    /// Headline size for the counter — large enough to stand out, small
+    /// enough not to crowd surrounding rows.
+    private static let counterFontSize: CGFloat = 40
+
+    /// Spacing between the small label and the headline counter.
+    private static let labelToCounterSpacing: CGFloat = 4
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Self.labelToCounterSpacing) {
             Text(label)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
             AnimatedByteCount(value: Double(bytes))
-                .font(.system(size: 40, weight: .semibold, design: .rounded))
+                .font(.system(size: Self.counterFontSize, weight: .semibold, design: .rounded))
                 .foregroundColor(.primary)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
-        .accessibilityValue(Text(bytes.formattedByteCount))
+        .accessibilityValue(Text(ByteCountFormatting.format(bytes)))
     }
 }
 
@@ -36,6 +43,6 @@ private struct AnimatedByteCount: View, Animatable {
     }
 
     var body: some View {
-        Text(max(0, Int(value)).formattedByteCount)
+        Text(ByteCountFormatting.format(max(0, Int(value))))
     }
 }

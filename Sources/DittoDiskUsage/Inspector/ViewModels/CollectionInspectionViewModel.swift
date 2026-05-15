@@ -1,45 +1,20 @@
 //
-//  DiskUsageInspectorViewModel.swift
+//  CollectionInspectionViewModel.swift
 //  DittoSwiftTools/DittoDiskUsage
 //
 //  Created by Rohith Sriram on 4/21/26.
 //
 
-import Combine
 import Foundation
 import SwiftUI
 import DittoSwift
 
-/// Defaults for ``DiskUsageInspectorViewModel``. Lifted out of the
-/// `@MainActor` class so default arguments can reference them.
-public enum DiskUsageInspectorDefaults {
-    /// 500 MB default health threshold.
-    public static let healthThresholdBytes: Int = 500_000_000
-
-    /// ~1 minute of trend at a typical publisher rate. FIFO trim.
-    public static let maxHistorySize: Int = 60
-
-    /// Default animation applied to breakdown updates.
-    public static let animation: Animation = .easeOut(duration: 0.5)
-}
-
-/// Subscribes to the SDK's public `diskUsagePublisher()` and republishes each
-/// emission as a ``StorageBreakdown``. Maintains a session-only in-memory
-/// history buffer for the growth rate and sparkline trend. Registers no
-/// observers or subscriptions on user collections.
+/// Owns the opt-in collection scan and sample state for the Inspector. Both
+/// halves use one-shot `store.execute` DQL — no observers, no subscriptions.
 @MainActor
-public final class DiskUsageInspectorViewModel: ObservableObject {
+public final class CollectionInspectionViewModel: ObservableObject {
 
-    // MARK: - Published state
-
-    @Published public private(set) var breakdown: StorageBreakdown = .empty
-    @Published public private(set) var hasReceivedFirstSnapshot: Bool = false
-
-    // Implementation detail — exposed to external callers via the
-    // ``historyTotalBytes`` computed view, not as raw `StorageBreakdown`s.
-    @Published private var history: [StorageBreakdown] = []
-
-    // MARK: - Collection scan state
+    // MARK: - Scan state
 
     @Published public private(set) var discoveredCollections: [String] = []
     @Published public private(set) var collectionScanStates: [String: CollectionScanState] = [:]
@@ -54,102 +29,55 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
     @Published public private(set) var isSamplingCollection: Bool = false
     @Published public private(set) var sampleError: Error?
 
-    // MARK: - Configuration
-
-    public let healthThresholdBytes: Int
-    public let maxHistorySize: Int
-
-    /// Below this, the per-minute rate is too noisy to display.
-    public static let growthRateMinSampleCount: Int = 5
-
-    /// Ensures the window covers real time, not just a burst of samples.
-    public static let growthRateMinElapsedSeconds: TimeInterval = 5
-
     /// Max documents per sample. Caps memory and keeps the query fast.
     public static let sampleLimit: Int = 1_000
 
+    // MARK: - Derived state
+
+    /// Last scanned document count for the currently selected collection.
+    /// `nil` if no collection is selected or the count is still pending /
+    /// failed.
+    public var totalDocsForSelected: Int? {
+        guard let name = selectedCollection,
+              case let .counted(total) = collectionScanStates[name] else {
+            return nil
+        }
+        return total
+    }
+
+    /// Cached sample for the currently selected collection, if any.
+    public var sampleForSelected: CollectionSample? {
+        guard let name = selectedCollection else { return nil }
+        return collectionSamples[name]
+    }
+
     // MARK: - Private
 
-    private let ditto: Ditto
-    private let now: () -> Date
-    private let animation: Animation?
     private let scanner: CollectionScanning
     private let sampler: CollectionSampling
-    private var cancellable: AnyCancellable?
     private var scanTask: Task<Void, Never>?
     private var sampleTask: Task<Void, Never>?
 
-    public convenience init(
-        ditto: Ditto,
-        healthThresholdBytes: Int = DiskUsageInspectorDefaults.healthThresholdBytes,
-        maxHistorySize: Int = DiskUsageInspectorDefaults.maxHistorySize,
-        now: @escaping () -> Date = Date.init,
-        animation: Animation? = DiskUsageInspectorDefaults.animation
-    ) {
+    public convenience init(ditto: Ditto, now: @escaping () -> Date = Date.init) {
         self.init(
-            ditto: ditto,
             scanner: CollectionScanner(ditto: ditto),
-            sampler: CollectionSampler(ditto: ditto, now: now),
-            healthThresholdBytes: healthThresholdBytes,
-            maxHistorySize: maxHistorySize,
-            now: now,
-            animation: animation
+            sampler: CollectionSampler(ditto: ditto, now: now)
         )
     }
 
-    /// Designated init. Internal so tests can swap in a fake scanner
-    /// or sampler without exposing the protocols in the public API.
-    internal init(
-        ditto: Ditto,
-        scanner: CollectionScanning,
-        sampler: CollectionSampling,
-        healthThresholdBytes: Int = DiskUsageInspectorDefaults.healthThresholdBytes,
-        maxHistorySize: Int = DiskUsageInspectorDefaults.maxHistorySize,
-        now: @escaping () -> Date = Date.init,
-        animation: Animation? = DiskUsageInspectorDefaults.animation
-    ) {
-        self.ditto = ditto
+    /// Designated init. Internal so tests can swap in fakes without
+    /// exposing the protocols in the public API.
+    internal init(scanner: CollectionScanning, sampler: CollectionSampling) {
         self.scanner = scanner
         self.sampler = sampler
-        self.healthThresholdBytes = healthThresholdBytes
-        self.maxHistorySize = max(2, maxHistorySize)
-        self.now = now
-        self.animation = animation
-        subscribe()
     }
 
     deinit {
-        cancellable?.cancel()
         scanTask?.cancel()
         sampleTask?.cancel()
     }
 
-    // MARK: - Derived state
-
-    public var healthStatus: HealthStatus {
-        HealthStatus(
-            currentBytes: breakdown.totalOnDiskBytes,
-            thresholdBytes: healthThresholdBytes
-        )
-    }
-
-    /// Total on-disk bytes across the rolling window, oldest first.
-    public var historyTotalBytes: [Int] {
-        history.map(\.totalOnDiskBytes)
-    }
-
-    /// Average byte growth per second; `nil` until there are enough
-    /// samples and enough elapsed time.
-    public var growthRatePerSecond: Double? {
-        guard history.count >= Self.growthRateMinSampleCount,
-              let first = history.first,
-              let last = history.last else { return nil }
-        let elapsed = last.capturedAt.timeIntervalSince(first.capturedAt)
-        guard elapsed >= Self.growthRateMinElapsedSeconds else { return nil }
-        return Double(last.totalOnDiskBytes - first.totalOnDiskBytes) / elapsed
-    }
-
-    // MARK: - Collection scan API
+    // MARK: - Public API
 
     /// Kicks off a fresh discovery + count scan. A no-op if one is already
     /// running.
@@ -182,37 +110,6 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
         sampleTask = Task { [weak self] in
             await self?.performSample(of: name)
         }
-    }
-
-    // MARK: - Subscription
-
-    private func subscribe() {
-        cancellable = ditto.diskUsage
-            .diskUsagePublisher()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] item in
-                self?.apply(item)
-            }
-    }
-
-    private func apply(_ item: DiskUsageItem) {
-        let next = StorageBreakdown(item: item, capturedAt: now())
-        var nextHistory = history
-        nextHistory.append(next)
-        if nextHistory.count > maxHistorySize {
-            nextHistory.removeFirst(nextHistory.count - maxHistorySize)
-        }
-
-        if let animation {
-            withAnimation(animation) {
-                breakdown = next
-                history = nextHistory
-            }
-        } else {
-            breakdown = next
-            history = nextHistory
-        }
-        hasReceivedFirstSnapshot = true
     }
 
     // MARK: - Scan implementation
@@ -277,6 +174,8 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
             }
         }
     }
+
+    // MARK: - Sample implementation
 
     private func performSample(of collection: String) async {
         // `isSamplingCollection` and `sampleError` are already set

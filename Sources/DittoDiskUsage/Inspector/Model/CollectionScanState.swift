@@ -9,7 +9,7 @@ import Foundation
 
 /// Per-collection scan outcome. One enum keeps state consistent rather
 /// than splitting it across parallel "counts" / "failures" dictionaries.
-public enum CollectionScanState: Equatable {
+public enum CollectionScanState: Equatable, Hashable, Sendable {
     case pending
     case counted(Int)
     case failed

@@ -7,15 +7,31 @@
 
 import SwiftUI
 
-struct CollectionScanSection: View {
+/// Read-only state ``CollectionScanSection`` needs from the view model.
+struct CollectionScanSectionState {
     let discoveredCollections: [String]
     let scanStates: [String: CollectionScanState]
     let selectedCollection: String?
     let isScanning: Bool
     let hasScanned: Bool
     let scanError: Error?
+}
+
+/// Callbacks for the section's user actions.
+struct CollectionScanSectionActions {
     let onScanTapped: () -> Void
     let onSelectCollection: (String) -> Void
+}
+
+struct CollectionScanSection: View {
+    let state: CollectionScanSectionState
+    let actions: CollectionScanSectionActions
+
+    /// Horizontal spacing between the progress spinner and the button label.
+    private static let buttonHStackSpacing: CGFloat = 8
+
+    /// Top padding on the ranking chart so it doesn't crowd the picker.
+    private static let rankingTopPadding: CGFloat = 4
 
     var body: some View {
         Section(header: Text("Collections")) {
@@ -26,33 +42,32 @@ struct CollectionScanSection: View {
 
     // MARK: - Subviews
 
-    @ViewBuilder
     private var scanButton: some View {
-        Button(action: onScanTapped) {
-            HStack(spacing: 8) {
-                if isScanning {
+        Button(action: actions.onScanTapped) {
+            HStack(spacing: Self.buttonHStackSpacing) {
+                if state.isScanning {
                     ProgressView()
                 }
                 Text(buttonLabel)
             }
         }
-        .disabled(isScanning)
+        .disabled(state.isScanning)
     }
 
     @ViewBuilder
     private var content: some View {
-        if let scanError {
+        if let scanError = state.scanError {
             Label(
                 "Couldn't list collections: \(scanError.localizedDescription)",
                 systemImage: "exclamationmark.triangle"
             )
             .font(.subheadline)
             .foregroundColor(.secondary)
-        } else if !hasScanned {
+        } else if !state.hasScanned {
             Text("Tap \"Scan collections\" to list local collections and their document counts.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
-        } else if discoveredCollections.isEmpty {
+        } else if state.discoveredCollections.isEmpty {
             Text("No collections found in the local store.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -65,18 +80,19 @@ struct CollectionScanSection: View {
     @ViewBuilder
     private var collectionDetail: some View {
         Picker("Collection", selection: pickerBinding) {
-            ForEach(discoveredCollections, id: \.self) { name in
+            ForEach(state.discoveredCollections, id: \.self) { name in
                 Text(name).tag(name)
             }
         }
         .pickerStyle(.menu)
 
-        if let selected = selectedCollection, let state = scanStates[selected] {
+        if let selected = state.selectedCollection,
+           let scanState = state.scanStates[selected] {
             HStack {
                 Text("Documents")
                     .font(.subheadline)
                 Spacer()
-                Text(detailValue(for: state))
+                detailValue(for: scanState)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -87,38 +103,38 @@ struct CollectionScanSection: View {
         HorizontalBarChartView(
             items: rankedItems,
             tint: .accentColor,
-            valueFormatter: { $0.formattedAsCount }
+            valueFormatter: CountFormatting.format
         )
-        .padding(.top, 4)
+        .padding(.top, Self.rankingTopPadding)
     }
 
     // MARK: - Helpers
 
     private var buttonLabel: LocalizedStringKey {
-        if isScanning { return "Scanning…" }
-        return hasScanned ? "Re-scan collections" : "Scan collections"
+        if state.isScanning { return "Scanning…" }
+        return state.hasScanned ? "Re-scan collections" : "Scan collections"
     }
 
     private var pickerBinding: Binding<String> {
         Binding(
-            get: { selectedCollection ?? "" },
-            set: { onSelectCollection($0) }
+            get: { state.selectedCollection ?? "" },
+            set: { actions.onSelectCollection($0) }
         )
     }
 
     private var rankedItems: [HorizontalBarChartView.Item] {
-        discoveredCollections.compactMap { name in
-            guard case let .counted(count) = scanStates[name] else { return nil }
+        state.discoveredCollections.compactMap { name in
+            guard case let .counted(count) = state.scanStates[name] else { return nil }
             return HorizontalBarChartView.Item(id: name, label: name, value: count)
         }
         .sorted { $0.value > $1.value }
     }
 
-    private func detailValue(for state: CollectionScanState) -> String {
-        switch state {
-        case .pending: return "Counting…"
-        case .counted(let n): return "\(n.formattedAsCount) docs"
-        case .failed: return "Failed"
+    private func detailValue(for scanState: CollectionScanState) -> Text {
+        switch scanState {
+        case .pending: return Text("Counting…")
+        case .counted(let n): return Text("\(CountFormatting.format(n)) docs")
+        case .failed: return Text("Failed")
         }
     }
 }

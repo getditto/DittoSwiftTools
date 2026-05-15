@@ -18,6 +18,8 @@ protocol CollectionScanning {
 /// Runs the DQL queries for the opt-in collection scan.
 ///
 /// One-shot `store.execute` calls only — no observers, no subscriptions.
+/// The scanner returns plain counts and never reports a timestamp, so
+/// (unlike `CollectionSampler`) it doesn't take a `now:` parameter.
 ///
 /// Thread-safe: no mutable state, so concurrent calls are fine.
 final class CollectionScanner: CollectionScanning {
@@ -30,10 +32,9 @@ final class CollectionScanner: CollectionScanning {
     /// Discovers collections via the documented `system:collections` query.
     func discoverCollections() async throws -> [String] {
         let result = try await ditto.store.execute(query: "SELECT * FROM system:collections")
-        let names = result.items.compactMap { item -> String? in
-            item.value["name"] as? String
-        }
-        return Array(Set(names)).sorted()
+        return result.items
+            .compactMap { $0.value["name"] as? String }
+            .sorted()
     }
 
     /// Returns the document count for a single collection.

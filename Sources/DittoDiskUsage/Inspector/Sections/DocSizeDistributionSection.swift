@@ -7,15 +7,27 @@
 
 import SwiftUI
 
-struct DocSizeDistributionSection: View {
+/// Read-only state ``DocSizeDistributionSection`` needs from the view model.
+struct DocSizeDistributionSectionState {
     let selectedCollection: String?
     let totalDocCount: Int?
     let sample: CollectionSample?
     let sampleLimit: Int
     let isSampling: Bool
     let hasScannedCollections: Bool
+    let scanFailed: Bool
     let sampleError: Error?
+}
+
+struct DocSizeDistributionSection: View {
+    let state: DocSizeDistributionSectionState
     let onSampleTapped: () -> Void
+
+    /// Horizontal spacing between the progress spinner and the button label.
+    private static let buttonHStackSpacing: CGFloat = 8
+
+    /// Top padding on visual elements so they don't crowd siblings.
+    private static let topPadding: CGFloat = 4
 
     var body: some View {
         Section(header: Text("Document Size Distribution")) {
@@ -27,11 +39,15 @@ struct DocSizeDistributionSection: View {
 
     @ViewBuilder
     private var content: some View {
-        if !hasScannedCollections {
+        if state.scanFailed {
+            Text("Scan failed — sample is unavailable until the scan succeeds.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        } else if !state.hasScannedCollections {
             Text("Scan collections first to sample one.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
-        } else if selectedCollection == nil {
+        } else if state.selectedCollection == nil {
             Text("No collection available to sample.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -41,32 +57,31 @@ struct DocSizeDistributionSection: View {
         }
     }
 
-    @ViewBuilder
     private var sampleButton: some View {
         Button(action: onSampleTapped) {
-            HStack(spacing: 8) {
-                if isSampling { ProgressView() }
+            HStack(spacing: Self.buttonHStackSpacing) {
+                if state.isSampling { ProgressView() }
                 Text(buttonLabel)
             }
         }
-        .disabled(isSampling)
+        .disabled(state.isSampling)
     }
 
     @ViewBuilder
     private var sampleContent: some View {
-        if let sampleError {
+        if let sampleError = state.sampleError {
             Label(
                 "Couldn't sample collection: \(sampleError.localizedDescription)",
                 systemImage: "exclamationmark.triangle"
             )
             .font(.subheadline)
             .foregroundColor(.secondary)
-        } else if let sample {
+        } else if let sample = state.sample {
             summary(for: sample)
             histogram(for: sample)
             footnote
         } else {
-            Text("Tap Sample to bucket up to \(sampleLimit.formattedAsCount) documents by JSON byte size.")
+            Text("Tap Sample to bucket up to \(CountFormatting.format(state.sampleLimit)) documents by JSON byte size.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
@@ -77,7 +92,7 @@ struct DocSizeDistributionSection: View {
             Text("Sampled")
                 .font(.subheadline)
             Spacer()
-            Text(summaryText(for: sample))
+            summaryText(for: sample)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
@@ -89,9 +104,9 @@ struct DocSizeDistributionSection: View {
                 HorizontalBarChartView.Item(id: $0.id, label: $0.label, value: $0.count)
             },
             tint: .accentColor,
-            valueFormatter: { $0.formattedAsCount }
+            valueFormatter: CountFormatting.format
         )
-        .padding(.top, 4)
+        .padding(.top, Self.topPadding)
     }
 
     private var footnote: some View {
@@ -99,35 +114,35 @@ struct DocSizeDistributionSection: View {
             .font(.caption)
             .foregroundColor(.secondary)
             .fixedSize(horizontal: false, vertical: true)
-            .padding(.top, 4)
+            .padding(.top, Self.topPadding)
     }
 
     // MARK: - Helpers
 
     private var buttonLabel: LocalizedStringKey {
-        if isSampling { return "Sampling…" }
-        return sample == nil ? "Sample documents" : "Re-sample documents"
+        if state.isSampling { return "Sampling…" }
+        return state.sample == nil ? "Sample documents" : "Re-sample documents"
     }
 
-    private func summaryText(for sample: CollectionSample) -> String {
-        let sampledText = sample.sampledCount.formattedAsCount
-        if let total = totalDocCount {
+    private func summaryText(for sample: CollectionSample) -> Text {
+        let sampledText = CountFormatting.format(sample.sampledCount)
+        if let total = state.totalDocCount {
             // Counts match — we sampled the whole collection.
             if sample.sampledCount == total {
-                return "All \(total.formattedAsCount) docs"
+                return Text("All \(CountFormatting.format(total)) docs")
             }
             // Sample was capped by the limit, scan count is bigger.
             if sample.sampledCount < total, sample.reachedLimit {
-                return "\(sampledText) of \(total.formattedAsCount) docs"
+                return Text("\(sampledText) of \(CountFormatting.format(total)) docs")
             }
             // Counts don't match for some other reason (collection changed
             // since the scan). Show what we actually sampled.
-            return "\(sampledText) docs"
+            return Text("\(sampledText) docs")
         }
         // Without a scan count, `reachedLimit` is the best we have.
         if sample.reachedLimit {
-            return "\(sampledText) docs (collection may be larger)"
+            return Text("\(sampledText) docs (collection may be larger)")
         }
-        return "\(sampledText) docs"
+        return Text("\(sampledText) docs")
     }
 }

@@ -90,7 +90,8 @@ enum MenuOption: String, CaseIterable, Equatable {
         case .diskUsage:
             return .secondary
         case .diskUsageInspector:
-            // Explicit RGB chosen for iOS 14 compatibility — `.teal` is iOS 15+.
+            // Indigo. Explicit RGB for iOS 14 compatibility — `.indigo`
+            // is iOS 15+.
             return Color(red: 0.29, green: 0.0, blue: 0.51)
         case .permissionsHealth:
             return .purple

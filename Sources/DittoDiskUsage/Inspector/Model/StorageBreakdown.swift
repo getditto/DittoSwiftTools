@@ -17,7 +17,7 @@ public struct StorageBreakdown: Equatable, Hashable, Sendable {
     public let totalOnDiskBytes: Int
     public let capturedAt: Date
 
-    public init(totalOnDiskBytes: Int = 0, capturedAt: Date = Date(timeIntervalSince1970: 0)) {
+    public init(totalOnDiskBytes: Int = 0, capturedAt: Date = Date()) {
         self.totalOnDiskBytes = totalOnDiskBytes
         self.capturedAt = capturedAt
     }
