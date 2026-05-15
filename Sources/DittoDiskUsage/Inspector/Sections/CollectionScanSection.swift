@@ -87,7 +87,7 @@ struct CollectionScanSection: View {
         HorizontalBarChartView(
             items: rankedItems,
             tint: .accentColor,
-            valueFormatter: Self.formatCount
+            valueFormatter: { $0.formattedAsCount }
         )
         .padding(.top, 4)
     }
@@ -117,18 +117,8 @@ struct CollectionScanSection: View {
     private func detailValue(for state: CollectionScanState) -> String {
         switch state {
         case .pending: return "Counting…"
-        case .counted(let n): return "\(Self.formatCount(n)) docs"
+        case .counted(let n): return "\(n.formattedAsCount) docs"
         case .failed: return "Failed"
         }
-    }
-
-    private static let countFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
-
-    private static func formatCount(_ value: Int) -> String {
-        countFormatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 }

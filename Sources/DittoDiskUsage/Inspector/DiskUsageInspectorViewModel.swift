@@ -48,6 +48,12 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
     @Published public private(set) var hasScannedCollections: Bool = false
     @Published public private(set) var scanError: Error?
 
+    // MARK: - Sample state
+
+    @Published public private(set) var collectionSamples: [String: CollectionSample] = [:]
+    @Published public private(set) var isSamplingCollection: Bool = false
+    @Published public private(set) var sampleError: Error?
+
     // MARK: - Configuration
 
     public let healthThresholdBytes: Int
@@ -59,14 +65,19 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
     /// Ensures the window covers real time, not just a burst of samples.
     public static let growthRateMinElapsedSeconds: TimeInterval = 5
 
+    /// Max documents per sample. Caps memory and keeps the query fast.
+    public static let sampleLimit: Int = 1_000
+
     // MARK: - Private
 
     private let ditto: Ditto
     private let now: () -> Date
     private let animation: Animation?
     private let scanner: CollectionScanning
+    private let sampler: CollectionSampling
     private var cancellable: AnyCancellable?
     private var scanTask: Task<Void, Never>?
+    private var sampleTask: Task<Void, Never>?
 
     public convenience init(
         ditto: Ditto,
@@ -78,6 +89,7 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
         self.init(
             ditto: ditto,
             scanner: CollectionScanner(ditto: ditto),
+            sampler: CollectionSampler(ditto: ditto, now: now),
             healthThresholdBytes: healthThresholdBytes,
             maxHistorySize: maxHistorySize,
             now: now,
@@ -86,10 +98,11 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
     }
 
     /// Designated init. Internal so tests can swap in a fake scanner
-    /// without exposing the protocol in the public API.
+    /// or sampler without exposing the protocols in the public API.
     internal init(
         ditto: Ditto,
         scanner: CollectionScanning,
+        sampler: CollectionSampling,
         healthThresholdBytes: Int = DiskUsageInspectorDefaults.healthThresholdBytes,
         maxHistorySize: Int = DiskUsageInspectorDefaults.maxHistorySize,
         now: @escaping () -> Date = Date.init,
@@ -97,6 +110,7 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
     ) {
         self.ditto = ditto
         self.scanner = scanner
+        self.sampler = sampler
         self.healthThresholdBytes = healthThresholdBytes
         self.maxHistorySize = max(2, maxHistorySize)
         self.now = now
@@ -107,6 +121,7 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
     deinit {
         cancellable?.cancel()
         scanTask?.cancel()
+        sampleTask?.cancel()
     }
 
     // MARK: - Derived state
@@ -154,6 +169,19 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
     public func selectCollection(_ name: String) {
         guard discoveredCollections.contains(name) else { return }
         selectedCollection = name
+    }
+
+    /// Samples the currently selected collection. No-op if nothing is
+    /// selected or a sample is already running.
+    public func sampleSelectedCollection() {
+        guard !isSamplingCollection, let name = selectedCollection else { return }
+        // Set state synchronously so a rapid double-tap is rejected by the
+        // guard above before a second task is scheduled.
+        isSamplingCollection = true
+        sampleError = nil
+        sampleTask = Task { [weak self] in
+            await self?.performSample(of: name)
+        }
     }
 
     // MARK: - Subscription
@@ -213,6 +241,10 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
         var initialStates: [String: CollectionScanState] = [:]
         for name in names { initialStates[name] = .pending }
         collectionScanStates = initialStates
+        // Drop cached samples for collections that aren't here anymore so
+        // memory stays tidy across re-scans.
+        let validNames = Set(names)
+        collectionSamples = collectionSamples.filter { validNames.contains($0.key) }
         if !names.contains(selectedCollection ?? "") {
             selectedCollection = names.first
         }
@@ -244,5 +276,26 @@ public final class DiskUsageInspectorViewModel: ObservableObject {
                 }
             }
         }
+    }
+
+    private func performSample(of collection: String) async {
+        // `isSamplingCollection` and `sampleError` are already set
+        // synchronously by ``sampleSelectedCollection()``.
+        defer { isSamplingCollection = false }
+
+        let sample: CollectionSample
+        do {
+            sample = try await sampler.sample(collection, limit: Self.sampleLimit)
+        } catch {
+            // Same cancellation rule as the scan path — silent on cancel.
+            if Task.isCancelled { return }
+            sampleError = error
+            return
+        }
+
+        if Task.isCancelled { return }
+        var next = collectionSamples
+        next[collection] = sample
+        collectionSamples = next
     }
 }

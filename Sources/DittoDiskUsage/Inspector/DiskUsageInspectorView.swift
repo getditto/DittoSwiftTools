@@ -39,8 +39,31 @@ public struct DiskUsageInspectorView: View {
                 onScanTapped: viewModel.scanCollections,
                 onSelectCollection: viewModel.selectCollection
             )
+            DocSizeDistributionSection(
+                selectedCollection: viewModel.selectedCollection,
+                totalDocCount: totalDocsForSelected,
+                sample: sampleForSelected,
+                sampleLimit: DiskUsageInspectorViewModel.sampleLimit,
+                isSampling: viewModel.isSamplingCollection,
+                hasScannedCollections: viewModel.hasScannedCollections,
+                sampleError: viewModel.sampleError,
+                onSampleTapped: viewModel.sampleSelectedCollection
+            )
             GlossarySection()
         }
         .navigationTitle("Disk Usage Inspector")
+    }
+
+    private var totalDocsForSelected: Int? {
+        guard let name = viewModel.selectedCollection,
+              case let .counted(total) = viewModel.collectionScanStates[name] else {
+            return nil
+        }
+        return total
+    }
+
+    private var sampleForSelected: CollectionSample? {
+        guard let name = viewModel.selectedCollection else { return nil }
+        return viewModel.collectionSamples[name]
     }
 }

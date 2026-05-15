@@ -38,7 +38,7 @@ final class CollectionScanner: CollectionScanning {
 
     /// Returns the document count for a single collection.
     func fetchCount(for collection: String) async throws -> Int {
-        let escaped = Self.escapeIdentifier(collection)
+        let escaped = DQLIdentifier.escape(collection)
         let result = try await ditto.store.execute(
             query: "SELECT COUNT(*) AS total FROM \(escaped)"
         )
@@ -51,11 +51,6 @@ final class CollectionScanner: CollectionScanning {
             throw DiskUsageScanError.unexpectedResultFormat
         }
         return try Self.intValue(raw)
-    }
-
-    /// Backtick-wraps an identifier, doubling any embedded backticks.
-    static func escapeIdentifier(_ name: String) -> String {
-        "`\(name.replacingOccurrences(of: "`", with: "``"))`"
     }
 
     /// DQL returns numbers as `Int`, `Int64`, `Double`, or a bridged
