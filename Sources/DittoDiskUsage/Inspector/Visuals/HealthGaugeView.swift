@@ -31,8 +31,8 @@ struct HealthGaugeView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Self.labelToGaugeSpacing) {
             HStack {
-                Text("Used")
-                    .font(.caption)
+                Text("\(percentText) used")
+                    .font(.caption.weight(.medium))
                     .foregroundColor(.secondary)
                 Spacer()
                 Text("\(ByteCountFormatting.format(currentBytes)) of \(ByteCountFormatting.format(thresholdBytes))")
@@ -52,12 +52,19 @@ struct HealthGaugeView: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Disk usage gauge")
-        .accessibilityValue(Text("\(ByteCountFormatting.format(currentBytes)) of \(ByteCountFormatting.format(thresholdBytes))"))
+        .accessibilityValue(Text("\(percentText) of threshold used"))
     }
 
     private var fillRatio: CGFloat {
         guard thresholdBytes > 0 else { return 0 }
         let ratio = CGFloat(currentBytes) / CGFloat(thresholdBytes)
         return min(max(ratio, 0), 1)
+    }
+
+    private var percentText: String {
+        guard thresholdBytes > 0 else { return "—" }
+        let ratio = Double(currentBytes) / Double(thresholdBytes)
+        let clamped = min(max(ratio, 0), 1)
+        return String(format: "%.0f%%", clamped * 100)
     }
 }

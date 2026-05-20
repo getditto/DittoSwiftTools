@@ -39,6 +39,10 @@ struct HorizontalBarChartView: View {
     /// Bar thickness — readable in dense lists, visible on small screens.
     private static let barHeight: CGFloat = 6
 
+    /// Opacity of the unfilled portion of each bar. Same value as the
+    /// health gauge so the two read as part of the same family.
+    private static let trackOpacity: Double = 0.2
+
     var body: some View {
         let maxValue = items.map(\.value).max() ?? 0
         VStack(alignment: .leading, spacing: Self.rowSpacing) {
@@ -62,7 +66,7 @@ struct HorizontalBarChartView: View {
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     Capsule()
-                        .fill(Color.secondary.opacity(0.2))
+                        .fill(Color.secondary.opacity(Self.trackOpacity))
                     Capsule()
                         .fill(tint)
                         .frame(width: geometry.size.width * fillRatio(value: item.value, max: maxValue))

@@ -22,7 +22,10 @@ public struct StorageBreakdown: Equatable, Hashable, Sendable {
         self.capturedAt = capturedAt
     }
 
-    public static let empty = StorageBreakdown()
+    /// Sentinel "no data yet" value. Uses `.distantPast` so callers that
+    /// (mistakenly) do time arithmetic with `capturedAt` get an obviously
+    /// stale result instead of "moments ago".
+    public static let empty = StorageBreakdown(totalOnDiskBytes: 0, capturedAt: .distantPast)
 }
 
 // MARK: - DittoSwift mapping

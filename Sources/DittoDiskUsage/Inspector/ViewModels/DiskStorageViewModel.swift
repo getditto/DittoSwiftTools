@@ -34,6 +34,7 @@ public final class DiskStorageViewModel: ObservableObject {
 
     @Published public private(set) var breakdown: StorageBreakdown = .empty
     @Published public private(set) var hasReceivedFirstSnapshot: Bool = false
+    @Published public private(set) var healthThresholdBytes: Int
 
     // Implementation detail — exposed externally via the
     // ``historyTotalBytes`` computed view, not as raw `StorageBreakdown`s.
@@ -41,7 +42,6 @@ public final class DiskStorageViewModel: ObservableObject {
 
     // MARK: - Configuration
 
-    public let healthThresholdBytes: Int
     public let maxHistorySize: Int
 
     /// Below this many seconds of history, the growth rate window is too
@@ -51,6 +51,12 @@ public final class DiskStorageViewModel: ObservableObject {
     /// How far back the growth rate averages over. Long enough to smooth
     /// out noise between snapshots, short enough to react to changes.
     public static let growthRateWindowSeconds: TimeInterval = 30
+
+    /// Step size when the user nudges the health threshold up or down.
+    public static let thresholdStepBytes: Int = 50_000_000
+
+    /// Smallest threshold a caller can set via ``adjustHealthThreshold(by:)``.
+    public static let minimumThresholdBytes: Int = 50_000_000
 
     // MARK: - Private
 
@@ -67,7 +73,9 @@ public final class DiskStorageViewModel: ObservableObject {
         animation: Animation? = DiskStorageDefaults.animation
     ) {
         self.ditto = ditto
-        self.healthThresholdBytes = healthThresholdBytes
+        // Same floor as ``adjustHealthThreshold(by:)`` so callers can't sneak
+        // an unusable threshold past the init.
+        self.healthThresholdBytes = max(Self.minimumThresholdBytes, healthThresholdBytes)
         self.maxHistorySize = max(2, maxHistorySize)
         self.now = now
         self.animation = animation
@@ -76,6 +84,14 @@ public final class DiskStorageViewModel: ObservableObject {
 
     deinit {
         cancellable?.cancel()
+    }
+
+    // MARK: - Public API
+
+    /// Increases or decreases the health threshold by `delta` bytes,
+    /// clamping at ``minimumThresholdBytes``.
+    public func adjustHealthThreshold(by delta: Int) {
+        healthThresholdBytes = max(Self.minimumThresholdBytes, healthThresholdBytes + delta)
     }
 
     // MARK: - Derived state
@@ -110,6 +126,23 @@ public final class DiskStorageViewModel: ObservableObject {
         return Double(last.totalOnDiskBytes - first.totalOnDiskBytes) / elapsed
     }
 
+    /// Estimated seconds until the current usage hits ``healthThresholdBytes``,
+    /// using the current ``growthRatePerSecond``. Returns `0` if already over
+    /// the threshold and `nil` if the rate isn't known or usage is shrinking.
+    public var estimatedSecondsToThreshold: Double? {
+        let remaining = healthThresholdBytes - breakdown.totalOnDiskBytes
+        guard let rate = growthRatePerSecond, rate > 0 else { return nil }
+        guard remaining > 0 else { return 0 }
+        return Double(remaining) / rate
+    }
+
+    /// Fill ratio of `currentBytes` against the threshold, clamped to `[0, 1]`.
+    public var fillRatio: Double {
+        guard healthThresholdBytes > 0 else { return 0 }
+        let ratio = Double(breakdown.totalOnDiskBytes) / Double(healthThresholdBytes)
+        return min(max(ratio, 0), 1)
+    }
+
     // MARK: - Subscription
 
     private func subscribe() {
@@ -129,15 +162,19 @@ public final class DiskStorageViewModel: ObservableObject {
             nextHistory.removeFirst(nextHistory.count - maxHistorySize)
         }
 
+        // `hasReceivedFirstSnapshot` flips inside the animation block so the
+        // placeholder → content transition (counter, badge, gauge appearing)
+        // fades with the same easeOut as the byte count itself.
         if let animation {
             withAnimation(animation) {
                 breakdown = next
                 history = nextHistory
+                hasReceivedFirstSnapshot = true
             }
         } else {
             breakdown = next
             history = nextHistory
+            hasReceivedFirstSnapshot = true
         }
-        hasReceivedFirstSnapshot = true
     }
 }

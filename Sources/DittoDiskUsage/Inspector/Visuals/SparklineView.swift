@@ -33,7 +33,7 @@ struct SparklineView: View {
         .frame(height: Self.height)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Disk usage trend")
-        .accessibilityValue(Text(accessibilitySummary))
+        .accessibilityValue(accessibilitySummary)
     }
 
     private func sparklinePath(in size: CGSize) -> Path {
@@ -61,12 +61,23 @@ struct SparklineView: View {
         return path
     }
 
-    private var accessibilitySummary: String {
+    /// Built as `Text` (not `String`) so each segment goes through the
+    /// localization table — a German VoiceOver user should hear German.
+    private var accessibilitySummary: Text {
         guard let first = values.first, let last = values.last, values.count >= 2 else {
-            return "Not enough samples"
+            return Text("Not enough samples")
         }
         let delta = last - first
-        let direction = delta == 0 ? "stable" : (delta > 0 ? "up" : "down")
-        return "\(values.count) samples, trending \(direction)"
+        // Mirror the visual floor: changes smaller than `minVisibleRange`
+        // render flat, so VoiceOver should say "stable" too.
+        let direction: Text
+        if abs(delta) < Self.minVisibleRange {
+            direction = Text("stable")
+        } else if delta > 0 {
+            direction = Text("trending up")
+        } else {
+            direction = Text("trending down")
+        }
+        return Text("\(values.count) samples, \(direction)")
     }
 }

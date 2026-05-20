@@ -30,13 +30,14 @@ struct CollectionScanSection: View {
     /// Horizontal spacing between the progress spinner and the button label.
     private static let buttonHStackSpacing: CGFloat = 8
 
-    /// Top padding on the ranking chart so it doesn't crowd the picker.
-    private static let rankingTopPadding: CGFloat = 4
-
     var body: some View {
-        Section(header: Text("Collections")) {
+        Section {
             scanButton
             content
+        } header: {
+            Text("Collection Scan")
+        } footer: {
+            Text("Counts come from one-shot `SELECT COUNT(*)` queries — no live observers on user collections.")
         }
     }
 
@@ -73,7 +74,6 @@ struct CollectionScanSection: View {
                 .foregroundColor(.secondary)
         } else {
             collectionDetail
-            ranking
         }
     }
 
@@ -99,15 +99,6 @@ struct CollectionScanSection: View {
         }
     }
 
-    private var ranking: some View {
-        HorizontalBarChartView(
-            items: rankedItems,
-            tint: .accentColor,
-            valueFormatter: CountFormatting.format
-        )
-        .padding(.top, Self.rankingTopPadding)
-    }
-
     // MARK: - Helpers
 
     private var buttonLabel: LocalizedStringKey {
@@ -120,14 +111,6 @@ struct CollectionScanSection: View {
             get: { state.selectedCollection ?? "" },
             set: { actions.onSelectCollection($0) }
         )
-    }
-
-    private var rankedItems: [HorizontalBarChartView.Item] {
-        state.discoveredCollections.compactMap { name in
-            guard case let .counted(count) = state.scanStates[name] else { return nil }
-            return HorizontalBarChartView.Item(id: name, label: name, value: count)
-        }
-        .sorted { $0.value > $1.value }
     }
 
     private func detailValue(for scanState: CollectionScanState) -> Text {

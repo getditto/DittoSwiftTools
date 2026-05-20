@@ -13,8 +13,16 @@ public enum DiskUsageScanError: Error, LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
-        case .emptyResult: return "The query returned no result."
-        case .unexpectedResultFormat: return "The query returned an unexpected result shape."
+        case .emptyResult:
+            return NSLocalizedString(
+                "The query returned no result.",
+                comment: "DiskUsageScanError.emptyResult"
+            )
+        case .unexpectedResultFormat:
+            return NSLocalizedString(
+                "The query returned an unexpected result shape.",
+                comment: "DiskUsageScanError.unexpectedResultFormat"
+            )
         }
     }
 }

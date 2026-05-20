@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct AnimatedByteCounterView: View {
-    let bytes: Int
+    /// `nil` shows a dash placeholder — used before the first disk usage
+    /// snapshot lands so the user doesn't briefly see "0 bytes".
+    let bytes: Int?
     let label: LocalizedStringKey
 
     /// Headline size for the counter — large enough to stand out, small
@@ -23,13 +25,30 @@ struct AnimatedByteCounterView: View {
             Text(label)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
-            AnimatedByteCount(value: Double(bytes))
+            counter
                 .font(.system(size: Self.counterFontSize, weight: .semibold, design: .rounded))
-                .foregroundColor(.primary)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
-        .accessibilityValue(Text(ByteCountFormatting.format(bytes)))
+        .accessibilityValue(accessibilityValueText)
+    }
+
+    @ViewBuilder
+    private var counter: some View {
+        if let bytes {
+            AnimatedByteCount(value: Double(bytes))
+                .foregroundColor(.primary)
+        } else {
+            Text(verbatim: "—")
+                .foregroundColor(.secondary)
+        }
+    }
+
+    private var accessibilityValueText: Text {
+        if let bytes {
+            return Text(ByteCountFormatting.format(bytes))
+        }
+        return Text("Waiting for first report")
     }
 }
 

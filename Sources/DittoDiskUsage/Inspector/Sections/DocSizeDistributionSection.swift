@@ -30,8 +30,12 @@ struct DocSizeDistributionSection: View {
     private static let topPadding: CGFloat = 4
 
     var body: some View {
-        Section(header: Text("Document Size Distribution")) {
+        Section {
             content
+        } header: {
+            Text("Document Size Distribution")
+        } footer: {
+            Text("Each document's size is its JSON serialization length. The sample takes the first documents the store returns, not a random pick. Each sampled item is released right after measuring.")
         }
     }
 
@@ -81,7 +85,7 @@ struct DocSizeDistributionSection: View {
             histogram(for: sample)
             footnote
         } else {
-            Text("Tap Sample to bucket up to \(CountFormatting.format(state.sampleLimit)) documents by JSON byte size.")
+            Text("Tap Sample to group up to \(CountFormatting.format(state.sampleLimit)) documents by JSON byte size.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }

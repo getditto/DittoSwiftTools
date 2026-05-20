@@ -51,6 +51,33 @@ public final class CollectionInspectionViewModel: ObservableObject {
         return collectionSamples[name]
     }
 
+    /// Number of collections seen by the most recent successful scan.
+    /// `nil` before the first scan, or while the most recent scan ended
+    /// with an error — so the overview never disagrees with the scan
+    /// section's failure state.
+    public var collectionCount: Int? {
+        guard hasScannedCollections, scanError == nil else { return nil }
+        return discoveredCollections.count
+    }
+
+    /// Sum of every successfully counted collection from the most recent
+    /// successful scan. `nil` before any scan, while any count is still
+    /// pending, or while the most recent scan ended with an error.
+    /// Failed-count collections are skipped (they don't pull the total
+    /// down to nil).
+    public var totalDocumentCount: Int? {
+        guard hasScannedCollections, scanError == nil else { return nil }
+        let anyPending = collectionScanStates.values.contains { state in
+            if case .pending = state { return true }
+            return false
+        }
+        guard !anyPending else { return nil }
+        return collectionScanStates.values.reduce(0) { running, state in
+            if case let .counted(count) = state { return running + count }
+            return running
+        }
+    }
+
     // MARK: - Private
 
     private let scanner: CollectionScanning
@@ -93,10 +120,12 @@ public final class CollectionInspectionViewModel: ObservableObject {
     }
 
     /// Updates the selected collection. Unknown names are ignored — defends
-    /// against stale UI bindings.
+    /// against stale UI bindings. Clears `sampleError` so a failure on one
+    /// collection doesn't leak into the next collection's section.
     public func selectCollection(_ name: String) {
         guard discoveredCollections.contains(name) else { return }
         selectedCollection = name
+        sampleError = nil
     }
 
     /// Samples the currently selected collection. No-op if nothing is
@@ -142,8 +171,15 @@ public final class CollectionInspectionViewModel: ObservableObject {
         // memory stays tidy across re-scans.
         let validNames = Set(names)
         collectionSamples = collectionSamples.filter { validNames.contains($0.key) }
-        if !names.contains(selectedCollection ?? "") {
+        // Keep the current selection if it survived the re-scan. Otherwise
+        // fall back to the first available collection (or `nil` when the
+        // list is empty) and drop any stale `sampleError` — it referred
+        // to a collection the user can't reach from here anymore.
+        if let current = selectedCollection, names.contains(current) {
+            // Selection survived — leave it alone.
+        } else {
             selectedCollection = names.first
+            sampleError = nil
         }
         // Discovery succeeded — surface the rows even if counts are still
         // in flight or the user cancels mid-loop.
@@ -171,6 +207,15 @@ public final class CollectionInspectionViewModel: ObservableObject {
                 } else {
                     collectionScanStates[name] = .failed
                 }
+            }
+        }
+
+        // If we exited the loop early (cancellation), some entries may
+        // still be `.pending`. Mark them as `.failed` so the UI doesn't
+        // show "Counting…" with no task left to finish them.
+        for name in names {
+            if case .pending = collectionScanStates[name] {
+                collectionScanStates[name] = .failed
             }
         }
     }
