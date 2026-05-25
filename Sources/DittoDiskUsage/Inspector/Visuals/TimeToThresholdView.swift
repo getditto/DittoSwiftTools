@@ -122,7 +122,7 @@ struct TimeToThresholdView: View {
 
     private var trailingValue: Text {
         let bytes = abs(remainingBytes)
-        return Text(verbatim: ByteCountFormatting.format(bytes))
+        return Text(verbatim: Format.bytes(bytes))
     }
 
     /// Combines primary and trailing into one VoiceOver value so the

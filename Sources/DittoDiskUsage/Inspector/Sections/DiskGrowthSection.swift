@@ -50,7 +50,7 @@ struct DiskGrowthSection: View {
                 .foregroundColor(.secondary)
             Spacer()
             if let latest = state.historyTotals.last {
-                Text(ByteCountFormatting.format(latest))
+                Text(Format.bytes(latest))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

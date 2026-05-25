@@ -47,7 +47,7 @@ struct CollectionRankingSection: View {
             HorizontalBarChartView(
                 items: rankedItems,
                 tint: .accentColor,
-                valueFormatter: CountFormatting.format
+                valueFormatter: Format.count
             )
         }
     }

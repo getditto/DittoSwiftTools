@@ -150,10 +150,10 @@ struct TotalCounterSection: View {
     }
 
     private var collectionCountText: String {
-        state.collectionCount.map(CountFormatting.format) ?? Self.placeholder
+        state.collectionCount.map(Format.count) ?? Self.placeholder
     }
 
     private var documentCountText: String {
-        state.totalDocumentCount.map(CountFormatting.format) ?? Self.placeholder
+        state.totalDocumentCount.map(Format.count) ?? Self.placeholder
     }
 }

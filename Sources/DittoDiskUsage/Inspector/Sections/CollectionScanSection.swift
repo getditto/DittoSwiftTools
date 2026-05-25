@@ -116,7 +116,7 @@ struct CollectionScanSection: View {
     private func detailValue(for scanState: CollectionScanState) -> Text {
         switch scanState {
         case .pending: return Text("Counting…")
-        case .counted(let n): return Text("\(CountFormatting.format(n)) docs")
+        case .counted(let n): return Text("\(Format.count(n)) docs")
         case .failed: return Text("Failed")
         }
     }

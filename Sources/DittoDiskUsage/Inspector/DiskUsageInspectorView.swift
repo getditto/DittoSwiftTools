@@ -60,12 +60,7 @@ public struct DiskUsageInspectorView: View {
                     hasReceivedFirstSnapshot: storage.hasReceivedFirstSnapshot
                 ),
                 actions: HealthStatusSectionActions(
-                    onIncreaseThreshold: {
-                        storage.adjustHealthThreshold(by: DiskStorageViewModel.thresholdStepBytes)
-                    },
-                    onDecreaseThreshold: {
-                        storage.adjustHealthThreshold(by: -DiskStorageViewModel.thresholdStepBytes)
-                    }
+                    onSetThreshold: storage.setThreshold
                 )
             )
 

@@ -38,7 +38,7 @@ struct AboutSection: View {
                 bullet(
                     iconName: "ruler",
                     title: "Bounded memory",
-                    detail: "Document sampling is capped at \(CountFormatting.format(CollectionInspectionViewModel.sampleLimit)) items and released as soon as each item is measured."
+                    detail: "Document sampling is capped at \(Format.count(CollectionInspectionViewModel.sampleLimit)) items and released as soon as each item is measured."
                 )
                 // The Glossary section's footer already explains the
                 // per-category gap. Don't say it twice.

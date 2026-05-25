@@ -175,9 +175,8 @@ public final class CollectionInspectionViewModel: ObservableObject {
         // fall back to the first available collection (or `nil` when the
         // list is empty) and drop any stale `sampleError` — it referred
         // to a collection the user can't reach from here anymore.
-        if let current = selectedCollection, names.contains(current) {
-            // Selection survived — leave it alone.
-        } else {
+        let selectionSurvived = selectedCollection.map(names.contains) ?? false
+        if !selectionSurvived {
             selectedCollection = names.first
             sampleError = nil
         }
@@ -238,6 +237,10 @@ public final class CollectionInspectionViewModel: ObservableObject {
         }
 
         if Task.isCancelled { return }
+        // If a re-scan dropped this collection while the sample was in
+        // flight, discard the result rather than resurrecting an entry
+        // for a collection that no longer exists.
+        guard discoveredCollections.contains(collection) else { return }
         var next = collectionSamples
         next[collection] = sample
         collectionSamples = next

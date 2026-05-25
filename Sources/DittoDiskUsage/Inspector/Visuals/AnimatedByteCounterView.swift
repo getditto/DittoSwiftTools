@@ -46,7 +46,7 @@ struct AnimatedByteCounterView: View {
 
     private var accessibilityValueText: Text {
         if let bytes {
-            return Text(ByteCountFormatting.format(bytes))
+            return Text(Format.bytes(bytes))
         }
         return Text("Waiting for first report")
     }
@@ -62,6 +62,6 @@ private struct AnimatedByteCount: View, Animatable {
     }
 
     var body: some View {
-        Text(ByteCountFormatting.format(max(0, Int(value))))
+        Text(Format.bytes(max(0, Int(value))))
     }
 }

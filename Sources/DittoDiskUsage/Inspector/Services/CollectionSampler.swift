@@ -16,9 +16,10 @@ protocol CollectionSampling {
 
 /// Runs the DQL query for the opt-in collection sample.
 ///
-/// One-shot `store.execute` only — no observers, no subscriptions. Each
-/// item is dematerialized right after its size is read, so memory stays
-/// low even for large samples.
+/// One-shot `store.execute` only — no observers, no subscriptions.
+/// `result.items` is materialized eagerly, so peak memory is bounded by
+/// `limit × max(doc_size)`. Each item is dematerialized right after its
+/// size is read, so by the end of the loop everything heavy is released.
 ///
 /// Thread-safe: no mutable state.
 final class CollectionSampler: CollectionSampling {
@@ -61,7 +62,7 @@ final class CollectionSampler: CollectionSampling {
         var sampled = 0
 
         for item in result.items {
-            let bytes = item.jsonString().utf8.count
+            let bytes = item.jsonData().count
             counts[Self.bucketIndex(forSizeBytes: bytes)] += 1
             sampled += 1
             // Release the doc's data right after measuring so memory

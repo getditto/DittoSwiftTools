@@ -6,9 +6,6 @@
 //
 
 import SwiftUI
-#if canImport(UIKit)
-import UIKit
-#endif
 
 /// Read-only state ``HealthStatusSection`` needs.
 struct HealthStatusSectionState {
@@ -22,8 +19,9 @@ struct HealthStatusSectionState {
 
 /// Callbacks for user actions on this section.
 struct HealthStatusSectionActions {
-    let onIncreaseThreshold: () -> Void
-    let onDecreaseThreshold: () -> Void
+    /// Receives the new absolute threshold in bytes. The view model is
+    /// responsible for clamping and persisting.
+    let onSetThreshold: (Int) -> Void
 }
 
 struct HealthStatusSection: View {
@@ -63,7 +61,7 @@ struct HealthStatusSection: View {
         } header: {
             Text("Health Status")
         } footer: {
-            Text("Adjust the threshold in \(ByteCountFormatting.format(DiskStorageViewModel.thresholdStepBytes)) steps. The gauge and indicator update live.")
+            Text("Adjust the threshold in \(Format.bytes(DiskStorageViewModel.thresholdStepBytes)) steps. The gauge and indicator update live.")
         }
     }
 
@@ -84,50 +82,33 @@ struct HealthStatusSection: View {
         HStack {
             Text("Threshold")
                 .font(.subheadline)
+                // Hidden so VoiceOver reads the Stepper as one combined
+                // adjustable element ("Threshold, 500 MB") instead of
+                // announcing the label and value separately.
+                .accessibilityHidden(true)
             Spacer()
-            Text(ByteCountFormatting.format(state.thresholdBytes))
+            Text(Format.bytes(state.thresholdBytes))
                 .font(.subheadline)
                 .foregroundColor(.secondary)
+                .accessibilityHidden(true)
+            // Value-binding `Stepper` gives us the adjustable-action and
+            // min-clamp announcements for free. SwiftUI takes care of the
+            // VoiceOver swipe-up / swipe-down contract.
             Stepper(
-                "",
-                onIncrement: actions.onIncreaseThreshold,
-                onDecrement: actions.onDecreaseThreshold
+                "Threshold, \(Format.bytes(state.thresholdBytes))",
+                value: thresholdBinding,
+                in: DiskStorageViewModel.minimumThresholdBytes...Int.max,
+                step: DiskStorageViewModel.thresholdStepBytes
             )
             .labelsHidden()
             .frame(width: Self.stepperWidth)
         }
-        // Group label + value + stepper into one VoiceOver element so the
-        // current threshold is announced alongside the adjust action.
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Threshold")
-        .accessibilityValue(Text(ByteCountFormatting.format(state.thresholdBytes)))
-        .accessibilityAdjustableAction { direction in
-            switch direction {
-            case .increment:
-                actions.onIncreaseThreshold()
-            case .decrement:
-                // Avoid silent no-ops at the minimum — VoiceOver users
-                // get no feedback otherwise.
-                if state.thresholdBytes <= DiskStorageViewModel.minimumThresholdBytes {
-                    postAccessibilityAnnouncement(
-                        NSLocalizedString(
-                            "Minimum threshold reached",
-                            comment: "VoiceOver announcement when the threshold stepper is decremented at the minimum"
-                        )
-                    )
-                } else {
-                    actions.onDecreaseThreshold()
-                }
-            @unknown default:
-                break
-            }
-        }
     }
 
-    /// Posts a VoiceOver announcement. No-op on platforms without UIKit.
-    private func postAccessibilityAnnouncement(_ message: String) {
-        #if canImport(UIKit)
-        UIAccessibility.post(notification: .announcement, argument: message)
-        #endif
+    private var thresholdBinding: Binding<Int> {
+        Binding(
+            get: { state.thresholdBytes },
+            set: { actions.onSetThreshold($0) }
+        )
     }
 }

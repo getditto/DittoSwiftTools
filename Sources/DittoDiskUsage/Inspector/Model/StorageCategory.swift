@@ -8,7 +8,7 @@
 import Foundation
 
 /// A top-level on-disk storage category, used purely for user-facing glossary
-/// copy. The Inspector does not currently bucket bytes per category — that
+/// copy. The Inspector does not currently group bytes per category — that
 /// requires SDK support beyond the documented `diskUsagePublisher()` total.
 public enum StorageCategory: String, CaseIterable, Identifiable, Hashable, Sendable {
     case store

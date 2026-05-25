@@ -35,7 +35,7 @@ struct DocSizeDistributionSection: View {
         } header: {
             Text("Document Size Distribution")
         } footer: {
-            Text("Each document's size is its JSON serialization length. The sample takes the first documents the store returns, not a random pick. Each sampled item is released right after measuring.")
+            Text("Each document's size is its JSON serialization length. The sample takes the first documents the store returns, not a random pick. Sampling holds up to \(Format.count(CollectionInspectionViewModel.sampleLimit)) documents in memory at peak and releases each one right after measuring.")
         }
     }
 
@@ -85,7 +85,7 @@ struct DocSizeDistributionSection: View {
             histogram(for: sample)
             footnote
         } else {
-            Text("Tap Sample to group up to \(CountFormatting.format(state.sampleLimit)) documents by JSON byte size.")
+            Text("Tap Sample to group up to \(Format.count(state.sampleLimit)) documents by JSON byte size.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
@@ -108,7 +108,7 @@ struct DocSizeDistributionSection: View {
                 HorizontalBarChartView.Item(id: $0.id, label: $0.label, value: $0.count)
             },
             tint: .accentColor,
-            valueFormatter: CountFormatting.format
+            valueFormatter: Format.count
         )
         .padding(.top, Self.topPadding)
     }
@@ -129,15 +129,15 @@ struct DocSizeDistributionSection: View {
     }
 
     private func summaryText(for sample: CollectionSample) -> Text {
-        let sampledText = CountFormatting.format(sample.sampledCount)
+        let sampledText = Format.count(sample.sampledCount)
         if let total = state.totalDocCount {
             // Counts match — we sampled the whole collection.
             if sample.sampledCount == total {
-                return Text("All \(CountFormatting.format(total)) docs")
+                return Text("All \(Format.count(total)) docs")
             }
             // Sample was capped by the limit, scan count is bigger.
             if sample.sampledCount < total, sample.reachedLimit {
-                return Text("\(sampledText) of \(CountFormatting.format(total)) docs")
+                return Text("\(sampledText) of \(Format.count(total)) docs")
             }
             // Counts don't match for some other reason (collection changed
             // since the scan). Show what we actually sampled.

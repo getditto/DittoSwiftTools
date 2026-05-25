@@ -35,7 +35,7 @@ struct HealthGaugeView: View {
                     .font(.caption.weight(.medium))
                     .foregroundColor(.secondary)
                 Spacer()
-                Text("\(ByteCountFormatting.format(currentBytes)) of \(ByteCountFormatting.format(thresholdBytes))")
+                Text("\(Format.bytes(currentBytes)) of \(Format.bytes(thresholdBytes))")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

@@ -55,14 +55,18 @@ public final class DiskStorageViewModel: ObservableObject {
     /// Step size when the user nudges the health threshold up or down.
     public static let thresholdStepBytes: Int = 50_000_000
 
-    /// Smallest threshold a caller can set via ``adjustHealthThreshold(by:)``.
+    /// Smallest threshold a caller can set via ``setThreshold(_:)``.
     public static let minimumThresholdBytes: Int = 50_000_000
+
+    /// `UserDefaults` key the persisted threshold is stored under.
+    public static let thresholdDefaultsKey: String = "DittoDiskUsage.healthThresholdBytes"
 
     // MARK: - Private
 
     private let ditto: Ditto
     private let now: () -> Date
     private let animation: Animation?
+    private let defaults: UserDefaults
     private var cancellable: AnyCancellable?
 
     public init(
@@ -70,12 +74,23 @@ public final class DiskStorageViewModel: ObservableObject {
         healthThresholdBytes: Int = DiskStorageDefaults.healthThresholdBytes,
         maxHistorySize: Int = DiskStorageDefaults.maxHistorySize,
         now: @escaping () -> Date = Date.init,
-        animation: Animation? = DiskStorageDefaults.animation
+        animation: Animation? = DiskStorageDefaults.animation,
+        defaults: UserDefaults = .standard
     ) {
         self.ditto = ditto
-        // Same floor as ``adjustHealthThreshold(by:)`` so callers can't sneak
-        // an unusable threshold past the init.
-        self.healthThresholdBytes = max(Self.minimumThresholdBytes, healthThresholdBytes)
+        self.defaults = defaults
+        // Resolve initial threshold: persisted value wins, then the caller's
+        // argument, then the default. The minimum clamp protects against a
+        // stale or corrupt persisted value and against callers passing 0.
+        let initial = (defaults.object(forKey: Self.thresholdDefaultsKey) as? Int)
+            ?? healthThresholdBytes
+        let clamped = max(Self.minimumThresholdBytes, initial)
+        self.healthThresholdBytes = clamped
+        // Self-heal: if a stale or corrupt value was on disk, write the
+        // clamped value back so the next launch doesn't re-clamp.
+        if clamped != initial {
+            defaults.set(clamped, forKey: Self.thresholdDefaultsKey)
+        }
         self.maxHistorySize = max(2, maxHistorySize)
         self.now = now
         self.animation = animation
@@ -88,10 +103,12 @@ public final class DiskStorageViewModel: ObservableObject {
 
     // MARK: - Public API
 
-    /// Increases or decreases the health threshold by `delta` bytes,
-    /// clamping at ``minimumThresholdBytes``.
-    public func adjustHealthThreshold(by delta: Int) {
-        healthThresholdBytes = max(Self.minimumThresholdBytes, healthThresholdBytes + delta)
+    /// Sets the health threshold to an absolute byte count, clamping at
+    /// ``minimumThresholdBytes``. The new value persists across launches
+    /// via the `defaults` passed at init.
+    public func setThreshold(_ bytes: Int) {
+        healthThresholdBytes = max(Self.minimumThresholdBytes, bytes)
+        defaults.set(healthThresholdBytes, forKey: Self.thresholdDefaultsKey)
     }
 
     // MARK: - Derived state

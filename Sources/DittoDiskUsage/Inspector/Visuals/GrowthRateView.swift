@@ -48,7 +48,7 @@ struct GrowthRateView: View {
         if abs(rate) < Self.stableThresholdBytesPerSecond { return Text("Stable") }
         let perMinute = Int(abs(rate * 60).rounded())
         let sign = rate >= 0 ? "+" : "−"
-        return Text("\(sign)\(ByteCountFormatting.format(perMinute)) / min")
+        return Text("\(sign)\(Format.bytes(perMinute)) / min")
     }
 
     private var iconName: String {
