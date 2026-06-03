@@ -31,7 +31,7 @@ public typealias PlatformViewController = NSViewController
 
  ```swift
  import DittoSwift
- import DittoSwiftPresenceViewer
+ import DittoPresenceViewer
 
  let ditto: Ditto
 
@@ -119,6 +119,7 @@ public class DittoPresenceView: PlatformView {
     public convenience init(ditto: Ditto) {
         self.init(frame: .zero)
         self.ditto = ditto
+        // didSet is not reliably called during init, so start observing explicitly.
         startObservingPresence()
     }
 
@@ -158,9 +159,11 @@ public class DittoPresenceView: PlatformView {
                 encoder.dataEncodingStrategy = .custom({ data, enc in
                     var container = enc.unkeyedContainer()
                     data.forEach { byte in
+                        // swiftlint:disable:next force_try
                         try! container.encode(byte)
                     }
                 })
+                // swiftlint:disable:next force_try
                 let presenceGraphJSON = try! encoder.encode(presenceGraph)
                 let presenceGraphJSONString = String(data: presenceGraphJSON, encoding: .utf8)!
                 DispatchQueue.main.async { [weak self] in

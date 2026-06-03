@@ -4,6 +4,7 @@
 //  Copyright © 2024 DittoLive Incorporated. All rights reserved.
 //
 
+import Foundation
 import DittoSwift
 
 
@@ -16,7 +17,7 @@ public extension DittoLogLevel {
         UserDefaults.standard.set(self.rawValue, forKey: DittoLogLevel.storageKey)
     }
 
-    /// Restores the log level from UserDefaults, defaulting to `.info` if no value is found.
+    /// Restores the log level from UserDefaults, defaulting to `.error` if no value is found.
     static func restoreFromStorage() -> DittoLogLevel {
         let rawValue = UserDefaults.standard.integer(forKey: storageKey)
         return DittoLogLevel(rawValue: rawValue) ?? .error

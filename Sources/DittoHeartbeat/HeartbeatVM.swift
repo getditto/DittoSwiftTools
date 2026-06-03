@@ -42,7 +42,7 @@ public class HeartbeatVM: ObservableObject {
         hbInfo = DittoHeartbeatInfo(
             id: config.id,
             schema: String._schemaValue,
-            peerKey: ditto.presence.graph.localPeer.peerKeyString,
+            peerKey: ditto.presence.graph.localPeer.peerKey,
             secondsInterval: config.secondsInterval,
             sdk: ditto.presence.graph.localPeer.platformSDK,
             metadata: config.metadata ?? [:]
@@ -82,7 +82,7 @@ public class HeartbeatVM: ObservableObject {
                 guard let self = self else { return }
                 updateHealthMetrics()
                 hbInfo?.lastUpdated = HeartbeatDateFormatter.isoDate.string(from: Date())
-                updateCollection()
+                Task { await self.updateCollection() }
                 emit()
             }
     }
@@ -112,15 +112,18 @@ public class HeartbeatVM: ObservableObject {
         }
     }
     
-    private func updateCollection() {
+    private func updateCollection() async {
         guard hbConfig?.publishToDittoCollection == true else { return }
         guard let doc = hbInfo?.value else {
             print("DittoHeartbeatVM.\(#function): ERROR updatingCollection: bhInfo is NIL --> Return")
             return
         }
-        
+
         do {
-            let _ = try ditto.store.collection(String.collectionName).upsert(doc)
+            _ = try await ditto.store.execute(
+                query: "INSERT INTO \(String.collectionName) DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE",
+                arguments: ["doc": doc]
+            )
         } catch {
             print(
                 "HeartbeatVM.\(#function) - ERROR updating collection: " +
@@ -137,11 +140,11 @@ public class HeartbeatVM: ObservableObject {
             let cx = DittoPeerConnection(
                 deviceName: peer.deviceName,
                 sdk: peer.platformSDK,
-                isConnectedToDittoCloud: peer.isConnectedToDittoCloud,
+                isConnectedToDittoCloud: peer.isConnectedToDittoServer,
                 bluetooth: types[String.bt] as Int? ?? 0,
                 p2pWifi: types[String.p2pWifi] as Int? ?? 0,
                 lan: types[String.lan] as Int? ?? 0,
-                peerKey: peer.peerKeyString
+                peerKey: peer.peerKey
             )
             connections.append(cx)
         }
@@ -168,7 +171,7 @@ public class HeartbeatVM: ObservableObject {
 //MARK: Extensions
 private extension DittoPeer {
     var platformSDK: String {
-        let platform = self.osV2 ?? .unknown(os: String.osNA)
+        let platform = self.os ?? .unknown(os: String.osNA)
         let sdk = self.dittoSDKVersion ?? String.sdkVersionNA
         return "\(platform.stringValue) v\(sdk)"
     }

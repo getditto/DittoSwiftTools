@@ -90,7 +90,7 @@ struct Documents: View {
                 }
                 .background(KeyboardOverlay(text: $querySearch, isPresented: $isEditing, keyboardType: .default))
                 #else
-                TextField("title == \"Hello, World!\"", text: $querySearch, onCommit: {viewModel.filterDocs(queryString: querySearch)})
+                TextField("title = 'Hello, World!'", text: $querySearch, onCommit: {viewModel.filterDocs(queryString: querySearch)})
                     .textFieldStyle(.roundedBorder)
                 #endif
                 #if os(macOS) || os(tvOS)
@@ -101,11 +101,11 @@ struct Documents: View {
                 }
                 #endif
             }
-            Text("This is a filter mechanism for Ditto's legacy query language. Filter, search, and retrieve using Boolean operators, equal and unequal operators, comparison operators, and match operators. Ex: title == \"Hello, World!\" ")
+            Text("Enter a DQL `WHERE` clause to filter documents in this collection. Ex: title = 'Hello, World!'")
                 .font(.caption)
             #if os(iOS) || os(macOS)
-            Link("Learn how to use Ditto's legacy query language",
-                 destination: URL(string: "https://docs.ditto.live/dql/query-syntax-legacy")!)
+            Link("Learn how to use DQL",
+                 destination: URL(string: "https://docs.ditto.live/dql/dql")!)
                 .font(.caption)
             #endif
         }

@@ -89,7 +89,7 @@ fileprivate struct ExportDataButton: View {
                             isExportDataSharePresented = true
 #elseif os(macOS)
                             if let ditto {
-                                ExportData_macOS(ditto: ditto).export()
+                                ExportDataMacOS(ditto: ditto).export()
                             }
 #endif
                         }),
@@ -100,7 +100,7 @@ fileprivate struct ExportDataButton: View {
                 Alert(title: Text("An active Ditto instance must be running in order to export data for security and privacy reasons."))
             }
         }
-        .disabled(!(ditto?.activated ?? false))
+        .disabled(!(ditto?.isActivated ?? false))
     }
 }
 #endif

@@ -22,6 +22,7 @@ public struct KeyboardOverlay: UIViewControllerRepresentable {
 
     public class Coordinator: NSObject, UITextFieldDelegate {
         var parent: KeyboardOverlay
+        weak var textField: UITextField?
 
         init(_ parent: KeyboardOverlay) {
             self.parent = parent
@@ -40,19 +41,26 @@ public struct KeyboardOverlay: UIViewControllerRepresentable {
     public func makeUIViewController(context: Context) -> UIViewController {
         let vc = UIViewController()
         vc.view.backgroundColor = .clear
+
+        // Create the text field once and store it on the coordinator for reuse.
+        let textField = UITextField()
+        textField.delegate = context.coordinator
+        textField.isHidden = true
+        vc.view.addSubview(textField)
+        context.coordinator.textField = textField
+
         return vc
     }
 
     public func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        guard isPresented else { return }
-
-        let textField = UITextField()
-        textField.text = text
-        textField.delegate = context.coordinator
-        textField.keyboardType = keyboardType  // 🔑 Keypad, email, number, etc.
-        textField.becomeFirstResponder()
-        uiViewController.view.addSubview(textField)
-        textField.isHidden = true
+        guard let textField = context.coordinator.textField else { return }
+        textField.keyboardType = keyboardType
+        if isPresented {
+            textField.text = text
+            textField.becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
     }
 }
 #endif

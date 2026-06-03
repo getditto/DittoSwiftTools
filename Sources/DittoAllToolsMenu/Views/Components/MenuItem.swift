@@ -17,7 +17,7 @@ struct MenuItem: View {
     var ditto: Ditto?
 
     var body: some View {
-        if let ditto, ditto.activated {
+        if let ditto, ditto.isActivated {
             NavigationLink(destination: option.destinationView(ditto: ditto)) {
                 toolListItem
             }
