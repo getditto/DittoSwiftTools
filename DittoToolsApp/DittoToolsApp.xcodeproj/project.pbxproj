@@ -13,7 +13,7 @@
 		01F34CB028A2EAE5003BDF17 /* DittoToolsAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CAF28A2EAE5003BDF17 /* DittoToolsAppUITests.swift */; };
 		01F34CB228A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34CB128A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift */; };
 		01F34D0928A31644003BDF17 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F34D0828A31644003BDF17 /* AppDelegate.swift */; };
-		074F006D2C514DB900211F51 /* DittoObjC in Frameworks */ = {isa = PBXBuildFile; productRef = 074F006C2C514DB900211F51 /* DittoObjC */; };
+		AAA0000000000000000000CC /* Env.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA0000000000000000000BB /* Env.swift */; };
 		074F006F2C514DB900211F51 /* DittoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 074F006E2C514DB900211F51 /* DittoSwift */; };
 		0E03301C2B8D3C0100C20156 /* DittoPermissionsHealth in Frameworks */ = {isa = PBXBuildFile; productRef = 0E03301B2B8D3C0100C20156 /* DittoPermissionsHealth */; };
 		0E60040F2B7BFCD500C27FAF /* DittoPresenceDegradation in Frameworks */ = {isa = PBXBuildFile; productRef = 0E60040E2B7BFCD500C27FAF /* DittoPresenceDegradation */; };
@@ -21,25 +21,14 @@
 		146ED3F629C4F13100A56229 /* DittoPeersList in Frameworks */ = {isa = PBXBuildFile; productRef = 146ED3F529C4F13100A56229 /* DittoPeersList */; };
 		14B7342C2A296A4E0081CEF2 /* DittoExportLogs in Frameworks */ = {isa = PBXBuildFile; productRef = 14B7342B2A296A4E0081CEF2 /* DittoExportLogs */; };
 		14E35DB12B7F345C0018EC3B /* DittoHeartbeat in Frameworks */ = {isa = PBXBuildFile; productRef = 14E35DB02B7F345C0018EC3B /* DittoHeartbeat */; };
-		231250CE2D2D892B00EFB3C4 /* FormState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231250CD2D2D892B00EFB3C4 /* FormState.swift */; };
-		231250D02D2DAEA200EFB3C4 /* FormField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231250CF2D2DAEA200EFB3C4 /* FormField.swift */; };
 		235C3CDC2D10815000AB35AE /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CDA2D10815000AB35AE /* MenuView.swift */; };
 		235C3CDE2D10817300AB35AE /* SyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CDD2D10817300AB35AE /* SyncButton.swift */; };
-		235C3CEB2D10817D00AB35AE /* CredentialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE72D10817D00AB35AE /* CredentialsView.swift */; };
-		235C3CEC2D10817D00AB35AE /* FormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE52D10817D00AB35AE /* FormViewModel.swift */; };
-		235C3CED2D10817D00AB35AE /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CE32D10817D00AB35AE /* FormView.swift */; };
 		235C3CF12D10819400AB35AE /* UIScrollView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CF02D10819400AB35AE /* UIScrollView+Extension.swift */; };
-		235C3CF22D10830600AB35AE /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD82D10813300AB35AE /* Credentials.swift */; };
-		235C3CF32D10830600AB35AE /* DittoIdentity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD72D10813300AB35AE /* DittoIdentity+Extension.swift */; };
-		235C3CF52D10831000AB35AE /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD52D10810100AB35AE /* KeychainService.swift */; };
-		235C3CF72D10831000AB35AE /* AuthenticationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD32D10810100AB35AE /* AuthenticationDelegate.swift */; };
 		235C3CF82D10831500AB35AE /* DittoServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD12D10810100AB35AE /* DittoServiceError.swift */; };
 		235C3CF92D10831500AB35AE /* DittoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CCF2D10810100AB35AE /* DittoService.swift */; };
 		235C3CFA2D10831500AB35AE /* DittoService+PersistenceDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C3CD02D10810100AB35AE /* DittoService+PersistenceDirectory.swift */; };
 		23B911022CC00EB600FD41EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23B911012CC00EB600FD41EF /* Assets.xcassets */; };
-		23DCC4062D1186C0008E92B6 /* CredentialsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DCC4052D1186C0008E92B6 /* CredentialsService.swift */; };
 		CC80DC002A1EACCE004A2A65 /* DittoExportData in Frameworks */ = {isa = PBXBuildFile; productRef = CC80DBFF2A1EACCE004A2A65 /* DittoExportData */; };
-		F87DC47C2988584200899FEC /* DittoDataBrowser in Frameworks */ = {isa = PBXBuildFile; productRef = F87DC47B2988584200899FEC /* DittoDataBrowser */; };
 		F87DC4802988584200899FEC /* DittoPresenceViewer in Frameworks */ = {isa = PBXBuildFile; productRef = F87DC47F2988584200899FEC /* DittoPresenceViewer */; };
 		F87DC4832988599C00899FEC /* DittoDiskUsage in Frameworks */ = {isa = PBXBuildFile; productRef = F87DC4822988599C00899FEC /* DittoDiskUsage */; };
 /* End PBXBuildFile section */
@@ -72,23 +61,14 @@
 		01F34CB128A2EAE5003BDF17 /* DittoToolsAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoToolsAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		01F34CC328A2EC4A003BDF17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		01F34D0828A31644003BDF17 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		231250CD2D2D892B00EFB3C4 /* FormState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormState.swift; sourceTree = "<group>"; };
-		231250CF2D2DAEA200EFB3C4 /* FormField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormField.swift; sourceTree = "<group>"; };
+		AAA0000000000000000000BB /* Env.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Env.swift; sourceTree = "<group>"; };
 		235C3CCF2D10810100AB35AE /* DittoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoService.swift; sourceTree = "<group>"; };
 		235C3CD02D10810100AB35AE /* DittoService+PersistenceDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DittoService+PersistenceDirectory.swift"; sourceTree = "<group>"; };
 		235C3CD12D10810100AB35AE /* DittoServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoServiceError.swift; sourceTree = "<group>"; };
-		235C3CD32D10810100AB35AE /* AuthenticationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationDelegate.swift; sourceTree = "<group>"; };
-		235C3CD52D10810100AB35AE /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
-		235C3CD72D10813300AB35AE /* DittoIdentity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DittoIdentity+Extension.swift"; sourceTree = "<group>"; };
-		235C3CD82D10813300AB35AE /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		235C3CDA2D10815000AB35AE /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		235C3CDD2D10817300AB35AE /* SyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncButton.swift; sourceTree = "<group>"; };
-		235C3CE32D10817D00AB35AE /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
-		235C3CE52D10817D00AB35AE /* FormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormViewModel.swift; sourceTree = "<group>"; };
-		235C3CE72D10817D00AB35AE /* CredentialsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsView.swift; sourceTree = "<group>"; };
 		235C3CF02D10819400AB35AE /* UIScrollView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extension.swift"; sourceTree = "<group>"; };
 		23B911012CC00EB600FD41EF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		23DCC4052D1186C0008E92B6 /* CredentialsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsService.swift; sourceTree = "<group>"; };
 		A4DA69372D15ED96000A6DCA /* DittoToolsApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DittoToolsApp.entitlements; sourceTree = "<group>"; };
 		F87DC47A2988581000899FEC /* DittoSwiftTools */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DittoSwiftTools; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -104,12 +84,10 @@
 				0E60040F2B7BFCD500C27FAF /* DittoPresenceDegradation in Frameworks */,
 				0ED091502C640FFF00F6403B /* DittoAllToolsMenu in Frameworks */,
 				0E03301C2B8D3C0100C20156 /* DittoPermissionsHealth in Frameworks */,
-				F87DC47C2988584200899FEC /* DittoDataBrowser in Frameworks */,
 				074F006F2C514DB900211F51 /* DittoSwift in Frameworks */,
 				14B7342C2A296A4E0081CEF2 /* DittoExportLogs in Frameworks */,
 				14E35DB12B7F345C0018EC3B /* DittoHeartbeat in Frameworks */,
 				146ED3F629C4F13100A56229 /* DittoPeersList in Frameworks */,
-				074F006D2C514DB900211F51 /* DittoObjC in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,6 +140,7 @@
 				01F34D0028A310A5003BDF17 /* Views */,
 				01F34CC328A2EC4A003BDF17 /* Info.plist */,
 				01F34D0828A31644003BDF17 /* AppDelegate.swift */,
+				AAA0000000000000000000BB /* Env.swift */,
 				23B911012CC00EB600FD41EF /* Assets.xcassets */,
 				01F34C9A28A2EAE5003BDF17 /* Preview Content */,
 			);
@@ -196,8 +175,6 @@
 		01F34CE428A30798003BDF17 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				235C3CD72D10813300AB35AE /* DittoIdentity+Extension.swift */,
-				235C3CD82D10813300AB35AE /* Credentials.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -207,7 +184,6 @@
 			children = (
 				01F34C9628A2EAE3003BDF17 /* ContentView.swift */,
 				235C3CDB2D10815000AB35AE /* Menu View */,
-				235C3CE82D10817D00AB35AE /* Credentials View */,
 				235C3CF02D10819400AB35AE /* UIScrollView+Extension.swift */,
 			);
 			path = Views;
@@ -241,9 +217,6 @@
 			isa = PBXGroup;
 			children = (
 				235C3CD22D10810100AB35AE /* Ditto Service */,
-				235C3CD32D10810100AB35AE /* AuthenticationDelegate.swift */,
-				23DCC4052D1186C0008E92B6 /* CredentialsService.swift */,
-				235C3CD52D10810100AB35AE /* KeychainService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -255,34 +228,6 @@
 				235C3CDD2D10817300AB35AE /* SyncButton.swift */,
 			);
 			path = "Menu View";
-			sourceTree = "<group>";
-		};
-		235C3CE22D10817D00AB35AE /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				231250CF2D2DAEA200EFB3C4 /* FormField.swift */,
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
-		235C3CE62D10817D00AB35AE /* Form */ = {
-			isa = PBXGroup;
-			children = (
-				235C3CE32D10817D00AB35AE /* FormView.swift */,
-				231250CD2D2D892B00EFB3C4 /* FormState.swift */,
-				235C3CE52D10817D00AB35AE /* FormViewModel.swift */,
-			);
-			path = Form;
-			sourceTree = "<group>";
-		};
-		235C3CE82D10817D00AB35AE /* Credentials View */ = {
-			isa = PBXGroup;
-			children = (
-				235C3CE72D10817D00AB35AE /* CredentialsView.swift */,
-				235C3CE22D10817D00AB35AE /* Components */,
-				235C3CE62D10817D00AB35AE /* Form */,
-			);
-			path = "Credentials View";
 			sourceTree = "<group>";
 		};
 		F87DC4662988501000899FEC /* Packages */ = {
@@ -300,6 +245,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 01F34CB528A2EAE5003BDF17 /* Build configuration list for PBXNativeTarget "DittoToolsApp" */;
 			buildPhases = (
+				AAA0000000000000000000AA /* Generate Env.swift */,
 				01F34C8D28A2EAE3003BDF17 /* Sources */,
 				01F34C8E28A2EAE3003BDF17 /* Frameworks */,
 				01F34C8F28A2EAE3003BDF17 /* Resources */,
@@ -310,7 +256,6 @@
 			);
 			name = DittoToolsApp;
 			packageProductDependencies = (
-				F87DC47B2988584200899FEC /* DittoDataBrowser */,
 				F87DC47F2988584200899FEC /* DittoPresenceViewer */,
 				F87DC4822988599C00899FEC /* DittoDiskUsage */,
 				146ED3F529C4F13100A56229 /* DittoPeersList */,
@@ -320,7 +265,6 @@
 				14E35DB02B7F345C0018EC3B /* DittoHeartbeat */,
 				0E03301B2B8D3C0100C20156 /* DittoPermissionsHealth */,
 				0ED0914F2C640FFF00F6403B /* DittoAllToolsMenu */,
-				074F006C2C514DB900211F51 /* DittoObjC */,
 				074F006E2C514DB900211F51 /* DittoSwift */,
 			);
 			productName = debug;
@@ -397,7 +341,6 @@
 			mainGroup = 01F34C8828A2EAE3003BDF17;
 			packageReferences = (
 				0E3768B92BB73C47009A7053 /* XCLocalSwiftPackageReference ".." */,
-				074F006B2C514DB900211F51 /* XCRemoteSwiftPackageReference "DittoSwiftPackage" */,
 			);
 			productRefGroup = 01F34C9228A2EAE3003BDF17 /* Products */;
 			projectDirPath = "";
@@ -436,29 +379,44 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		AAA0000000000000000000AA /* Generate Env.swift */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../scripts/buildEnv.sh",
+				"$(SRCROOT)/../.env",
+			);
+			name = "Generate Env.swift";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${SRCROOT}/${PROJECT}/Env.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../scripts/buildEnv.sh\" \"${SRCROOT}/../.env\" \"${SRCROOT}/${PROJECT}\"\n\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		01F34C8D28A2EAE3003BDF17 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				235C3CDE2D10817300AB35AE /* SyncButton.swift in Sources */,
-				235C3CF22D10830600AB35AE /* Credentials.swift in Sources */,
-				235C3CF32D10830600AB35AE /* DittoIdentity+Extension.swift in Sources */,
 				235C3CDC2D10815000AB35AE /* MenuView.swift in Sources */,
 				01F34C9728A2EAE3003BDF17 /* ContentView.swift in Sources */,
 				01F34D0928A31644003BDF17 /* AppDelegate.swift in Sources */,
+				AAA0000000000000000000CC /* Env.swift in Sources */,
 				235C3CF82D10831500AB35AE /* DittoServiceError.swift in Sources */,
 				235C3CF92D10831500AB35AE /* DittoService.swift in Sources */,
 				235C3CFA2D10831500AB35AE /* DittoService+PersistenceDirectory.swift in Sources */,
-				23DCC4062D1186C0008E92B6 /* CredentialsService.swift in Sources */,
-				231250D02D2DAEA200EFB3C4 /* FormField.swift in Sources */,
-				235C3CEB2D10817D00AB35AE /* CredentialsView.swift in Sources */,
 				235C3CF12D10819400AB35AE /* UIScrollView+Extension.swift in Sources */,
-				235C3CEC2D10817D00AB35AE /* FormViewModel.swift in Sources */,
-				231250CE2D2D892B00EFB3C4 /* FormState.swift in Sources */,
-				235C3CED2D10817D00AB35AE /* FormView.swift in Sources */,
-				235C3CF52D10831000AB35AE /* KeychainService.swift in Sources */,
-				235C3CF72D10831000AB35AE /* AuthenticationDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -547,7 +505,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -604,7 +562,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -641,12 +599,14 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				"LIBRARY_SEARCH_PATHS[arch=arm64]" = "$(SRCROOT)/../../lib/arm64$(EFFECTIVE_PLATFORM_NAME)";
+				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = "$(SRCROOT)/../../lib/x86_64$(EFFECTIVE_PLATFORM_NAME)";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ditto.DittoToolsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -687,12 +647,14 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				"LIBRARY_SEARCH_PATHS[arch=arm64]" = "$(SRCROOT)/../../lib/arm64$(EFFECTIVE_PLATFORM_NAME)";
+				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = "$(SRCROOT)/../../lib/x86_64$(EFFECTIVE_PLATFORM_NAME)";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ditto.DittoToolsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -825,28 +787,13 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ..;
 		};
+		/* removed XCLocalSwiftPackageReference "../.." — monorepo-only path, broken in standalone clone; DittoSwift now resolves via ".." (DittoSwiftTools Package.swift) */
 /* End XCLocalSwiftPackageReference section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		074F006B2C514DB900211F51 /* XCRemoteSwiftPackageReference "DittoSwiftPackage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/getditto/DittoSwiftPackage";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.12.4;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		074F006C2C514DB900211F51 /* DittoObjC */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 074F006B2C514DB900211F51 /* XCRemoteSwiftPackageReference "DittoSwiftPackage" */;
-			productName = DittoObjC;
-		};
 		074F006E2C514DB900211F51 /* DittoSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 074F006B2C514DB900211F51 /* XCRemoteSwiftPackageReference "DittoSwiftPackage" */;
+			package = 0E3768B92BB73C47009A7053 /* XCLocalSwiftPackageReference ".." */;
 			productName = DittoSwift;
 		};
 		0E03301B2B8D3C0100C20156 /* DittoPermissionsHealth */ = {
@@ -876,10 +823,6 @@
 		CC80DBFF2A1EACCE004A2A65 /* DittoExportData */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DittoExportData;
-		};
-		F87DC47B2988584200899FEC /* DittoDataBrowser */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DittoDataBrowser;
 		};
 		F87DC47F2988584200899FEC /* DittoPresenceViewer */ = {
 			isa = XCSwiftPackageProductDependency;

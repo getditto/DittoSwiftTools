@@ -552,10 +552,49 @@ heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(secondsInterval: Int, me
 } 
 ```
 
-## Ditto Tools Example App
-The [Ditto Tools Example App](https://github.com/getditto/DittoSwiftTools/tree/main/DittoToolsApp) 
-included in this repo allows you to try the DittoSwiftTools package in a standalone app. Open 
-DittoToolsApp.xcodeproj in Xcode and build to a simulator or device.   
+## Running the Example App (DittoToolsApp)
+
+The `DittoToolsApp/` directory contains a reference Xcode app that demonstrates
+all DittoSwiftTools features. It builds standalone from the cloned repo — no
+monorepo or local SDK build required.
+
+### Setup
+
+1. **Clone the repo** (if you haven't already):
+
+   ```sh
+   git clone https://github.com/getditto/DittoSwiftTools.git
+   cd DittoSwiftTools
+   ```
+
+2. **Create your `.env` file** from the provided template:
+
+   ```sh
+   cp .env.sample .env
+   ```
+
+3. **Fill in your Ditto credentials** in `.env`. Get these from the
+   [Ditto Portal](https://portal.ditto.live):
+
+   ```sh
+   DITTO_APP_ID=your-app-id-here
+   DITTO_PLAYGROUND_TOKEN=your-playground-token-here
+   DITTO_AUTH_URL=https://your-app-id-here.cloud.ditto.live
+   ```
+
+   The Xcode build phase reads `.env` and generates `DittoToolsApp/DittoToolsApp/Env.swift`
+   automatically on every build. Both `.env` and `Env.swift` are gitignored.
+
+4. **Open and build** in Xcode:
+
+   ```sh
+   open DittoToolsApp/DittoToolsApp.xcodeproj
+   ```
+
+   Select a device or simulator and build (`Cmd+R`). Swift Package Manager fetches
+   `DittoSwiftPackage` (the Ditto Swift SDK) from the public registry automatically.
+
+
 
 <div align="center">
     <figure>

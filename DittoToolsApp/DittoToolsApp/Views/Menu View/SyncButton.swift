@@ -27,7 +27,7 @@ struct SyncButton: View {
                 }
             }
         }) {
-            if let ditto = dittoService?.ditto, ditto.activated {
+            if let ditto = dittoService?.ditto, ditto.isActivated {
                 HStack(spacing: 12) {
                     Text(ditto.sync.isActive ? "Ditto is active." : "Ditto is not running.")
                         .font(.subheadline)

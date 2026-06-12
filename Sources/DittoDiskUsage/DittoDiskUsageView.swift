@@ -91,7 +91,7 @@ public struct DittoDiskUsageView: View {
                                 #if os(iOS)
                                 presentExportDataShare = true
                                 #elseif os(macOS)
-                                ExportData_macOS(ditto: viewModel.ditto).export()
+                                ExportDataMacOS(ditto: viewModel.ditto).export()
                                 #endif
                             }),
                           secondaryButton: .cancel()
@@ -112,8 +112,3 @@ public struct DittoDiskUsageView: View {
     }
 }
 
-struct DittoDiskUsageView_Previews: PreviewProvider {
-    static var previews: some View {
-        DittoDiskUsageView(ditto: Ditto())
-    }
-}

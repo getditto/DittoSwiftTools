@@ -2,13 +2,23 @@
 
 import PackageDescription
 
+// PUBLISHING NOTE: At publish time, the DittoSwiftPackage path dep below is
+// swapped for its URL-based equivalent, the DittoPresenceViewerCore path dep is
+// removed (its source is vendored as an internal target instead), and a
+// DittoPresenceViewerCore target declaration is inserted — see PUBLISHING.md.
+//
+// DITTO_DEFAULT_SDK_VERSION: 5.0.1
+// When the publish workflow runs without an explicit SDK version, the
+// DittoSwiftPackage URL dependency is pinned to this version. Keep it current
+// with the latest published Swift SDK.
+
 let package = Package(
     name: "DittoSwiftTools",
     platforms: [
-        .iOS(.v14),
-        .macCatalyst(.v14),
+        .iOS(.v15),
+        .macCatalyst(.v15),
         .tvOS(.v15),
-        .macOS(.v11)
+        .macOS(.v12)
     ],
     products: [
         .library(
@@ -21,7 +31,7 @@ let package = Package(
         ),
         .library(
             name: "DittoDataBrowser",
-             targets: ["DittoDataBrowser"]
+            targets: ["DittoDataBrowser"]
         ),
         .library(
             name: "DittoExportLogs",
@@ -58,17 +68,23 @@ let package = Package(
             targets: ["DittoTvOSTextFieldComponent"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.12.4"),
-        .package(url: "https://github.com/getditto/DittoPresenceViewerCore.git", from: "2.1.2"),
-        .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "5.0.1"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.0.0"),
     ],
     targets: [
+        .target(
+            name: "DittoPresenceViewerCore",
+            path: "Sources/DittoPresenceViewerCore",
+            resources: [
+                .copy("Resources/dist"),
+            ]
+        ),
         .target(name: "DittoHealthMetrics"),
         .target(
             name: "DittoPresenceViewer",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
-                .product(name: "DittoPresenceViewerCore", package: "DittoPresenceViewerCore"),
+                "DittoPresenceViewerCore",
             ]
         ),
         .target(

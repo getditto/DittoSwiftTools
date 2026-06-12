@@ -14,16 +14,16 @@ struct MenuView: View {
     @ObservedObject var dittoService = DittoService.shared
 
     public var body: some View {
-        MultiPlatformLayoutView
+        multiPlatformLayoutView
     }
 
     /// The main content of the view, a two column layout for tvos with an image and a menu, otherwise just the menu
     @ViewBuilder
-    private var MultiPlatformLayoutView: some View {
+    private var multiPlatformLayoutView: some View {
         #if os(tvOS)
             HStack {
                 VStack {
-                    LogoView
+                    logoView
 
                     SyncButton(dittoService: dittoService)
                         .buttonStyle(.plain)
@@ -46,7 +46,7 @@ struct MenuView: View {
                     ToolbarItemGroup(placement: .bottomBar) {
                         VStack(spacing: 0) {
                             SyncButton(dittoService: dittoService)
-                            CopyButton
+                            copyButton
                         }
                     }
                 }
@@ -54,7 +54,7 @@ struct MenuView: View {
     }
 
     @ViewBuilder
-    private var LogoView: some View {
+    private var logoView: some View {
         Image("Ditto.LogoMark", bundle: .main)
             .resizable()
             .aspectRatio(contentMode: .fit)
@@ -64,7 +64,7 @@ struct MenuView: View {
     }
 
     #if !os(tvOS)
-        private var CopyButton: some View {
+        private var copyButton: some View {
             Button(action: {
                 #if !os(macOS)
                 // Copy SDK version to clipboard on tap

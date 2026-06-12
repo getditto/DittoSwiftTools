@@ -28,7 +28,7 @@ public struct PeersListView: View {
             }
 
             Section {
-                ForEach(vm.peers, id: \.peerKeyString) { peer in
+                ForEach(vm.peers, id: \.peerKey) { peer in
                     peerView(peer)
                         .padding(.bottom, 4)
                 }
@@ -63,16 +63,16 @@ public struct PeersListView: View {
     func peerView(_ peer: DittoPeer) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             
-            // Device name + siteID
+            // Device name + peer key
             Text("\(peer.deviceName): ").font(Font.body.weight(.bold))
-            + Text("\(peer.peerKeyString)")
+            + Text("\(peer.peerKey)")
             
             if vm.isLocalPeer(peer) {
                 ForEach(vm.peers, id: \.self) { conPeer in
                     VStack(alignment: .leading) {
                         Divider()
                             .frame(height: 1)
-                        Text("peer: \(conPeer.peerKeyString)")
+                        Text("peer: \(conPeer.peerKey)")
                             .lineLimit(1)
 
                         presenceSnapshotDirectlyConnectedPeersView(conPeer)

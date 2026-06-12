@@ -9,15 +9,15 @@ import Foundation
 import DittoSwift
 
 public struct Settings {
-    let expectedPeers: Int
-    let reportApiEnabled: Bool
-    let hasSeenExpectedPeers: Bool
-    let sessionStartedAt: String
-    
-    init(expectedPeers: Int = 0,
-         reportApiEnabled: Bool = false,
-         hasSeenExpectedPeers: Bool = false,
-         sessionStartedAt: String = "") {
+    public let expectedPeers: Int
+    public let reportApiEnabled: Bool
+    public let hasSeenExpectedPeers: Bool
+    public let sessionStartedAt: String
+
+    public init(expectedPeers: Int = 0,
+                reportApiEnabled: Bool = false,
+                hasSeenExpectedPeers: Bool = false,
+                sessionStartedAt: String = "") {
         self.expectedPeers = expectedPeers
         self.reportApiEnabled = reportApiEnabled
         self.hasSeenExpectedPeers = hasSeenExpectedPeers
@@ -37,13 +37,3 @@ extension Settings {
     }
 }
 
-extension DittoDocument {
-    func toSettings() -> Settings {
-        return Settings(
-            expectedPeers: Int(self["expectedPeers"].stringValue)!,
-            reportApiEnabled: Bool(self["reportApiEnabled"].stringValue)!,
-            hasSeenExpectedPeers: Bool(self["hasSeenExpectedPeers"].stringValue)!,
-            sessionStartedAt: self["sessionStartedAt"].stringValue
-        )
-    }
-}

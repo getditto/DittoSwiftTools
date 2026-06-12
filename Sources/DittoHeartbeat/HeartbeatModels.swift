@@ -81,7 +81,10 @@ public extension DittoHeartbeatInfo {
     }
     
     private static func connections(_ cxs: [String: Any]) -> [DittoPeerConnection] {
-        cxs.map { (key, val) in DittoPeerConnection(key, cx: val as! [String: Any]) }
+        cxs.compactMap { (key, val) in
+            guard let cx = val as? [String: Any] else { return nil }
+            return DittoPeerConnection(key, cx: cx)
+        }
     }
 
     private static func healthMetrics(_ metrics: [String: Any]) -> [String: HealthMetric] {
