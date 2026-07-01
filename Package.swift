@@ -7,7 +7,7 @@ import PackageDescription
 // removed (its source is vendored as an internal target instead), and a
 // DittoPresenceViewerCore target declaration is inserted — see PUBLISHING.md.
 //
-// DITTO_DEFAULT_SDK_VERSION: 5.0.1
+// DITTO_DEFAULT_SDK_VERSION: 5.1.0-experimental-join.1
 // When the publish workflow runs without an explicit SDK version, the
 // DittoSwiftPackage URL dependency is pinned to this version. Keep it current
 // with the latest published Swift SDK.
@@ -68,7 +68,7 @@ let package = Package(
             targets: ["DittoTvOSTextFieldComponent"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "5.0.1"),
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", exact: "5.1.0-experimental-join.1"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0"),
     ],
     targets: [
