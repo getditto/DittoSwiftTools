@@ -117,7 +117,7 @@ public class DiskUsageViewModel: ObservableObject {
             .map { [weak self] diskUsage in
                 guard let self = self else { return nil }
                 let children = diskUsage.childItems
-                    .map { (child: DiskUsageItem) in
+                    .map { (child: DittoDiskUsageItem) in
                         DiskUsage(
                             relativePath: child.path,
                             sizeInBytes: child.sizeInBytes,

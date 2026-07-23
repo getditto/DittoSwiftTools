@@ -8,7 +8,6 @@ import SwiftUI
 import UIKit
 #endif
 
-@available(tvOS, unavailable)
 public struct ExportData: View {
 
     private let ditto: Ditto
@@ -21,22 +20,28 @@ public struct ExportData: View {
 
     public var body: some View {
         #if os(iOS)
-        ExportData_iOS(ditto: ditto, fileManager: fileManager)
+        ExportDataIOS(ditto: ditto, fileManager: fileManager)
         #endif
     }
 }
 
 // MARK: - iOS Implementation
 #if os(iOS)
-struct ExportData_iOS: UIViewControllerRepresentable {
+struct ExportDataIOS: UIViewControllerRepresentable {
     
     let ditto: Ditto
     let fileManager: FileManager
 
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        let zippedURL = zipDittoDirectory()
+        let activityItems: [Any]
+        if let zippedURL = zipDittoDirectory() {
+            activityItems = [zippedURL]
+        } else {
+            // Zipping failed; present an empty share sheet rather than crashing.
+            activityItems = []
+        }
 
-        let activityViewController = UIActivityViewController(activityItems: [zippedURL as Any], applicationActivities: nil)
+        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         activityViewController.excludedActivityTypes = [.postToVimeo, .postToWeibo, .postToFlickr, .postToTwitter, .postToFacebook, .postToTencentWeibo, .addToReadingList, .assignToContact, .openInIBooks]
 
         return activityViewController
@@ -49,7 +54,7 @@ struct ExportData_iOS: UIViewControllerRepresentable {
 
         var nsError: NSError?
 
-        NSFileCoordinator().coordinate(readingItemAt: self.ditto.persistenceDirectory,
+        NSFileCoordinator().coordinate(readingItemAt: self.ditto.absolutePersistenceDirectory,
                                        options: [.forUploading], error: &nsError) { tempURL in
             do {
                 try FileManager().moveItem(at: tempURL, to: destinationURL)
@@ -75,7 +80,8 @@ struct ExportData_iOS: UIViewControllerRepresentable {
 
 // MARK: - macOS Implementation
 #if os(macOS)
-public struct ExportData_macOS {
+/// Exports the Ditto store directory through the macOS sharing picker.
+public struct ExportDataMacOS {
     
     let ditto: Ditto
     let fileManager: FileManager
@@ -124,6 +130,10 @@ public struct ExportData_macOS {
         return destinationURL
     }
 }
+
+/// The name published by earlier DittoSwiftTools releases. Existing callers
+/// can continue to compile while new code uses the standard Swift spelling,
+/// `ExportDataMacOS`.
+@available(*, deprecated, renamed: "ExportDataMacOS")
+public typealias ExportData_macOS = ExportDataMacOS
 #endif
-
-
