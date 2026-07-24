@@ -29,10 +29,16 @@ class VisJSWebView: JSWebView {
     }
 
     private func setup() {
-        let htmlString = try! String(contentsOf: DittoPresenceViewerResources.htmlURL, encoding: .utf8)
+        do {
+            let htmlString = try String(contentsOf: DittoPresenceViewerResources.htmlURL, encoding: .utf8)
 #if canImport(WebKit)
-        webView.loadHTMLString(htmlString, baseURL: DittoPresenceViewerResources.webDistDirURL)
+            webView.loadHTMLString(htmlString, baseURL: DittoPresenceViewerResources.webDistDirURL)
 #endif
+        } catch {
+            // The HTML resource is bundled with the package and should always be present.
+            // If it is missing, presence visualization will be blank but the app won't crash.
+            print("VisJSWebView: failed to load HTML resource: \(error)")
+        }
     }
 
     // MARK: - Functions
@@ -55,7 +61,7 @@ class VisJSWebView: JSWebView {
         enqueueInvocation(javascript: "Presence.updateNetwork('\(base64JSON)');",
                           coalescingIdentifier: "updateNetwork") { result in
             if case let .failure(error) = result {
-                print("VisJSWebView: failed to update network: %@", error)
+                print("VisJSWebView: failed to update network: \(error)")
             }
 
             // In release mode, we should never fail (we control all inputs and outputs an

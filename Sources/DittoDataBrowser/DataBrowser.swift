@@ -56,17 +56,15 @@ public struct DataBrowser: View {
     private var listView: some View {
         List {
             Section {
-                ForEach(viewModel.collections ?? [], id: \.name) { collection in
-                    NavigationLink(destination: Documents(collectionName: collection.name, ditto: viewModel.ditto, isStandAlone: self.isStandAlone)) {
-                        Text(collection.name)
+                ForEach(viewModel.collectionNames, id: \.self) { name in
+                    NavigationLink(destination: Documents(collectionName: name, ditto: viewModel.ditto, isStandAlone: self.isStandAlone)) {
+                        Text(name)
                     }
                 }
             }
         }
         #if os(iOS)
         .padding(.top, -16)
-        #elseif os(tvOS)
-        .padding(.top, 16)
         #endif
     }
     
