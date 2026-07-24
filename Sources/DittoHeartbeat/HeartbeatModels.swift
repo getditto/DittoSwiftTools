@@ -81,7 +81,10 @@ public extension DittoHeartbeatInfo {
     }
     
     private static func connections(_ cxs: [String: Any]) -> [DittoPeerConnection] {
-        cxs.map { (key, val) in DittoPeerConnection(key, cx: val as! [String: Any]) }
+        cxs.compactMap { (key, val) in
+            guard let cx = val as? [String: Any] else { return nil }
+            return DittoPeerConnection(key, cx: cx)
+        }
     }
 
     private static func healthMetrics(_ metrics: [String: Any]) -> [String: HealthMetric] {
@@ -128,10 +131,20 @@ public extension DittoHeartbeatInfo {
 public struct DittoPeerConnection {
     public var deviceName: String
     public var sdk: String
+    /// Whether the peer is connected to Ditto Server. The tools model retains
+    /// the SDK v4-era `isConnectedToDittoCloud` name because it also represents
+    /// the stable heartbeat document key. SDK v5 renamed the SDK property to
+    /// `isConnectedToDittoServer`, but the connection state did not change.
     public var isConnectedToDittoCloud: Bool
+    @available(*, deprecated, message: "Use connectionTypes for exact connection-type counts.")
     public var bluetooth: Int
+    @available(*, deprecated, message: "Use connectionTypes for exact connection-type counts.")
     public var p2pWifi: Int
+    @available(*, deprecated, message: "Use connectionTypes for exact connection-type counts.")
     public var lan: Int
+    /// Counts keyed by the SDK's connection-type string value. Unlike the
+    /// fixed summary fields, this map preserves types added by newer SDKs.
+    public var connectionTypes: [String: Int]
     public var peerKey: String
 }
 
@@ -143,9 +156,10 @@ extension DittoPeerConnection {
         bluetooth = cx[String.bluetooth] as? Int ?? 0
         p2pWifi = cx[String.p2pWifi] as? Int ?? 0
         lan = cx[String.lan] as? Int ?? 0
+        connectionTypes = cx[String.connectionTypes] as? [String: Int] ?? [:]
         peerKey = key
     }
-    
+
     public var value: [String:Any] {
         [
             String.deviceName: deviceName,
@@ -153,7 +167,8 @@ extension DittoPeerConnection {
             String.isConnectedToDittoCloud: isConnectedToDittoCloud,
             String.bluetooth: bluetooth,
             String.p2pWifi: p2pWifi,
-            String.lan: lan
+            String.lan: lan,
+            String.connectionTypes: connectionTypes
             /* peerKey: not included in doc values */
         ]
     }

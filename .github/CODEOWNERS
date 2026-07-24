@@ -1,6 +1,1 @@
-#
-# .github/CODEOWNERS
-# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
-#
-
-* @getditto/sdk-swift-engineers @skylerjokiel @getditto/sdk-engineers
+* @getditto/sdk-engineers
