@@ -40,13 +40,10 @@ public struct PermissionsHealth: View {
                                 openBluetoothSettings()
                             }) {
                                 Text("Authorize Bluetooth")
-// TvOS does its own thing with buttons already
-#if !os(tvOS)
                                     .foregroundColor(.white)
                                     .padding(7)
                                     .background(Color.blue)
                                     .cornerRadius(10)
-#endif
                             }
                         }
                     }
@@ -81,13 +78,10 @@ public struct PermissionsHealth: View {
                                     openBluetoothSettings()
                                 }) {
                                     Text("Enable Bluetooth")
-// TvOS does its own thing with buttons already
-#if !os(tvOS)
                                         .foregroundColor(.white)
                                         .padding(7)
                                         .background(Color.blue)
                                         .cornerRadius(10)
-#endif
                                 }
                             }
                         }
@@ -120,13 +114,10 @@ public struct PermissionsHealth: View {
                                 openWifiSettings()
                             }) {
                                 Text("Enable Wi-fi")
-// TvOS does its own thing with buttons already
-#if !os(tvOS)
                                     .foregroundColor(.white)
                                     .padding(7)
                                     .background(Color.blue)
                                     .cornerRadius(10)
-#endif
                             }
                         }
                     }

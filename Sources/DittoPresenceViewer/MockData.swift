@@ -102,6 +102,7 @@ struct MockData {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             let newState = generator(lastState)
 
+            // swiftlint:disable:next force_try
             callback(String.init(data: try! JSONEncoder().encode(newState), encoding: .utf8)!)
 
             runChanges(lastState: newState, generator: generator, callback: callback)

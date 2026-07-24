@@ -43,7 +43,7 @@ public enum LogUploader {
     /// }
     /// ```
     public static func uploadLogsToPortal(ditto: Ditto) async throws {
-        let peerKey = ditto.presence.graph.localPeer.peerKeyString
+        let peerKey = ditto.presence.graph.localPeer.peerKey
         let currentTime = iso8601Formatter.string(from: Date())
 
         let query = """
