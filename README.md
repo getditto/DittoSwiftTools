@@ -4,9 +4,19 @@ DittoSwiftTools are diagnostic tools for Ditto. You can view connected peers in 
 in a list view, export Ditto data directory and debug logs (locally or to Ditto Portal), browse collections/documents, and see
 Ditto's disk usage.
 
-For support, please contact Ditto Support (<support@ditto.com>).
+> [!IMPORTANT]
+> This repository is a read-only mirror maintained by Ditto's SDK release
+> process. Pull requests opened outside that process are not accepted. To report
+> a problem or request a change, contact Ditto Support (<support@ditto.com>).
 
 ## Installation
+
+DittoSwiftTools requires Swift 6.0 or later and Ditto Swift SDK 5.0.1 or a
+later 5.x release.
+
+Swift 6.0 is a toolchain requirement: SwiftPM needs it to resolve the Ditto SDK
+5 package. DittoSwiftTools sources retain Swift 5 language mode for this
+release; moving the source to Swift 6 language mode is separate future work.
 
 The recommended approach to use DittoSwiftTools in your project is using the Swift Package Manager.  
 
@@ -21,6 +31,7 @@ The recommended approach to use DittoSwiftTools in your project is using the Swi
 ## Usage
 
 There are several targets in this package:
+- DittoHealthMetrics
 - DittoAllToolsMenu
 - DittoPresenceViewer  
 - DittoPeersList  
@@ -30,6 +41,7 @@ There are several targets in this package:
 - DittoExportData    
 - DittoPermissionsHealth
 - DittoHeartbeat
+- DittoPresenceDegradation
 
 ### All Tools Menu
 This tool provides an easy way to integrate all of our tools together in a single handy SwiftUI menu by passing in your `Ditto` instance. We typically recommend this tool for integration, unless you need limited specific tools for your app.
@@ -368,9 +380,18 @@ let vc = UIHostingController(rootView: ExportData(ditto: ditto))
 present(vc, animated: true)
 ```
 
+**macOS**
+
+Call `ExportDataMacOS(ditto: ditto).export()` to present the macOS sharing
+picker. The deprecated `ExportData_macOS` name remains available so code built
+against earlier DittoSwiftTools releases continues to compile.
+
 ### Presence Degradation Reporter
 
 Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected. Provides a callback function that will allow you to monitor the status of the mesh.
+
+The SDK enum names LAN connections `AccessPoint`, so the reporter's LAN count
+uses that enum case. WebSocket is a separate transport.
 
 <img width="248" alt="Screenshot 2024-02-20 at 5 14 18 PM" src="https://github.com/getditto/DittoSwiftTools/assets/60948031/9cf81503-4557-4480-a843-1236314c926b">
 
@@ -505,6 +526,7 @@ public struct DittoPeerConnection {
     public var bluetooth: Int
     public var p2pWifi: Int
     public var lan: Int
+    public var connectionTypes: [String: Int]
     public var peerKey: String
 }
 
@@ -514,6 +536,29 @@ public struct HealthMetric {
     public var details: [String: String]
 }
 ```
+
+`connectionTypes` maps every observed SDK connection-type string to its count.
+New code should use this map for connection-type counts. The deprecated
+`bluetooth`, `p2pWifi`, and `lan` properties mirror legacy summary fields that
+remain in heartbeat documents for compatibility. The SDK enum names LAN
+connections `AccessPoint`, so that enum case supplies `lan`. WebSocket,
+Multicast, and other connection types are reported by their SDK names in
+`connectionTypes`.
+
+Wire compatibility is additive: tools released before `connectionTypes` ignore
+that extra field and continue reading the fixed summary fields. Current tools
+also accept older documents without `connectionTypes`, treating the missing map
+as empty. For those documents, the legacy summaries are the only available
+breakdown. The `lan` summary means `AccessPoint` only. Earlier GA tools also
+included WebSocket in `lan`, so documents written by those versions can report
+a larger LAN count. In current documents, WebSocket has its own exact
+`connectionTypes` entry.
+
+The `isConnectedToDittoCloud` field reports whether the peer is connected to
+Ditto Server. SDK v4 exposed this connection state as
+`isConnectedToDittoCloud`; SDK v5 renamed the SDK property to
+`isConnectedToDittoServer`. The heartbeat document schema retains the original
+key so independently versioned tools can exchange and read the same documents.
 
 You can either use the provided UI from this tool or you can read the `DittoHeartbeatInfo` data and create your own UI/use the data as you please.
 
@@ -552,10 +597,49 @@ heartBeatVm.startHeartbeat(config: DittoHeartbeatConfig(secondsInterval: Int, me
 } 
 ```
 
-## Ditto Tools Example App
-The [Ditto Tools Example App](https://github.com/getditto/DittoSwiftTools/tree/main/DittoToolsApp) 
-included in this repo allows you to try the DittoSwiftTools package in a standalone app. Open 
-DittoToolsApp.xcodeproj in Xcode and build to a simulator or device.   
+## Running the Example App (DittoToolsApp)
+
+The `DittoToolsApp/` directory contains a reference Xcode app that demonstrates
+all DittoSwiftTools features. It builds standalone from the cloned repo with no
+local SDK build required.
+
+### Setup
+
+1. **Clone the repo** (if you haven't already):
+
+   ```sh
+   git clone https://github.com/getditto/DittoSwiftTools.git
+   cd DittoSwiftTools
+   ```
+
+2. **Create your `.env` file** from the provided template:
+
+   ```sh
+   cp .env.sample .env
+   ```
+
+3. **Fill in your Ditto credentials** in `.env`. Get these from the
+   [Ditto Portal](https://portal.ditto.live):
+
+   ```sh
+   DITTO_APP_ID=your-app-id-here
+   DITTO_PLAYGROUND_TOKEN=your-playground-token-here
+   DITTO_AUTH_URL=https://your-app-id-here.cloud.ditto.live
+   ```
+
+   The Xcode build phase reads `.env` and generates `DittoToolsApp/DittoToolsApp/Env.swift`
+   automatically on every build. Both `.env` and `Env.swift` are gitignored.
+
+4. **Open and build** in Xcode:
+
+   ```sh
+   open DittoToolsApp/DittoToolsApp.xcodeproj
+   ```
+
+   Select a device or simulator and build (`Cmd+R`). Swift Package Manager fetches
+   `DittoSwiftPackage` (the Ditto Swift SDK) from the public registry automatically.
+
+
 
 <div align="center">
     <figure>
@@ -582,14 +666,11 @@ This will initialize the Ditto instance and enable you to try the different feat
 ## Troubleshooting
 
 
-### Could not resolve package dependencies for `Swift tools`  
+### Could not resolve the package's Swift tools version
 
-```
-xcodebuild: error: Could not resolve package dependencies:
-  package at 'http://github.com/getditto/DittoSwiftTools' @ 0ae82dcc1031d25ce5f6f20735b666312ecb2e53 is using Swift tools version 5.6.0 but the installed version is 5.5.0 in http://github.com/getditto/DittoSwiftTools  
-```
-
-Solution: Update to the latest version of XCode to get new Swift versions.
+DittoSwiftTools requires a Swift 6.0 or later toolchain. If Swift Package
+Manager reports that the installed tools version is too old, select an Xcode
+toolchain that includes Swift 6.0 or later.
 
 ## Contact
 

@@ -79,7 +79,7 @@ public struct ExportLogsToPortalView: View {
     }
 
     private var alertMessage: String {
-        let appId = ditto.appID
+        let appId = ditto.config.databaseID
         switch viewModel.state {
         case .idle:
             return "Logs will be exported to Portal for appID: \(appId)"

@@ -39,9 +39,6 @@ public struct HeartbeatInfoRowItem: View {
     let info: DittoHeartbeatInfo
     public var body: some View {
         HeartbeatInfoView(info)
-#if os(tvOS)
-            .focusable(true)
-#endif
     }
 }
 
@@ -85,8 +82,8 @@ extension DittoPeerConnection: CustomStringConvertible {
              \(String.bluetooth): \(bluetooth)
              \(String.p2pWifi): \(p2pWifi)
              \(String.lan): \(lan)
+             \(String.connectionTypes): \(connectionTypes)
              \(String.peerKey): \(peerKey)
         """
     }
 }
-

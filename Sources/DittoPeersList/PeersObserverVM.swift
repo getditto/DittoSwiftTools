@@ -37,11 +37,11 @@ import Foundation
     }
     
     func isLocalPeer(_ peer: DittoPeer) -> Bool {
-        peer.peerKeyString == localPeer.peerKeyString
+        peer.peerKey == localPeer.peerKey
     }
     
     func connectionsWithLocalPeer(_ peer: DittoPeer) -> [DittoConnection] {
-        peer.connections.filter { $0.peerKeyString1 == localPeer.peerKeyString || $0.peerKeyString2 == localPeer.peerKeyString }
+        peer.connections.filter { $0.peer1 == localPeer.peerKey || $0.peer2 == localPeer.peerKey }
     }
 
     func formattedDistanceString(_ dbl: Double?) -> String {
