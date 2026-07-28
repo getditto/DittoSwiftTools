@@ -24,14 +24,8 @@ extension DittoService {
     /// - Throws: `DittoServiceError.initializationFailed` if the directory cannot be located or created.
     static func persistenceDirectoryURL(appID: String? = "", useIsolatedDirectories: Bool = false) throws -> URL {
         do {
-            // Determine the base directory for persistent storage
-            #if os(tvOS)
-                // Use caches directory for tvOS due to limited persistent storage
-                let persistenceDirectory: FileManager.SearchPathDirectory = .cachesDirectory
-            #else
-                // Use document directory for other platforms for long-term persistence
-                let persistenceDirectory: FileManager.SearchPathDirectory = .documentDirectory
-            #endif
+            // Use document directory for long-term persistence
+            let persistenceDirectory: FileManager.SearchPathDirectory = .documentDirectory
 
             // Get the root directory URL for the chosen persistence directory
             var rootDirectoryURL = try FileManager.default.url(
