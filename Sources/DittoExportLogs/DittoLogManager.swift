@@ -1,6 +1,7 @@
 //
 //  Copyright © 2021 DittoLive Incorporated. All rights reserved.
 //
+import Foundation
 import DittoSwift
 
 private struct Config {
