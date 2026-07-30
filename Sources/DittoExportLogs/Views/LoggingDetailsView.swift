@@ -28,7 +28,7 @@ public struct LoggingDetailsView: View {
     }
     
     public var body: some View {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS)
         List {
             Section {
                 settingsBody()
@@ -36,21 +36,15 @@ public struct LoggingDetailsView: View {
                 Text("Changes will be applied immediately.")
                     .font(.caption)
             }
-            #if os(iOS)
             Section {
                 exportLogsButton()
                 exportLogsToPortalButton()
             }
-            #endif
         }
-        #if os(iOS)
         .padding(.top, -16)
         .listStyle(InsetGroupedListStyle())
         .navigationBarTitleDisplayMode(.inline)
-        #else
-        .listStyle(GroupedListStyle())
-        #endif
-        
+
         #else
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
@@ -103,7 +97,7 @@ public struct LoggingDetailsView: View {
     #endif
     
     private func pickerText() -> String {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS)
         return "Log Level"
         #else
         return "Log Level:"

@@ -29,16 +29,11 @@ enum MenuOption: String, CaseIterable, Equatable {
         case diagnosticsAndDebuggingTools = "Debugging"
         
         /// Returns a list of `MenuOption`s available for each section.
-        /// - On tvOS, some options are excluded.
         var options: [MenuOption] {
             switch self {
             case .networkAndPresenceTools:
-#if os(tvOS)
-                return [.peersList, .presenceDegradation, .heartbeat]
-#else
                 return [.presenceViewer, .peersList, .presenceDegradation, .heartbeat]
 
-#endif
             case .systemAndPerformanceTools:
                 return [.permissionsHealth, .diskUsage]
             case .diagnosticsAndDebuggingTools:

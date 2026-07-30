@@ -1,0 +1,4 @@
+tool=swift
+package_version=10.0.0-rc.10
+minimum_sdk_version=5.0.1
+validation_sdk_version=5.0.1
