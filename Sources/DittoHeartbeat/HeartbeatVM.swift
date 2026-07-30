@@ -42,7 +42,7 @@ public class HeartbeatVM: ObservableObject {
         hbInfo = DittoHeartbeatInfo(
             id: config.id,
             schema: String._schemaValue,
-            peerKey: ditto.presence.graph.localPeer.peerKeyString,
+            peerKey: ditto.presence.graph.localPeer.peerKey,
             secondsInterval: config.secondsInterval,
             sdk: ditto.presence.graph.localPeer.platformSDK,
             metadata: config.metadata ?? [:]
@@ -82,7 +82,7 @@ public class HeartbeatVM: ObservableObject {
                 guard let self = self else { return }
                 updateHealthMetrics()
                 hbInfo?.lastUpdated = HeartbeatDateFormatter.isoDate.string(from: Date())
-                updateCollection()
+                Task { await self.updateCollection() }
                 emit()
             }
     }
@@ -112,15 +112,18 @@ public class HeartbeatVM: ObservableObject {
         }
     }
     
-    private func updateCollection() {
+    private func updateCollection() async {
         guard hbConfig?.publishToDittoCollection == true else { return }
         guard let doc = hbInfo?.value else {
             print("DittoHeartbeatVM.\(#function): ERROR updatingCollection: bhInfo is NIL --> Return")
             return
         }
-        
+
         do {
-            let _ = try ditto.store.collection(String.collectionName).upsert(doc)
+            _ = try await ditto.store.execute(
+                query: "INSERT INTO \(String.collectionName) DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE",
+                arguments: ["doc": doc]
+            )
         } catch {
             print(
                 "HeartbeatVM.\(#function) - ERROR updating collection: " +
@@ -133,34 +136,33 @@ public class HeartbeatVM: ObservableObject {
     private func connections() -> [DittoPeerConnection] {
         var connections = [DittoPeerConnection]()
         for peer in self.peers {
-            let types = connectionTypeCounts(peer: peer)
+            let connectionTypes = HeartbeatConnectionTypes.count(
+                peer.connections.map { $0.type.rawValue }
+            )
             let cx = DittoPeerConnection(
                 deviceName: peer.deviceName,
                 sdk: peer.platformSDK,
-                isConnectedToDittoCloud: peer.isConnectedToDittoCloud,
-                bluetooth: types[String.bt] as Int? ?? 0,
-                p2pWifi: types[String.p2pWifi] as Int? ?? 0,
-                lan: types[String.lan] as Int? ?? 0,
-                peerKey: peer.peerKeyString
+                isConnectedToDittoCloud: peer.isConnectedToDittoServer,
+                bluetooth: connectionTypes[DittoConnectionType.bluetooth.rawValue, default: 0],
+                p2pWifi: connectionTypes[DittoConnectionType.p2pWiFi.rawValue, default: 0],
+                // The SDK enum calls LAN `accessPoint`. WebSocket is a
+                // separate transport in the open-ended connectionTypes map.
+                lan: connectionTypes[DittoConnectionType.accessPoint.rawValue, default: 0],
+                connectionTypes: connectionTypes,
+                peerKey: peer.peerKey
             )
             connections.append(cx)
         }
         return connections
     }
 
-    private func connectionTypeCounts(peer: DittoPeer) -> [String: Int] {
-        var bt = 0, wifi = 0, lan = 0
-        
-        for cx in peer.connections {
-            switch cx.type {
-            case .bluetooth: bt += 1
-            case .p2pWiFi: wifi += 1
-            case .accessPoint, .webSocket: lan += 1
-            @unknown default:
-                break
-            }
+}
+
+enum HeartbeatConnectionTypes {
+    static func count<S: Sequence>(_ names: S) -> [String: Int] where S.Element == String {
+        names.reduce(into: [:]) { counts, name in
+            counts[name, default: 0] += 1
         }
-        return [String.bt: bt, String.p2pWifi: wifi, String.lan: lan]
     }
 }
 
@@ -168,7 +170,7 @@ public class HeartbeatVM: ObservableObject {
 //MARK: Extensions
 private extension DittoPeer {
     var platformSDK: String {
-        let platform = self.osV2 ?? .unknown(os: String.osNA)
+        let platform = self.os ?? .unknown(os: String.osNA)
         let sdk = self.dittoSDKVersion ?? String.sdkVersionNA
         return "\(platform.stringValue) v\(sdk)"
     }

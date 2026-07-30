@@ -31,7 +31,7 @@ public typealias PlatformViewController = NSViewController
 
  ```swift
  import DittoSwift
- import DittoSwiftPresenceViewer
+ import DittoPresenceViewer
 
  let ditto: Ditto
 
@@ -80,9 +80,8 @@ public class DittoPresenceView: PlatformView {
      */
     public var viewController: PlatformViewController {
         // Note that this is a highly unusual inversion of the typical
-        // `UIViewController` → `UIView` relationship based on the original
-        // specification for this work(https://github.com/getditto/ditto/issues/789)
-        // but it seems to make for a nice plug-and-play API.
+        // `UIViewController` → `UIView` relationship retained from the
+        // original public API, but it makes for a useful plug-and-play view.
         //
         // The inversion will likely trip up more experienced native iOS
         // developers, but they're also the group likely to be designing their
@@ -119,6 +118,7 @@ public class DittoPresenceView: PlatformView {
     public convenience init(ditto: Ditto) {
         self.init(frame: .zero)
         self.ditto = ditto
+        // didSet is not reliably called during init, so start observing explicitly.
         startObservingPresence()
     }
 
@@ -158,9 +158,11 @@ public class DittoPresenceView: PlatformView {
                 encoder.dataEncodingStrategy = .custom({ data, enc in
                     var container = enc.unkeyedContainer()
                     data.forEach { byte in
+                        // swiftlint:disable:next force_try
                         try! container.encode(byte)
                     }
                 })
+                // swiftlint:disable:next force_try
                 let presenceGraphJSON = try! encoder.encode(presenceGraph)
                 let presenceGraphJSONString = String(data: presenceGraphJSON, encoding: .utf8)!
                 DispatchQueue.main.async { [weak self] in
