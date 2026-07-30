@@ -12,6 +12,7 @@ import Foundation
 internal extension String {
     static var bt = "bt"
     static var bluetooth = "bluetooth"
+    static var connectionTypes = "connectionTypes"
     static var deviceName = "deviceName"
     static var deviceNameNA = "deviceName N/A"
     static var collectionName = "dittotools_devices"
@@ -22,6 +23,11 @@ internal extension String {
     static var id = "id"
     static var imgPause = "pause.circle"
     static var imgPlay = "play.circle"
+    // SDK v4 exposed this connection state as `isConnectedToDittoCloud`;
+    // SDK v5 exposes the same state as `isConnectedToDittoServer`. Heartbeat
+    // documents are exchanged between independently versioned tools, so the
+    // stored key remains `isConnectedToDittoCloud`. Changing it would make
+    // existing heartbeat readers miss the connection state.
     static var isConnectedToDittoCloud = "isConnectedToDittoCloud"
     static var lan = "lan"
     static var lastUpdated = "lastUpdated"

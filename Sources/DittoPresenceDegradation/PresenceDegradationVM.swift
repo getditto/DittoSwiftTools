@@ -34,43 +34,44 @@ class PresenceDegradationVM: ObservableObject {
                 
         self.peersObserver?.stop()
         
-        self.peersObserver = self.ditto.presence.observe { graph in
-            DispatchQueue.main.async {
+        self.peersObserver = self.ditto.presence.observe { [weak self] graph in
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
                 let seenAt = Date()
                 let localPeerTransportInfo = self.resolveTransportInfo(peer: graph.localPeer)
-                
+
                 self.localPeer = Peer(
                     name: graph.localPeer.deviceName,
                     transportInfo: localPeerTransportInfo,
                     connected: true,
                     lastSeen: Int(seenAt.timeIntervalSince1970),
-                    key: graph.localPeer.peerKeyString
+                    key: graph.localPeer.peerKey
                 )
-                
+
                 for peer in graph.remotePeers {
                     if var remotePeers = self.remotePeers {
-                        remotePeers[peer.peerKeyString] = Peer(
+                        remotePeers[peer.peerKey] = Peer(
                             name: peer.deviceName,
                             transportInfo: self.resolveTransportInfo(peer: peer),
                             connected: true,
                             lastSeen: Int(seenAt.timeIntervalSince1970),
-                            key: peer.peerKeyString
+                            key: peer.peerKey
                         )
                         self.remotePeers = remotePeers
                     } else {
-                        self.remotePeers = [peer.peerKeyString: Peer(
+                        self.remotePeers = [peer.peerKey: Peer(
                             name: peer.deviceName,
                             transportInfo: self.resolveTransportInfo(peer: peer),
                             connected: true,
                             lastSeen: Int(seenAt.timeIntervalSince1970),
-                            key: peer.peerKeyString
+                            key: peer.peerKey
                         )]
                     }
                 }
-                
+
                 if let peers = self.remotePeers?.values {
-                    for peer in peers {                    
-                        if !graph.remotePeers.contains(where: { $0.peerKeyString == peer.key}) {
+                    for peer in peers {
+                        if !graph.remotePeers.contains(where: { $0.peerKey == peer.key }) {
                             self.remotePeers?[peer.key]?.connected = false
                         }
                     }
@@ -82,13 +83,11 @@ class PresenceDegradationVM: ObservableObject {
     }
 
     func resolveTransportInfo(peer: DittoPeer) -> PeerTransportInfo {
-        let lanSet: Set<DittoConnectionType> = [.accessPoint, .webSocket]
-
         let connections = peer.connections.map{ $0.type }
         let bluetoothConnections = connections.filter { $0 == DittoConnectionType.bluetooth }.count
-        let lanConnections = connections.filter { lanSet.contains($0) }.count
+        let lanConnections = countLanConnections(connections)
         let p2pConnections = connections.filter { $0 == DittoConnectionType.p2pWiFi }.count
-        let cloudConnections = peer.isConnectedToDittoCloud ? 1 : 0
+        let cloudConnections = peer.isConnectedToDittoServer ? 1 : 0
         
         return PeerTransportInfo(
             bluetoothConnections: bluetoothConnections,
@@ -114,4 +113,8 @@ class PresenceDegradationVM: ObservableObject {
     }
 }
 
+func countLanConnections<S: Sequence>(_ connectionTypes: S) -> Int
+where S.Element == DittoConnectionType {
+    connectionTypes.filter { $0 == .accessPoint }.count
+}
 
