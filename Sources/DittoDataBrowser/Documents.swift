@@ -7,26 +7,24 @@
 
 import SwiftUI
 import DittoSwift
-#if os(tvOS)
-import DittoTvOSTextFieldComponent
-#endif
 
 struct Documents: View {
     
     @StateObject var viewModel: DocumentsViewModel
     @State var querySearch = ""
     @State private var isShowingDocPicker = false
-    @State private var isEditing: Bool = false
 
-        
-    init(collectionName: String, ditto: Ditto, isStandAlone: Bool) {
-        self._viewModel = StateObject(wrappedValue: DocumentsViewModel(collectionName: collectionName, ditto: ditto, isStandAlone: isStandAlone))
+    init(collectionName: String, ditto: Ditto) {
+        self._viewModel = StateObject(
+            wrappedValue: DocumentsViewModel(collectionName: collectionName, ditto: ditto)
+        )
     }
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
                 queryBar
+                errorMessages
                 documentDropDown
                 detailsView
             }
@@ -49,9 +47,6 @@ struct Documents: View {
                             Text(String(describing: val))
                         }
                     }
-                    #if os(tvOS)
-                    .focusable(true)
-                    #endif
                 }
             } else {
                 Text("No document selected or query returned no results.")
@@ -64,9 +59,30 @@ struct Documents: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(UIColor.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        #elseif os(tvOS)
-        .padding()
         #endif
+    }
+
+    private var errorMessages: some View {
+        VStack(spacing: 12) {
+            if let error = viewModel.documentsErrorMessage {
+                errorMessage(error)
+            }
+        }
+        .padding(.bottom)
+    }
+
+    private func errorMessage(_ message: String) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundColor(.red)
+            Text(message)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding()
+        .background(Color.red.opacity(0.12))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Error: \(message)")
     }
 
     
@@ -77,23 +93,9 @@ struct Documents: View {
                 .font(.headline)
             #endif
             HStack {
-                #if os(tvOS)
-                Button(action: {
-                    isEditing = true
-                }) {
-                    HStack {
-                        Text("Query Documents")
-                        Spacer()
-                        Text(querySearch)
-                        Image(systemName: "chevron.right")
-                    }
-                }
-                .background(KeyboardOverlay(text: $querySearch, isPresented: $isEditing, keyboardType: .default))
-                #else
-                TextField("title == \"Hello, World!\"", text: $querySearch, onCommit: {viewModel.filterDocs(queryString: querySearch)})
+                TextField("title = 'Hello, World!'", text: $querySearch, onCommit: {viewModel.filterDocs(queryString: querySearch)})
                     .textFieldStyle(.roundedBorder)
-                #endif
-                #if os(macOS) || os(tvOS)
+                #if os(macOS)
                 Button {
                     viewModel.filterDocs(queryString: querySearch)
                 } label: {
@@ -101,11 +103,11 @@ struct Documents: View {
                 }
                 #endif
             }
-            Text("This is a filter mechanism for Ditto's legacy query language. Filter, search, and retrieve using Boolean operators, equal and unequal operators, comparison operators, and match operators. Ex: title == \"Hello, World!\" ")
+            Text("Enter a DQL `WHERE` clause to filter documents in this collection. Ex: title = 'Hello, World!'")
                 .font(.caption)
             #if os(iOS) || os(macOS)
-            Link("Learn how to use Ditto's legacy query language",
-                 destination: URL(string: "https://docs.ditto.live/dql/query-syntax-legacy")!)
+            Link("Learn how to use DQL",
+                 destination: URL(string: "https://docs.ditto.live/dql/dql")!)
                 .font(.caption)
             #endif
         }
@@ -117,7 +119,7 @@ struct Documents: View {
     
     private var documentDropDown: some View {
         HStack {
-            #if os(iOS) || os(tvOS)
+            #if os(iOS)
             NavigationLink(
                 destination: DocumentSelectionView(
                     selectedIndex: $viewModel.selectedDoc,
