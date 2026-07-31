@@ -1,14 +1,17 @@
-// swift-tools-version: 5.8.1
+// swift-tools-version: 6.0
 
 import PackageDescription
+
+// DITTO_DEFAULT_SDK_VERSION: 5.0.1
+// This is the minimum Ditto SDK version for the next tools release. Raising it
+// requires a new major version of DittoSwiftTools.
 
 let package = Package(
     name: "DittoSwiftTools",
     platforms: [
-        .iOS(.v14),
-        .macCatalyst(.v14),
-        .tvOS(.v15),
-        .macOS(.v11)
+        .iOS(.v15),
+        .macCatalyst(.v15),
+        .macOS(.v12)
     ],
     products: [
         .library(
@@ -21,7 +24,7 @@ let package = Package(
         ),
         .library(
             name: "DittoDataBrowser",
-             targets: ["DittoDataBrowser"]
+            targets: ["DittoDataBrowser"]
         ),
         .library(
             name: "DittoExportLogs",
@@ -53,22 +56,25 @@ let package = Package(
         .library(
             name: "DittoAllToolsMenu",
             targets: ["DittoAllToolsMenu"]),
-        .library(
-            name: "DittoTvOSTextFieldComponent",
-            targets: ["DittoTvOSTextFieldComponent"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "4.12.4"),
-        .package(url: "https://github.com/getditto/DittoPresenceViewerCore.git", from: "2.1.2"),
-        .package(url: "https://github.com/apple/swift-collections", from: "1.0.0")
+        .package(url: "https://github.com/getditto/DittoSwiftPackage", from: "5.0.1"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.0.0"),
     ],
     targets: [
+        .target(
+            name: "DittoPresenceViewerCore",
+            path: "Sources/DittoPresenceViewerCore",
+            resources: [
+                .copy("Resources/dist"),
+            ]
+        ),
         .target(name: "DittoHealthMetrics"),
         .target(
             name: "DittoPresenceViewer",
             dependencies: [
                 .product(name: "DittoSwift", package: "DittoSwiftPackage"),
-                .product(name: "DittoPresenceViewerCore", package: "DittoPresenceViewerCore"),
+                "DittoPresenceViewerCore",
             ]
         ),
         .target(
@@ -107,8 +113,7 @@ let package = Package(
         .target(
             name: "DittoPresenceDegradation",
             dependencies: [
-                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
-                "DittoTvOSTextFieldComponent"
+                .product(name: "DittoSwift", package: "DittoSwiftPackage")
             ]
         ),
         .target(
@@ -140,8 +145,20 @@ let package = Package(
                 "DittoPermissionsHealth"
             ]
         ),
-        .target(
-            name: "DittoTvOSTextFieldComponent"
-        )
-    ]
+        .testTarget(
+            name: "DittoHeartbeatTests",
+            dependencies: ["DittoHeartbeat"]
+        ),
+        .testTarget(
+            name: "DittoPresenceDegradationTests",
+            dependencies: [
+                "DittoPresenceDegradation",
+                .product(name: "DittoSwift", package: "DittoSwiftPackage"),
+            ]
+        ),
+    ],
+    // DittoSwiftPackage 5.0.1 requires a Swift 6 toolchain. Keep the tools
+    // source in its existing Swift 5 language mode for this focused release;
+    // adopting Swift 6 language semantics requires separate concurrency work.
+    swiftLanguageModes: [.v5]
 )
