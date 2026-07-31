@@ -74,6 +74,9 @@ class JSWebView: PlatformView {
         webView.isOpaque = false
 
         webView.scrollView.isScrollEnabled = false
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
 #endif
 #if canImport(AppKit)
 #endif
@@ -205,7 +208,7 @@ extension JSWebView: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        print("JSWebView: didFailNavigationWithError: %@", error)
+        print("JSWebView: didFailNavigationWithError: \(error)")
     }
 }
 #endif

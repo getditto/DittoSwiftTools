@@ -33,9 +33,6 @@ public struct DittoDiskUsageView: View {
                                 .frame(minWidth: 100, alignment: .trailing)
                         }
                     }
-                    #if os(tvOS)
-                    .focusable(true)
-                    #endif
                     HStack {
                         Group {
                             Text("Total")
@@ -45,9 +42,6 @@ public struct DittoDiskUsageView: View {
                                 .frame(minWidth: 100, alignment: .trailing)
                         }
                     }
-                    #if os(tvOS)
-                    .focusable(true)
-                    #endif
                 } else {
                     // Displayed before first async callback
                     Text(DittoDiskUsageConstants.noData)
@@ -60,9 +54,6 @@ public struct DittoDiskUsageView: View {
                     Spacer()
                     Text(viewModel.diskUsage?.lastUpdated ?? DiskUsageViewModel.dateFormatter.string(from: Date()))
                 }
-                #if os(tvOS)
-                .focusable(true)
-                #endif
             }
 
             Section {
@@ -78,10 +69,6 @@ public struct DittoDiskUsageView: View {
                     #endif
                 }
                 .alert(isPresented: $presentExportDataAlert) {
-                    #if os(tvOS)
-                    Alert(title: Text("Export Ditto Directory"),
-                          message: Text("Exporting the Ditto Directory on tvOS does not work at this time."))
-                    #else
                     Alert(title: Text("Export Ditto Directory"),
                           message:
                             Text("Compressing the data may take a while."),
@@ -91,12 +78,11 @@ public struct DittoDiskUsageView: View {
                                 #if os(iOS)
                                 presentExportDataShare = true
                                 #elseif os(macOS)
-                                ExportData_macOS(ditto: viewModel.ditto).export()
+                                ExportDataMacOS(ditto: viewModel.ditto).export()
                                 #endif
                             }),
                           secondaryButton: .cancel()
                     )
-                    #endif
                 }
             }
 
@@ -112,8 +98,3 @@ public struct DittoDiskUsageView: View {
     }
 }
 
-struct DittoDiskUsageView_Previews: PreviewProvider {
-    static var previews: some View {
-        DittoDiskUsageView(ditto: Ditto())
-    }
-}

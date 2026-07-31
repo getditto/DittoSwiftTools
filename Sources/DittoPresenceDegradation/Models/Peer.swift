@@ -10,12 +10,12 @@ import DittoSwift
 
 public struct Peer: Identifiable {
     public var id: String { key }
-    var name: String
-    var transportInfo: PeerTransportInfo
-    var connected: Bool
-    var lastSeen: Int
-    var key: String
-    var lastSeenFormatted: String {
+    public var name: String
+    public var transportInfo: PeerTransportInfo
+    public var connected: Bool
+    public var lastSeen: Int
+    public var key: String
+    public var lastSeenFormatted: String {
         return getDateFromTimestamp(lastSeen)
     }
 }
@@ -31,21 +31,6 @@ func toMap(peer: Peer) -> [String: String] {
         "lastSeen": String(peer.lastSeen),
         "key": peer.key
     ]
-}
-
-func toPeer(dittoDocument: DittoDocument) -> Peer {
-    return Peer(
-        name: dittoDocument["_id"].stringValue,
-        transportInfo: PeerTransportInfo(
-            bluetoothConnections: Int(dittoDocument["bluetoothConnections"].stringValue)!,
-            lanConnections: Int(dittoDocument["lanConnections"].stringValue)!,
-            p2pConnections: Int(dittoDocument["p2pConnections"].stringValue)!,
-            cloudConnections: Int(dittoDocument["cloudConnections"].stringValue)!
-        ),
-        connected: Bool(dittoDocument["connected"].stringValue)!,
-        lastSeen: Int(dittoDocument["lastSeen"].stringValue)!,
-        key: dittoDocument["key"].stringValue
-    )
 }
 
 func getDateFromTimestamp(_ timestamp: Int) -> String {

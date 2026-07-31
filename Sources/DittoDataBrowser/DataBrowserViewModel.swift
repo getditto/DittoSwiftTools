@@ -9,32 +9,28 @@ import SwiftUI
 import DittoSwift
 
 class DataBrowserViewModel: ObservableObject {
-    
-    @Published var collections: [DittoCollection]?
-    var subscription: DittoSubscription?
-    var collectionsObserver: DittoLiveQuery?
+
+    @Published var collectionNames: [String] = []
+    var collectionsObserver: DittoStoreObserver?
     var ditto: Ditto
-    
+
     init(ditto: Ditto) {
         self.ditto = ditto
         observeCollections()
     }
-    
+
+    // The Data Browser intentionally observes only the local store. The host
+    // application owns its sync subscriptions.
     func observeCollections() {
-                                                                                         
-        collectionsObserver = self.ditto.store.collections().observeLocal(eventHandler: { _ in
-            
-            // self.collections = ditto.store.collectionNames()
-            self.collections = self.ditto.store.collections().exec()
-        })
+        collectionsObserver = try? self.ditto.store.registerObserver(
+            query: "SELECT * FROM system:collections"
+        ) { [weak self] result in
+            guard let self = self else { return }
+            self.collectionNames = result.items.compactMap { $0.value["name"] as? String }
+        }
     }
-    
-    func startSubscription() {
-        subscription = ditto.store.collections().subscribe()
+
+    deinit {
+        collectionsObserver?.cancel()
     }
-    
-    func closeLiveQuery() {
-        collectionsObserver?.stop()
-    }
-    
 }
