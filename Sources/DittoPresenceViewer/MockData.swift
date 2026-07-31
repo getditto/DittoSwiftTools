@@ -102,6 +102,7 @@ struct MockData {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             let newState = generator(lastState)
 
+            // swiftlint:disable:next force_try
             callback(String.init(data: try! JSONEncoder().encode(newState), encoding: .utf8)!)
 
             runChanges(lastState: newState, generator: generator, callback: callback)
@@ -185,6 +186,7 @@ private enum ConnectionType: String, CaseIterable, Codable {
     case accessPoint = "AccessPoint"
     case p2pWiFi = "P2PWiFi"
     case webSocket = "WebSocket"
+    case multicast = "Multicast"
 
     /// Deterministic generator
     static func generate(index: Int) -> Self {

@@ -17,7 +17,7 @@ struct MenuItem: View {
     var ditto: Ditto?
 
     var body: some View {
-        if let ditto, ditto.activated {
+        if let ditto, ditto.isActivated {
             NavigationLink(destination: option.destinationView(ditto: ditto)) {
                 toolListItem
             }
@@ -54,11 +54,7 @@ fileprivate struct ToolListItem: View {
     var body: some View {
         HStack(spacing: 16) {
             SettingsIcon(backgroundColor: color, systemImageName: systemImageName)
-#if os(tvOS)
-                .frame(width: 48, height: 48)
-#else
                 .frame(width: 29, height: 29)
-#endif
             Text(title)
         }
     }

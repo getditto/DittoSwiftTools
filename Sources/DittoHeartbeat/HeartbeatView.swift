@@ -99,9 +99,7 @@ public struct HeartbeatView: View {
             } else {
                 List {
                     ForEach(vm.infoDocs) { info in
-#if !os(tvOS)
                         HeartbeatInfoRowItem(info: info)
-#endif
                     }
                 }
             }

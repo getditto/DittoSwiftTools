@@ -6,10 +6,6 @@
 //
 
 import SwiftUI
-#if os(tvOS)
-import UIKit
-import DittoTvOSTextFieldComponent
-#endif
 
 public struct NewSessionView: View {
     
@@ -19,7 +15,6 @@ public struct NewSessionView: View {
     @Binding var sessionStartTime: String?
     @State private var tempExpectedPeers: String = ""
     @State private var showAlert = false
-    @State private var isEditing = false
 
     var onDismiss: () -> Void
     
@@ -103,23 +98,6 @@ public struct NewSessionView: View {
             Text("Define the minimum number of required peers to be connected. Must be at least 1.")
                 .font(.footnote)
                 .padding(.top, -16)
-        }
-        #else
-        Section {
-            Button(action: {
-                isEditing = true
-            }) {
-                HStack {
-                    Text("Expected Peer Count")
-                    Spacer()
-                    Text(tempExpectedPeers)
-                    Image(systemName: "chevron.right")
-                }
-            }
-            .background(KeyboardOverlay(text: $tempExpectedPeers, isPresented: $isEditing, keyboardType: .numberPad))
-        } footer: {
-            Text("Define the minimum number of required peers to be connected. Must be at least 1.")
-                .font(.footnote)
         }
         #endif
     }
