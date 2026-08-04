@@ -14,30 +14,13 @@ struct MenuView: View {
     @ObservedObject var dittoService = DittoService.shared
 
     public var body: some View {
-        MultiPlatformLayoutView
+        multiPlatformLayoutView
     }
 
-    /// The main content of the view, a two column layout for tvos with an image and a menu, otherwise just the menu
+    /// The main content of the view, adapting its layout based on the platform.
     @ViewBuilder
-    private var MultiPlatformLayoutView: some View {
-        #if os(tvOS)
-            HStack {
-                VStack {
-                    LogoView
-
-                    SyncButton(dittoService: dittoService)
-                        .buttonStyle(.plain)
-
-                    Text("SDK Version: \(dittoService.ditto?.sdkVersion ?? Ditto.version)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                .focusSection()
-
-                AllToolsMenu(ditto: DittoService.shared.ditto)
-                    .listStyle(.grouped)
-            }
-        #elseif os(macOS)
+    private var multiPlatformLayoutView: some View {
+        #if os(macOS)
             AllToolsMenu(ditto: DittoService.shared.ditto)
         #else
             AllToolsMenu(ditto: DittoService.shared.ditto)
@@ -46,39 +29,27 @@ struct MenuView: View {
                     ToolbarItemGroup(placement: .bottomBar) {
                         VStack(spacing: 0) {
                             SyncButton(dittoService: dittoService)
-                            CopyButton
+                            copyButton
                         }
                     }
                 }
         #endif
     }
 
-    @ViewBuilder
-    private var LogoView: some View {
-        Image("Ditto.LogoMark", bundle: .main)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(maxWidth: .infinity)
-            .foregroundColor(.dittoBlue)
-            .padding(180)
-    }
-
-    #if !os(tvOS)
-        private var CopyButton: some View {
-            Button(action: {
-                #if !os(macOS)
-                // Copy SDK version to clipboard on tap
-                UIPasteboard.general.string = Ditto.version
-                #endif
-            }) {
-                HStack {
-                    Text("SDK Version: \(Ditto.version)")
-                    Image(systemName: "doc.on.doc")
-                        .font(.system(size: 10))
-                }
-                .font(.caption)
-                .foregroundColor(.secondary)
+    private var copyButton: some View {
+        Button(action: {
+            #if !os(macOS)
+            // Copy SDK version to clipboard on tap
+            UIPasteboard.general.string = Ditto.version
+            #endif
+        }) {
+            HStack {
+                Text("SDK Version: \(Ditto.version)")
+                Image(systemName: "doc.on.doc")
+                    .font(.system(size: 10))
             }
+            .font(.caption)
+            .foregroundColor(.secondary)
         }
-    #endif
+    }
 }
